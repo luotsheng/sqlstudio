@@ -1,12 +1,11 @@
 package com.changhong.sqlstudio;
 
-import com.changhong.sqlstudio.ui.MainWorkbench;
 import com.changhong.sqlstudio.ui.MainMenuBar;
 import com.changhong.sqlstudio.ui.MainToolBar;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import com.changhong.sqlstudio.ui.MainWorkbench;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author luotiansheng

@@ -1,6 +1,7 @@
 package com.changhong.sqlstudio.ui.area;
 
 import com.changhong.sqlstudio.StudioApplication;
+import com.changhong.sqlstudio.widgets.DragTabFolder;
 import org.eclipse.swt.custom.*;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -29,22 +30,20 @@ public class ScriptEditor {
     private static final int EDITOR_FONT_SIZE = 16;
 
     private final Composite container;
-    private final CTabFolder tabFolder;
+    private final DragTabFolder tabFolder;
 
     public ScriptEditor(SashForm sashForm) {
         container = new Composite(sashForm, BORDER);
         container.setLayout(new FillLayout());
 
-        tabFolder = new CTabFolder(container, HORIZONTAL);
-        tabFolder.setMinimumCharacters(1);
+        tabFolder = new DragTabFolder(container);
     }
 
+    private int count = 1;
+
     public void newQueryScriptTab() {
-        CTabItem tabItem = new CTabItem(tabFolder, CLOSE);
-        tabItem.setText("* 新建查询");
-        CodeEditor codeEditor = new CodeEditor(tabFolder);
-        tabItem.setControl(codeEditor);
-        tabFolder.setSelection(tabItem);
+        CodeEditor codeEditor = new CodeEditor(tabFolder.getTabFolder());
+        tabFolder.addTab("*新建查询" + "_" + (count++), codeEditor);
     }
 
     /**
