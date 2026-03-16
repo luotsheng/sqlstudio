@@ -2,11 +2,15 @@ package com.changhong.sqlstudio.widgets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabFolder2Listener;
+import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.*;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,7 +60,7 @@ public class DragTabFolder {
 
         /* 关闭当前标签 */
         MenuItem closeCurrentItem = new MenuItem(contextMenu, SWT.PUSH);
-        closeCurrentItem.setText("关闭");
+        closeCurrentItem.setText("关闭当前标签");
         closeCurrentItem.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -121,14 +125,64 @@ public class DragTabFolder {
     }
 
     /**
+     * 关闭指定标签（触发事件）
+     */
+    @SuppressWarnings("ALL")
+    public void closeTabItem(CTabItem item) {
+        if (item == null || item.isDisposed())
+            return;
+
+        try {
+            CTabFolder2Listener[] listeners = getCTabFolder2Listeners();
+
+            Constructor<CTabFolderEvent> constructor =
+                    CTabFolderEvent.class.getDeclaredConstructor(Widget.class);
+            constructor.setAccessible(true);
+            CTabFolderEvent event = constructor.newInstance(tabFolder);
+
+            event.item = item;
+            event.doit = true;
+
+            for (CTabFolder2Listener listener : listeners) {
+                listener.close(event);
+                if (!event.doit)
+                    return;
+            }
+
+            if (event.doit) {
+                item.dispose();
+                itemContentMap.remove(item);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private CTabFolder2Listener[] getCTabFolder2Listeners() {
+        try {
+            Field field = CTabFolder.class.getDeclaredField("folderListeners");
+            field.setAccessible(true);
+
+            CTabFolder2Listener[] listeners =
+                    (CTabFolder2Listener[]) field.get(tabFolder);
+
+            if (listeners == null)
+                return new CTabFolder2Listener[0];
+
+            return listeners;
+        } catch (Exception e) {
+            return new CTabFolder2Listener[0];
+        }
+    }
+
+    /**
      * 关闭指定标签
      */
     private void closeTab(CTabItem item) {
         if (item == null || item.isDisposed())
             return;
 
-        item.dispose();
-        itemContentMap.remove(item);
+        closeTabItem(item);
     }
 
     /**
@@ -144,8 +198,7 @@ public class DragTabFolder {
         for (int i = items.length - 1; i > index; i--) {
             CTabItem rightItem = items[i];
             if (!rightItem.isDisposed()) {
-                rightItem.dispose();
-                itemContentMap.remove(rightItem);
+                closeTabItem(rightItem);
             }
         }
     }
@@ -159,10 +212,8 @@ public class DragTabFolder {
 
         CTabItem[] items = tabFolder.getItems();
         for (CTabItem otherItem : items) {
-            if (otherItem != item && !otherItem.isDisposed()) {
-                otherItem.dispose();
-                itemContentMap.remove(otherItem);
-            }
+            if (otherItem != item && !otherItem.isDisposed())
+                closeTabItem(otherItem);
         }
     }
 
@@ -172,10 +223,8 @@ public class DragTabFolder {
     private void closeAllTabs() {
         CTabItem[] items = tabFolder.getItems();
         for (CTabItem item : items) {
-            if (!item.isDisposed()) {
-                item.dispose();
-                itemContentMap.remove(item);
-            }
+            if (!item.isDisposed())
+                closeTabItem(item);
         }
     }
 

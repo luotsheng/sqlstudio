@@ -1,6 +1,8 @@
 package com.changhong.sqlstudio.widgets;
 
 import com.changhong.sqlstudio.StudioApplication;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.custom.*;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -44,27 +46,32 @@ public class CodeEditor extends StyledText {
         setTopMargin(10);
         setBottomMargin(10);
 
-        Font font = new Font(StudioApplication.DISPLAY, new FontData[] {
+        Font font = new Font(StudioApplication.DISPLAY, new FontData[]{
                 new FontData("Monaco", EDITOR_FONT_SIZE, NORMAL),
         });
 
         setFont(font);
 
-        addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(ModifyEvent modifyEvent) {
+        addModifyListener(modifyEvent -> {
+            try {
+                if (tabItem == null || tabItem.isDisposed())
+                    return;
+
                 if (!dirty) {
                     dirty = true;
-                    if (tabItem != null) {
+                    if (tabItem != null && !tabItem.isDisposed())
                         tabItem.setText("*" + tabItem.getText());
-                    }
+                }
+            } catch (SWTException e) {
+                if (e.code != SWT.ERROR_WIDGET_DISPOSED) {
+                    throw e;
                 }
             }
         });
 
         addLineStyleListener(new LineStyleListener() {
             private final Color keywordColor = StudioApplication.DISPLAY.getSystemColor(COLOR_DARK_BLUE);
-            private final Color stringColor   = StudioApplication.DISPLAY.getSystemColor(COLOR_DARK_GREEN);
+            private final Color stringColor = StudioApplication.DISPLAY.getSystemColor(COLOR_DARK_GREEN);
 
             @Override
             public void lineGetStyle(LineStyleEvent event) {
