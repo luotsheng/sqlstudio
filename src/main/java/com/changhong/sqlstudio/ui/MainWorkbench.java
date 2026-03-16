@@ -5,9 +5,8 @@ import com.changhong.sqlstudio.event.EventBus;
 import com.changhong.sqlstudio.event.EventListener;
 import com.changhong.sqlstudio.event.NewQueryEvent;
 import com.changhong.sqlstudio.ui.area.Navigator;
-import com.changhong.sqlstudio.ui.area.ScriptEditor;
+import com.changhong.sqlstudio.ui.area.QueryEditor;
 import org.eclipse.swt.custom.*;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 
@@ -27,7 +26,7 @@ public class MainWorkbench extends EventListener {
     private final Shell shell;
 
     private Navigator navigator;
-    private ScriptEditor scriptEditor;
+    private QueryEditor queryEditor;
 
     public MainWorkbench(Shell shell) {
         this.shell = shell;
@@ -37,7 +36,7 @@ public class MainWorkbench extends EventListener {
 
     @Override
     public void eventTigger(Event event) {
-        scriptEditor.newQueryScriptTab();
+        queryEditor.newQueryScriptTab();
     }
 
     private void createContents() {
@@ -45,7 +44,7 @@ public class MainWorkbench extends EventListener {
         sashForm.setLayoutData(new GridData(FILL, FILL, true, true));
 
         navigator = new Navigator(sashForm);
-        scriptEditor = new ScriptEditor(shell, sashForm);
+        queryEditor = new QueryEditor(shell, sashForm);
 
         sashForm.setWeights(RATIO);
     }

@@ -22,7 +22,7 @@ import static org.eclipse.swt.SWT.BORDER;
  * @author luotiansheng
  */
 @SuppressWarnings("FieldCanBeLocal")
-public class ScriptEditor extends EventListener {
+public class QueryEditor extends EventListener {
 
     private int count = 1;
 
@@ -30,7 +30,7 @@ public class ScriptEditor extends EventListener {
     private final Composite container;
     private final DragTabFolder tabFolder;
 
-    public ScriptEditor(Shell shell, SashForm sashForm) {
+    public QueryEditor(Shell shell, SashForm sashForm) {
         this.shell = shell;
         container = new Composite(sashForm, BORDER);
         container.setLayout(new FillLayout());
@@ -40,11 +40,7 @@ public class ScriptEditor extends EventListener {
         tabFolder.getTabFolder().addCTabFolder2Listener(new CTabFolder2Adapter() {
             @Override
             public void close(CTabFolderEvent event) {
-                ScriptTabCloseEvent closeEvent = new ScriptTabCloseEvent((CTabItem) event.item);
-                EventBus.publish(closeEvent);
-
-                if (!closeEvent.doit)
-                    event.doit = closeEvent.doit;
+                EventBus.publish(new ScriptTabCloseEvent(event));
             }
         });
 
@@ -59,8 +55,8 @@ public class ScriptEditor extends EventListener {
 
         if (codeEditor.isDirty()) {
             switch (showSaveDialog(tabItem.getText())) {
-                case SWT.CANCEL: closeEvent.doit = false; break;
-                default: break;
+                case SWT.CANCEL -> closeEvent.setDoit(false);
+                case SWT.NO -> closeEvent.setDoit(true);
             }
         }
 
@@ -73,7 +69,7 @@ public class ScriptEditor extends EventListener {
         MessageBox dialog = new MessageBox(shell,
                 SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_QUESTION);
 
-        dialog.setText("SQL Studio");
+        dialog.setText("数据库管理工具");
         dialog.setMessage("文件 \"" + tabName + "\" 已修改，是否保存？");
 
         return dialog.open();
@@ -81,7 +77,7 @@ public class ScriptEditor extends EventListener {
 
     public void newQueryScriptTab() {
         CodeEditor codeEditor = new CodeEditor(tabFolder.getTabFolder());
-        CTabItem cTabItem = tabFolder.addTab("新建查询" + "_" + (count++), codeEditor);
+        CTabItem cTabItem = tabFolder.addTab("新建查询" + "_" + (count++) + ".sql", codeEditor);
         codeEditor.setTabItem(cTabItem);
     }
 

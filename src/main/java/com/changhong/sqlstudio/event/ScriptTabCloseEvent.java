@@ -1,5 +1,6 @@
 package com.changhong.sqlstudio.event;
 
+import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.custom.CTabItem;
 
 /**
@@ -7,15 +8,18 @@ import org.eclipse.swt.custom.CTabItem;
  */
 public class ScriptTabCloseEvent implements Event {
 
-    private final CTabItem cTabItem;
+    private final CTabFolderEvent event;
 
-    public boolean doit = true;
-
-    public ScriptTabCloseEvent(CTabItem cTabItem) {
-        this.cTabItem = cTabItem;
+    public ScriptTabCloseEvent(CTabFolderEvent event) {
+        this.event = event;
     }
 
     public CTabItem getCTabItem() {
-        return cTabItem;
+        return (CTabItem) event.item;
     }
+
+    public void setDoit(boolean value) {
+        event.doit = value;
+    }
+
 }

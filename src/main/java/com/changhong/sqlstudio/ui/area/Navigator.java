@@ -37,7 +37,7 @@ public class Navigator {
         navigatorItem.setControl(projectTree);
 
         TreeItem projectTreeRoot = new TreeItem(projectTree, NONE);
-        projectTreeRoot.setText("根目录");
+        projectTreeRoot.setText("我的连接");
 
         TreeItem projectTreeSample = new TreeItem(projectTreeRoot, NONE);
         projectTreeSample.setText("连接样例");
@@ -51,7 +51,7 @@ public class Navigator {
         projectItem.setControl(projectTree);
 
         TreeItem projectTreeRoot = new TreeItem(projectTree, NONE);
-        projectTreeRoot.setText("根项目");
+        projectTreeRoot.setText("我的项目");
 
         TreeItem projectTreeSample = new TreeItem(projectTreeRoot, NONE);
         projectTreeSample.setText("项目样例");
