@@ -498,4 +498,9 @@ public class DragTabFolder {
     public CTabFolder getTabFolder() {
         return tabFolder;
     }
+
+    public void addCTabFolder2Listener(CTabFolder2Listener listener) {
+        tabFolder.addCTabFolder2Listener(listener);
+    }
+
 }

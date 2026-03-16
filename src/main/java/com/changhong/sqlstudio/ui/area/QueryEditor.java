@@ -37,7 +37,7 @@ public class QueryEditor extends EventListener {
 
         tabFolder = new DragTabFolder(container);
 
-        tabFolder.getTabFolder().addCTabFolder2Listener(new CTabFolder2Adapter() {
+        tabFolder.addCTabFolder2Listener(new CTabFolder2Adapter() {
             @Override
             public void close(CTabFolderEvent event) {
                 EventBus.publish(new ScriptTabCloseEvent(event));
