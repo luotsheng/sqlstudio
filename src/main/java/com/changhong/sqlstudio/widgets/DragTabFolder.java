@@ -329,6 +329,7 @@ public class DragTabFolder {
     /**
      * 添加新标签页
      */
+    @SuppressWarnings("UnusedReturnValue")
     public CTabItem addTab(String title, Control content) {
         CTabItem item = new CTabItem(tabFolder, SWT.CLOSE);
         item.setText(title);

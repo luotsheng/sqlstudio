@@ -45,7 +45,7 @@ public class MainWorkbench extends EventListener {
         sashForm.setLayoutData(new GridData(FILL, FILL, true, true));
 
         navigator = new Navigator(sashForm);
-        scriptEditor = new ScriptEditor(sashForm);
+        scriptEditor = new ScriptEditor(shell, sashForm);
 
         sashForm.setWeights(RATIO);
     }

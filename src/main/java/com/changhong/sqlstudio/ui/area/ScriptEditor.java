@@ -1,126 +1,88 @@
 package com.changhong.sqlstudio.ui.area;
 
-import com.changhong.sqlstudio.StudioApplication;
+import com.changhong.sqlstudio.event.Event;
+import com.changhong.sqlstudio.event.EventBus;
+import com.changhong.sqlstudio.event.EventListener;
+import com.changhong.sqlstudio.event.ScriptTabCloseEvent;
+import com.changhong.sqlstudio.widgets.CodeEditor;
 import com.changhong.sqlstudio.widgets.DragTabFolder;
-import org.eclipse.swt.custom.*;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder2Adapter;
+import org.eclipse.swt.custom.CTabFolderEvent;
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 
-import java.util.ArrayList;
-
-import static org.eclipse.swt.SWT.*;
-import static org.eclipse.swt.SWT.BOLD;
-import static org.eclipse.swt.SWT.COLOR_BLACK;
-import static org.eclipse.swt.SWT.COLOR_DARK_BLUE;
-import static org.eclipse.swt.SWT.COLOR_DARK_GREEN;
-import static org.eclipse.swt.SWT.COLOR_WHITE;
-import static org.eclipse.swt.SWT.H_SCROLL;
-import static org.eclipse.swt.SWT.NORMAL;
-import static org.eclipse.swt.SWT.V_SCROLL;
+import static org.eclipse.swt.SWT.BORDER;
 
 /**
  * @author luotiansheng
  */
 @SuppressWarnings("FieldCanBeLocal")
-public class ScriptEditor {
+public class ScriptEditor extends EventListener {
 
-    private static final int EDITOR_FONT_SIZE = 16;
+    private int count = 1;
 
+    private final Shell shell;
     private final Composite container;
     private final DragTabFolder tabFolder;
 
-    public ScriptEditor(SashForm sashForm) {
+    public ScriptEditor(Shell shell, SashForm sashForm) {
+        this.shell = shell;
         container = new Composite(sashForm, BORDER);
         container.setLayout(new FillLayout());
 
         tabFolder = new DragTabFolder(container);
+
+        tabFolder.getTabFolder().addCTabFolder2Listener(new CTabFolder2Adapter() {
+            @Override
+            public void close(CTabFolderEvent event) {
+                ScriptTabCloseEvent closeEvent = new ScriptTabCloseEvent((CTabItem) event.item);
+                EventBus.publish(closeEvent);
+
+                if (!closeEvent.doit)
+                    event.doit = closeEvent.doit;
+            }
+        });
+
+        EventBus.subscribe(ScriptTabCloseEvent.class, this);
     }
 
-    private int count = 1;
+    @Override
+    public void eventTigger(Event event) {
+        ScriptTabCloseEvent closeEvent = (ScriptTabCloseEvent) event;
+        CTabItem tabItem = closeEvent.getCTabItem();
+        CodeEditor codeEditor = (CodeEditor) tabItem.getControl();
 
-    public void newQueryScriptTab() {
-        CodeEditor codeEditor = new CodeEditor(tabFolder.getTabFolder());
-        tabFolder.addTab("*新建查询" + "_" + (count++), codeEditor);
+        if (codeEditor.isDirty()) {
+            switch (showSaveDialog(tabItem.getText())) {
+                case SWT.CANCEL: closeEvent.doit = false; break;
+                default: break;
+            }
+        }
+
     }
 
     /**
-     * @author luotiansheng
+     * 显示保存确认对话框
      */
-    static class CodeEditor extends StyledText {
-        public CodeEditor(Composite parent) {
-            super(parent, MULTI | BORDER | V_SCROLL | H_SCROLL);
+    private int showSaveDialog(String tabName) {
+        MessageBox dialog = new MessageBox(shell,
+                SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_QUESTION);
 
-            setBackground(StudioApplication.DISPLAY.getSystemColor(COLOR_WHITE));
-            setForeground(StudioApplication.DISPLAY.getSystemColor(COLOR_BLACK));
+        dialog.setText("SQL Studio");
+        dialog.setMessage("文件 \"" + tabName + "\" 已修改，是否保存？");
 
-            Font font = new Font(StudioApplication.DISPLAY, new FontData[] {
-                    new FontData("Consolas", EDITOR_FONT_SIZE, NORMAL),
-                    new FontData("Monaco", EDITOR_FONT_SIZE, NORMAL),
-            });
+        return dialog.open();
+    }
 
-            setFont(font);
-
-            addLineStyleListener(new LineStyleListener() {
-                private final String[] keywords = {
-                        "SELECT", "FROM", "WHERE", "INSERT", "UPDATE", "DELETE", "JOIN", "ON", "INNER", "LEFT", "RIGHT", "FULL", "OUTER",
-                        "AND", "OR", "NOT", "AS", "BY", "GROUP", "HAVING", "ORDER", "ASC", "DESC", "LIMIT", "OFFSET",
-                        "CREATE", "TABLE", "DROP", "ALTER", "ADD", "COLUMN", "PRIMARY", "KEY", "FOREIGN", "REFERENCES",
-                        "VALUES", "INTO", "SET", "DISTINCT", "ALL", "UNION", "INTERSECT", "EXCEPT", "CASE", "WHEN", "THEN", "ELSE", "END",
-                        "NULL", "IS", "LIKE", "BETWEEN", "EXISTS", "IN"
-                };
-                private final Color keywordColor = StudioApplication.DISPLAY.getSystemColor(COLOR_DARK_BLUE);
-                private final Color stringColor   = StudioApplication.DISPLAY.getSystemColor(COLOR_DARK_GREEN);
-
-                @Override
-                public void lineGetStyle(LineStyleEvent event) {
-                    String lineUpper = event.lineText.toUpperCase();
-                    java.util.List<StyleRange> styles = new ArrayList<>();
-
-                    for (String kw : keywords) {
-                        int pos = 0;
-                        while ((pos = lineUpper.indexOf(kw, pos)) >= 0) {
-                            boolean isWordStart = pos == 0 || !Character.isJavaIdentifierPart(event.lineText.charAt(pos - 1));
-                            boolean isWordEnd = pos + kw.length() == event.lineText.length() ||
-                                    !Character.isJavaIdentifierPart(event.lineText.charAt(pos + kw.length()));
-
-                            if (isWordStart && isWordEnd) {
-                                StyleRange sr = new StyleRange();
-                                sr.start = pos + event.lineOffset;
-                                sr.length = kw.length();
-                                sr.foreground = keywordColor;
-                                sr.fontStyle = BOLD;
-                                styles.add(sr);
-                            }
-                            pos += kw.length();
-                        }
-                    }
-
-                    int start = -1;
-                    for (int i = 0; i < event.lineText.length(); i++) {
-                        char c = event.lineText.charAt(i);
-                        if (c == '\'') {
-                            if (start == -1) {
-                                start = i;
-                            } else {
-                                StyleRange sr = new StyleRange();
-                                sr.start = start + event.lineOffset;
-                                sr.length = i - start + 1;
-                                sr.foreground = stringColor;
-                                styles.add(sr);
-                                start = -1;
-                            }
-                        }
-                    }
-
-                    if (!styles.isEmpty()) {
-                        event.styles = styles.toArray(new StyleRange[0]);
-                    }
-                }
-            });
-        }
+    public void newQueryScriptTab() {
+        CodeEditor codeEditor = new CodeEditor(tabFolder.getTabFolder());
+        CTabItem cTabItem = tabFolder.addTab("新建查询" + "_" + (count++), codeEditor);
+        codeEditor.setTabItem(cTabItem);
     }
 
 }
