@@ -43,7 +43,7 @@ public class MainMenuBar {
 
     private void createNewSubMenu(Menu parent) {
         MenuItem newItem = new MenuItem(parent, CASCADE);
-        newItem.setText("新建\tCtrl+N");
+        newItem.setText("新建");
 
         Menu newMenu = new Menu(parent);
         newItem.setMenu(newMenu);

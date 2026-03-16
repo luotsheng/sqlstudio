@@ -3,10 +3,10 @@ package com.changhong.sqlstudio.ui.area;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.swt.widgets.*;
 
 import static org.eclipse.swt.SWT.*;
 
@@ -33,14 +33,36 @@ public class Navigator {
         CTabItem navigatorItem = new CTabItem(tabFolder, NONE);
         navigatorItem.setText("连接管理");
 
-        Tree projectTree = new Tree(tabFolder, NONE);
-        navigatorItem.setControl(projectTree);
+        Tree connectionTree = new Tree(tabFolder, NONE);
+        navigatorItem.setControl(connectionTree);
 
-        TreeItem projectTreeRoot = new TreeItem(projectTree, NONE);
-        projectTreeRoot.setText("我的连接");
+        TreeItem rootItem = new TreeItem(connectionTree, NONE);
+        rootItem.setText("我的连接");
 
-        TreeItem projectTreeSample = new TreeItem(projectTreeRoot, NONE);
-        projectTreeSample.setText("连接样例");
+        Menu menu = new Menu(connectionTree);
+        connectionTree.setMenu(menu);
+
+        MenuItem newConnectionItem = new MenuItem(menu, PUSH);
+        newConnectionItem.setText("创建连接");
+        newConnectionItem.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                openNewConnectionDialog();
+            }
+        });
+
+        MenuItem closeAllConnectionItem = new MenuItem(menu, PUSH);
+        closeAllConnectionItem.setText("关闭所有连接");
+        closeAllConnectionItem.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                System.out.println("关闭所有连接");
+            }
+        });
+    }
+
+    private void openNewConnectionDialog() {
+        new NewConnectionDialog().open();
     }
 
     private void createProjectTabItem(CTabFolder tabFolder) {
