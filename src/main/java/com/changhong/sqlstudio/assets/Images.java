@@ -1,5 +1,6 @@
-package com.changhong.sqlstudio;
+package com.changhong.sqlstudio.assets;
 
+import com.changhong.sqlstudio.StudioApplication;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -10,6 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * @author luotiansheng
+ */
 public class Images {
 
     public static Image CONNECT = getScaled("connect.png");
@@ -30,10 +34,10 @@ public class Images {
 
         for (File file : Objects.requireNonNull(iconsDir.listFiles())) {
             ImageData data = new ImageData(file.getAbsolutePath());
-            Image src = new Image(SqlStudio.DISPLAY, data);
+            Image src = new Image(StudioApplication.DISPLAY, data);
 
             ImageData scaledData = data.scaledTo(ICON_SIZE, ICON_SIZE);
-            Image scaled = new Image(SqlStudio.DISPLAY, scaledData);
+            Image scaled = new Image(StudioApplication.DISPLAY, scaledData);
 
             GC gc = new GC(scaled);
             gc.setAntialias(SWT.ON);
