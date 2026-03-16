@@ -1,5 +1,7 @@
 package com.changhong.sqlstudio;
 
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -58,7 +60,34 @@ public class SqlStudio {
     private void createLeftComposite(SashForm sashForm) {
         Composite site = new Composite(sashForm, BORDER);
         site.setLayout(new FillLayout());
-        new Table(site, BORDER | FULL_SELECTION);
+
+        CTabFolder tabFolder = new CTabFolder(site, HORIZONTAL);
+
+        createNavigatorTabItem(tabFolder);
+        createProjectTabItem(tabFolder);
+    }
+
+    private void createNavigatorTabItem(CTabFolder tabFolder) {
+        CTabItem navigatorItem = new CTabItem(tabFolder, NONE | CLOSE);
+        navigatorItem.setText("连接管理");
+    }
+
+    private void createProjectTabItem(CTabFolder tabFolder) {
+        CTabItem projectItem = new CTabItem(tabFolder, NONE | CLOSE);
+        projectItem.setText("项目管理");
+
+        Composite projectContent = new Composite(tabFolder, NONE);
+        projectContent.setLayout(new FillLayout());
+
+        projectItem.setControl(projectContent);
+
+        Tree projectTree = new Tree(projectContent, NONE);
+
+        TreeItem projectTreeRoot = new TreeItem(projectTree, NONE);
+        projectTreeRoot.setText("根项目");
+
+        TreeItem projectTreeSample = new TreeItem(projectTreeRoot, NONE);
+        projectTreeSample.setText("项目样例");
     }
 
     private void createRightComposite(SashForm sashForm) {
