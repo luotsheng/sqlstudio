@@ -7,7 +7,7 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * 组件库
  *
- * @author luotiansheng
+ * @author Luo Tiansheng
  */
 public class Widgets {
 

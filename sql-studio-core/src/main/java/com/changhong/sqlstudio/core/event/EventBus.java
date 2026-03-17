@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 事件总线
  *
- * @author luotiansheng
+ * @author Luo Tiansheng
  */
 public class EventBus {
 

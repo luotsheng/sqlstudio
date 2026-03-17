@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * 支持拖拽排序的 CTabFolder
  *
- * @author luotiansheng
+ * @author Luo Tiansheng
  */
 public class DragTabFolder {
     private final CTabFolder tabFolder;

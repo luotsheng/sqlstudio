@@ -3,7 +3,7 @@ package com.changhong.sqlstudio.core.event;
 /**
  * 事件接口
  *
- * @author luotiansheng
+ * @author Luo Tiansheng
  */
 public interface Event {
 
