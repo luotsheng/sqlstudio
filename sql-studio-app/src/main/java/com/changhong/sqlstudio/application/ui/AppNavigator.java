@@ -1,7 +1,7 @@
-package com.changhong.sqlstudio.app.ui;
+package com.changhong.sqlstudio.application.ui;
 
 import com.changhong.sqlstudio.core.event.notify.OpenDBCreateUIEvent;
-import com.changhong.sqlstudio.app.widgets.dbui.GeneralCreateUIProvider;
+import com.changhong.sqlstudio.application.widgets.dbui.GeneralCreateUIProvider;
 import com.changhong.sqlstudio.core.common.DBType;
 import com.changhong.sqlstudio.core.event.Event;
 import com.changhong.sqlstudio.core.event.EventBus;

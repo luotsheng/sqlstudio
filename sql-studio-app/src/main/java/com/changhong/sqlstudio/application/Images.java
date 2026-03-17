@@ -1,4 +1,4 @@
-package com.changhong.sqlstudio.app;
+package com.changhong.sqlstudio.application;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;

@@ -1,7 +1,7 @@
-package com.changhong.sqlstudio.app;
+package com.changhong.sqlstudio.application;
 
 import com.changhong.sqlstudio.core.event.notify.ApplicationReadyEvent;
-import com.changhong.sqlstudio.app.window.Window;
+import com.changhong.sqlstudio.application.window.Window;
 import com.changhong.sqlstudio.core.event.EventBus;
 import org.eclipse.swt.widgets.Display;
 

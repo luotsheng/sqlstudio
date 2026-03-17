@@ -1,6 +1,6 @@
-package com.changhong.sqlstudio.app.widgets;
+package com.changhong.sqlstudio.application.widgets;
 
-import com.changhong.sqlstudio.app.Launcher;
+import com.changhong.sqlstudio.application.Launcher;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.custom.*;

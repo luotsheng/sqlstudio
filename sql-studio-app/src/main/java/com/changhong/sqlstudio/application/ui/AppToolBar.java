@@ -1,6 +1,6 @@
-package com.changhong.sqlstudio.app.ui;
+package com.changhong.sqlstudio.application.ui;
 
-import com.changhong.sqlstudio.app.Images;
+import com.changhong.sqlstudio.application.Images;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 

@@ -1,4 +1,4 @@
-package com.changhong.sqlstudio.app.ui;
+package com.changhong.sqlstudio.application.ui;
 
 import com.changhong.sqlstudio.core.event.notify.NewQueryScriptEvent;
 import com.changhong.sqlstudio.core.event.EventBus;

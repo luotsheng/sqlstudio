@@ -1,4 +1,4 @@
-package com.changhong.sqlstudio.app.widgets;
+package com.changhong.sqlstudio.application.widgets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;

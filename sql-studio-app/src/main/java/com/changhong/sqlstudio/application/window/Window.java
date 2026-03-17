@@ -1,15 +1,13 @@
-package com.changhong.sqlstudio.app.window;
+package com.changhong.sqlstudio.application.window;
 
-import com.changhong.sqlstudio.app.ui.AppMenuBar;
-import com.changhong.sqlstudio.app.ui.AppNavigator;
-import com.changhong.sqlstudio.app.ui.AppQueryEditor;
-import com.changhong.sqlstudio.app.ui.AppToolBar;
+import com.changhong.sqlstudio.application.ui.AppMenuBar;
+import com.changhong.sqlstudio.application.ui.AppNavigator;
+import com.changhong.sqlstudio.application.ui.AppQueryEditor;
+import com.changhong.sqlstudio.application.ui.AppToolBar;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 

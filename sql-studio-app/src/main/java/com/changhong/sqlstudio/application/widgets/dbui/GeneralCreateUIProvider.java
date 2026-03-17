@@ -1,4 +1,4 @@
-package com.changhong.sqlstudio.app.widgets.dbui;
+package com.changhong.sqlstudio.application.widgets.dbui;
 
 import com.changhong.sqlstudio.core.common.DBType;
 import com.changhong.sqlstudio.core.event.Event;
@@ -147,6 +147,13 @@ public class GeneralCreateUIProvider extends EventListener {
             status.setText(e.getCause().getMessage());
             status.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
         }
+    }
+
+    /**
+     * 保存连接
+     */
+    public void saveConnection() {
+
     }
 
     private void createGeneralTab() {
