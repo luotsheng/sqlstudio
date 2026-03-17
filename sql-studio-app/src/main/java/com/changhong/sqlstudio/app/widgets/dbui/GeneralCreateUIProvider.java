@@ -6,13 +6,12 @@ import com.changhong.sqlstudio.core.event.Event;
 import com.changhong.sqlstudio.core.event.EventBus;
 import com.changhong.sqlstudio.core.event.EventListener;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 /**
@@ -166,6 +165,18 @@ public class GeneralCreateUIProvider extends EventListener {
         checkBoxBtnGridData.horizontalIndent = HORIZONTAL_INDENT;
         checkBoxBtn.setLayoutData(checkBoxBtnGridData);
 
+        /* 提示状态 */
+        Label filler1 = new Label(content, SWT.NONE);
+        filler1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
+
+        CLabel status = new CLabel(content, SWT.NONE);
+        status.setText("Connection successful");
+        status.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_DARK_GREEN));
+        GridData gd = new GridData(SWT.BEGINNING, SWT.END, false, false);
+        gd.horizontalSpan = 2; // 跨两列
+        status.setLayoutData(gd);
+
+        /* 按钮区域 */
         Composite buttonBar = new Composite(dialog, SWT.NONE);
         buttonBar.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false));
         GridLayout buttonBarGridLayout = new GridLayout(4, false);
