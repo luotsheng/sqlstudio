@@ -1,8 +1,15 @@
 package com.changhong.sqlstudio.app.widgets.dbui;
 
+import com.changhong.sqlstudio.app.event.ConnectionConfigChangeEvent;
+import com.changhong.sqlstudio.core.common.DBType;
+import com.changhong.sqlstudio.core.event.Event;
+import com.changhong.sqlstudio.core.event.EventBus;
+import com.changhong.sqlstudio.core.event.EventListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -14,9 +21,9 @@ import org.eclipse.swt.widgets.*;
  */
 @SuppressWarnings({
         "FieldCanBeLocal",
-        "unused"
+        "unused",
 })
-public class GeneralCreateUIProvider {
+public class GeneralCreateUIProvider extends EventListener {
 
     private static final int DIALOG_WIDTH = 600;
     private static final int DIALOG_HEIGHT = 500;
@@ -26,14 +33,53 @@ public class GeneralCreateUIProvider {
     private static final String TAB_ITEM_GENERAL_TITLE = "常规";
     private static final String TAB_ITEM_ADVANCED_TITLE = "高级";
 
+    private static final String[] COMMON_TIMEZONES = new String[]{
+            "UTC",
+            "Asia/Shanghai",
+            "Asia/Hong_Kong",
+            "Asia/Singapore",
+            "Asia/Seoul",
+            "Asia/Bangkok",
+            "Asia/Dubai",
+            "Europe/London",
+            "Europe/Berlin",
+            "Europe/Paris",
+            "America/New_York",
+            "America/Los_Angeles",
+            "America/Chicago",
+            "Australia/Sydney",
+            "Asia/Tokyo",
+    };
+
     private final Shell parentShell;
     private final String dialogTitle;
+    private final ConnectionConfig config;
     private Shell dialog;
     private Composite container;
     private CTabFolder tabFolder;
+    private Text jdbcUrlText;
 
-    public GeneralCreateUIProvider(String dbname) {
-        this.dialogTitle = "新建" + dbname + "连接";
+    static class ConnectionConfig {
+        public String host = "127.0.0.1";
+        public String port = "3306";
+        public String jdbcType;
+        public String username = "root";
+        public String password;
+        public boolean useSSL = false;
+        public String timezone = "Asia/Shanghai";
+
+        public String build() {
+            return "jdbc:" + jdbcType + "://" + host + ":" + port
+                    + "?useSSL=" + useSSL + "&serverTimezone=" + timezone;
+        }
+
+    }
+
+    public GeneralCreateUIProvider(DBType dbType) {
+        this.dialogTitle = "新建" + dbType.getName() + "连接";
+
+        this.config = new ConnectionConfig();
+        this.config.jdbcType = dbType.getJdbcType();
 
         parentShell = Display.getCurrent().getActiveShell();
 
@@ -45,10 +91,13 @@ public class GeneralCreateUIProvider {
         /* 创建布局 */
         createGeneralTab();
         createAdvancedTab();
+
+        /* 订阅事件 */
+        EventBus.subscribe(ConnectionConfigChangeEvent.class, this);
     }
 
     private void configureDialog() {
-        dialog = new Shell(parentShell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | SWT.RESIZE);
+        dialog = new Shell(parentShell, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
         dialog.setText(dialogTitle);
         dialog.setSize(DIALOG_WIDTH, DIALOG_HEIGHT);
         dialog.setLayout(new GridLayout(1, false));
@@ -67,6 +116,13 @@ public class GeneralCreateUIProvider {
         tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
     }
 
+    @Override
+    public void eventTigger(Event event) {
+        if (event instanceof ConnectionConfigChangeEvent) {
+            jdbcUrlText.setText(config.build());
+        }
+    }
+
     private void createGeneralTab() {
         CTabItem tabItem = new  CTabItem(tabFolder, SWT.NONE);
         tabItem.setText(TAB_ITEM_GENERAL_TITLE);
@@ -80,10 +136,25 @@ public class GeneralCreateUIProvider {
         new Label(content, SWT.NONE);
         new Label(content, SWT.NONE);
 
-        Text host = createLabeledTextField(content, "主机地址", "127.0.0.1");
-        Text port = createLabeledTextField(content, "端口号", "3306");
-        Text user = createLabeledTextField(content, "用户名", "root");
-        Text passwd = createLabeledTextField(content, "密码", null, SWT.PASSWORD);
+        Text host = createLabeledTextField(content, "主机地址", config.host);
+        host.addModifyListener(modifyEvent -> {
+            config.host = host.getText();
+            EventBus.publish(new ConnectionConfigChangeEvent());
+        });
+
+        Text port = createLabeledTextField(content, "端口号", config.port);
+        host.addModifyListener(modifyEvent -> {
+            config.port = port.getText();
+            EventBus.publish(new ConnectionConfigChangeEvent());
+        });
+
+        Text user = createLabeledTextField(content, "用户名", config.username);
+        user.addModifyListener(modifyEvent -> {
+            config.username = user.getText();
+            EventBus.publish(new ConnectionConfigChangeEvent());
+        });
+
+        Text passwd = createLabeledTextField(content, "密码", config.password, SWT.PASSWORD);
 
         new Label(content, SWT.NONE);
         new Label(content, SWT.NONE);
@@ -134,7 +205,36 @@ public class GeneralCreateUIProvider {
         content.setLayout(new GridLayout(2, false));
         tabItem.setControl(content);
 
-        Text jdbcUrl = createLabeledTextField(content, "JDBC URL", "jdbc:mysql://127.0.0.1:3306/testdb?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf8");
+        jdbcUrlText = createLabeledTextField(content, "JDBC URL", config.build());
+
+        Label label = new Label(content, SWT.LEFT);
+        label.setText("时区：");
+        GridData labelGridData = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
+        labelGridData.horizontalIndent = HORIZONTAL_INDENT;
+        label.setLayoutData(labelGridData);
+
+        Combo timezoneCombo = new Combo(content, SWT.NONE);
+        timezoneCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        timezoneCombo.setItems(COMMON_TIMEZONES);
+        timezoneCombo.select(1);
+        timezoneCombo.addModifyListener(modifyEvent -> {
+            config.timezone = timezoneCombo.getText();
+            EventBus.publish(new ConnectionConfigChangeEvent());
+        });
+
+        Button useSSLBtn = new Button(content, SWT.CHECK);
+        useSSLBtn.setText("使用 SSL");
+        GridData checkBoxBtnGridData = new GridData(SWT.LEFT, SWT.CENTER, false, false);
+        checkBoxBtnGridData.horizontalSpan = 2;
+        checkBoxBtnGridData.horizontalIndent = HORIZONTAL_INDENT;
+        useSSLBtn.setLayoutData(checkBoxBtnGridData);
+        useSSLBtn.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                config.useSSL = useSSLBtn.getSelection();
+                EventBus.publish(new ConnectionConfigChangeEvent());
+            }
+        });
     }
 
     public void open() {

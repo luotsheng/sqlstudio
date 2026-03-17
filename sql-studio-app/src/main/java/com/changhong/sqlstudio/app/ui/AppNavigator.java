@@ -40,8 +40,10 @@ public class AppNavigator extends EventListener {
 
     @Override
     public void eventTigger(Event event) {
-        if (event instanceof OpenDBCreateUIEvent openDBCreateUIEvent)
-            new GeneralCreateUIProvider(openDBCreateUIEvent.dbType().getName()).open();
+        if (event instanceof OpenDBCreateUIEvent openDBCreateUIEvent) {
+            DBType dbType = openDBCreateUIEvent.dbType();
+            new GeneralCreateUIProvider(dbType).open();
+        }
     }
 
     private void createNavigatorTabItem(CTabFolder tabFolder) {
