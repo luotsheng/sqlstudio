@@ -1,7 +1,8 @@
 package com.changhong.sqlstudio.app.ui;
 
-import com.changhong.sqlstudio.app.event.StartReadyEvent;
-import com.changhong.sqlstudio.app.widgets.NewConnectionDialog;
+import com.changhong.sqlstudio.app.event.OpenDBCreateUIEvent;
+import com.changhong.sqlstudio.app.widgets.dbui.GeneralCreateUIProvider;
+import com.changhong.sqlstudio.core.common.DBType;
 import com.changhong.sqlstudio.core.event.Event;
 import com.changhong.sqlstudio.core.event.EventBus;
 import com.changhong.sqlstudio.core.event.EventListener;
@@ -34,13 +35,13 @@ public class AppNavigator extends EventListener {
         createNavigatorTabItem(tabFolder);
         createProjectTabItem(tabFolder);
 
-        EventBus.subscribe(StartReadyEvent.class, this);
+        EventBus.subscribe(OpenDBCreateUIEvent.class, this);
     }
 
     @Override
     public void eventTigger(Event event) {
-        if (event instanceof StartReadyEvent)
-            openNewConnectionDialog();
+        if (event instanceof OpenDBCreateUIEvent openDBCreateUIEvent)
+            new GeneralCreateUIProvider(openDBCreateUIEvent.dbType().getName()).open();
     }
 
     private void createNavigatorTabItem(CTabFolder tabFolder) {
@@ -56,27 +57,36 @@ public class AppNavigator extends EventListener {
         Menu menu = new Menu(connectionTree);
         connectionTree.setMenu(menu);
 
-        MenuItem newConnectionItem = new MenuItem(menu, PUSH);
+        MenuItem newConnectionItem = new MenuItem(menu, CASCADE);
         newConnectionItem.setText("创建连接");
-        newConnectionItem.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                openNewConnectionDialog();
+
+        Menu newConnectionSubMenu = new Menu(newConnectionItem);
+        newConnectionItem.setMenu(newConnectionSubMenu);
+
+        for (DBType type : DBType.values()) {
+            MenuItem newDBConnectionItem = new MenuItem(newConnectionSubMenu, PUSH);
+            newDBConnectionItem.setText(type.getName());
+
+            switch (type) {
+                case PostgreSQL:
+                case Oracle:
+                case SQL_SERVER:
+                case DM:
+                case MySQL:
+                    newDBConnectionItem.addSelectionListener(new SelectionAdapter() {
+                        @Override
+                        public void widgetSelected(SelectionEvent e) {
+                            EventBus.publish(new OpenDBCreateUIEvent(type, e));
+                        }
+                    });
+                    break;
+                case SQLite: break;
             }
-        });
+
+        }
 
         MenuItem closeAllConnectionItem = new MenuItem(menu, PUSH);
         closeAllConnectionItem.setText("关闭所有连接");
-        closeAllConnectionItem.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                System.out.println("关闭所有连接");
-            }
-        });
-    }
-
-    private void openNewConnectionDialog() {
-        new NewConnectionDialog().open();
     }
 
     private void createProjectTabItem(CTabFolder tabFolder) {
