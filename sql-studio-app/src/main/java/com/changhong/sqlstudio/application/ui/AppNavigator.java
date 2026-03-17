@@ -1,11 +1,15 @@
 package com.changhong.sqlstudio.application.ui;
 
+import com.changhong.sqlstudio.application.Users;
+import com.changhong.sqlstudio.application.config.ConnectionConfig;
 import com.changhong.sqlstudio.core.event.notify.OpenDBCreateUIEvent;
 import com.changhong.sqlstudio.application.widgets.dbui.GeneralCreateUIProvider;
 import com.changhong.sqlstudio.core.common.DBType;
 import com.changhong.sqlstudio.core.event.Event;
 import com.changhong.sqlstudio.core.event.EventBus;
 import com.changhong.sqlstudio.core.event.EventListener;
+import com.changhong.sqlstudio.core.event.notify.RefreshConnectionListEvent;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
@@ -13,6 +17,9 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
+
+import java.util.List;
+import java.util.Map;
 
 import static org.eclipse.swt.SWT.*;
 
@@ -24,6 +31,7 @@ import static org.eclipse.swt.SWT.*;
 public class AppNavigator extends EventListener {
 
     private final Composite container;
+    private TreeItem myConnections;
 
     public AppNavigator(SashForm sashForm) {
         container = new Composite(sashForm, BORDER);
@@ -36,6 +44,7 @@ public class AppNavigator extends EventListener {
         createProjectTabItem(tabFolder);
 
         EventBus.subscribe(OpenDBCreateUIEvent.class, this);
+        EventBus.subscribe(RefreshConnectionListEvent.class, this);
     }
 
     @Override
@@ -43,6 +52,14 @@ public class AppNavigator extends EventListener {
         if (event instanceof OpenDBCreateUIEvent openDBCreateUIEvent) {
             DBType dbType = openDBCreateUIEvent.dbType();
             new GeneralCreateUIProvider(dbType).open();
+        }
+
+        if (event instanceof RefreshConnectionListEvent) {
+            Map<String, ConnectionConfig> connectionList = Users.getConnectionList();
+            connectionList.forEach((k, v) -> {
+                TreeItem childItem = new TreeItem(myConnections, NONE);
+                childItem.setText(k);
+            });
         }
     }
 
@@ -53,8 +70,10 @@ public class AppNavigator extends EventListener {
         Tree connectionTree = new Tree(tabFolder, NONE);
         navigatorItem.setControl(connectionTree);
 
-        TreeItem rootItem = new TreeItem(connectionTree, NONE);
-        rootItem.setText("我的连接");
+        myConnections = new TreeItem(connectionTree, NONE);
+        myConnections.setText("我的连接");
+
+        EventBus.publish(new RefreshConnectionListEvent());
 
         Menu menu = new Menu(connectionTree);
         connectionTree.setMenu(menu);
