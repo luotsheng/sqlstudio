@@ -1,0 +1,64 @@
+package com.changhong.sqlstudio.app.window;
+
+import com.changhong.sqlstudio.app.ui.AppMenuBar;
+import com.changhong.sqlstudio.app.ui.AppNavigator;
+import com.changhong.sqlstudio.app.ui.AppQueryEditor;
+import com.changhong.sqlstudio.app.ui.AppToolBar;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+
+/**
+ * @author Luo Tiansheng
+ * @since 2026-03-01
+ */
+@SuppressWarnings({
+        "FieldCanBeLocal",
+        "unused"
+})
+public class Window {
+
+    private final Display display;
+
+    private Shell shell;
+    private SashForm sashForm;
+
+    private AppMenuBar menuBar;
+    private AppToolBar toolBar;
+    private AppNavigator navigator;
+    private AppQueryEditor queryEditor;
+
+    public Window(Display display) {
+        this.display = display;
+    }
+
+    public void open() {
+        shell = new Shell(display);
+
+        GridLayout gridLayout = new GridLayout();
+        gridLayout.marginWidth = 0;
+        gridLayout.marginHeight = 0;
+        gridLayout.verticalSpacing = 0;
+
+        shell.setLayout(gridLayout);
+        shell.setSize(1200, 800);
+
+        sashForm = new SashForm(shell, SWT.HORIZONTAL | SWT.BORDER);
+        sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+        menuBar = new AppMenuBar(shell);
+        toolBar = new AppToolBar(shell);
+        navigator = new AppNavigator(sashForm);
+        queryEditor = new AppQueryEditor(shell, sashForm);
+
+        sashForm.setWeights(20, 80);
+
+        shell.open();
+    }
+
+}
