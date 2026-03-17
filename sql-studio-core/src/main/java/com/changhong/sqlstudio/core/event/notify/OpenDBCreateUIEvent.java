@@ -1,4 +1,4 @@
-package com.changhong.sqlstudio.app.event;
+package com.changhong.sqlstudio.core.event.notify;
 
 
 import com.changhong.sqlstudio.core.common.DBType;

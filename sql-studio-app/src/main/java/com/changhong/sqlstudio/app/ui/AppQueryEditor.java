@@ -1,7 +1,7 @@
 package com.changhong.sqlstudio.app.ui;
 
-import com.changhong.sqlstudio.app.event.NewQueryScriptEvent;
-import com.changhong.sqlstudio.app.event.ScriptTabCloseEvent;
+import com.changhong.sqlstudio.core.event.notify.NewQueryScriptEvent;
+import com.changhong.sqlstudio.core.event.notify.ScriptTabCloseEvent;
 import com.changhong.sqlstudio.app.widgets.DragTabFolder;
 import com.changhong.sqlstudio.app.widgets.StyledTextEditor;
 import com.changhong.sqlstudio.app.widgets.Widgets;

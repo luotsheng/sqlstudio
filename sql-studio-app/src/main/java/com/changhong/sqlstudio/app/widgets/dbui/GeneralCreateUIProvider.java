@@ -1,6 +1,6 @@
 package com.changhong.sqlstudio.app.widgets.dbui;
 
-import com.changhong.sqlstudio.app.event.ConnectionConfigChangeEvent;
+import com.changhong.sqlstudio.core.event.notify.ConnectionConfigChangeEvent;
 import com.changhong.sqlstudio.core.common.DBType;
 import com.changhong.sqlstudio.core.event.Event;
 import com.changhong.sqlstudio.core.event.EventBus;
@@ -15,6 +15,8 @@ import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 /**
+ * 通用 JDBC 创建连接 UI 窗口类
+ *
  * @author Luo Tiansheng
  * @since 2026/3/17
  */
@@ -173,7 +175,7 @@ public class GeneralCreateUIProvider extends EventListener {
         status.setText("Connection successful");
         status.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_DARK_GREEN));
         GridData gd = new GridData(SWT.BEGINNING, SWT.END, false, false);
-        gd.horizontalSpan = 2; // 跨两列
+        gd.horizontalSpan = 2;
         status.setLayoutData(gd);
 
         /* 按钮区域 */

@@ -1,4 +1,4 @@
-package com.changhong.sqlstudio.app.event;
+package com.changhong.sqlstudio.core.event.notify;
 
 
 import com.changhong.sqlstudio.core.event.Event;
@@ -9,5 +9,5 @@ import com.changhong.sqlstudio.core.event.Event;
  * @author Luo Tiansheng
  * @since 2026/3/17
  */
-public class StartReadyEvent implements Event {
+public class ApplicationReadyEvent implements Event {
 }

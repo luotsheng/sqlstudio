@@ -1,6 +1,6 @@
 package com.changhong.sqlstudio.app.ui;
 
-import com.changhong.sqlstudio.app.event.NewQueryScriptEvent;
+import com.changhong.sqlstudio.core.event.notify.NewQueryScriptEvent;
 import com.changhong.sqlstudio.core.event.EventBus;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
