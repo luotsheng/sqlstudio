@@ -1,12 +1,12 @@
 package com.changhong.sqlstudio.driver;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * 数据源配置
@@ -18,18 +18,20 @@ import java.util.List;
         "SqlNoDataSourceInspection",
         "SqlDialectInspection",
 })
-public class MySqlDataSource implements DataSourceAdapter {
+public class MySqlDataSource extends HikariDataSourceAdapter {
 
-    private final DataSource dataSource;
+    public MySqlDataSource(DataSourceConfig config) {
+        super(config);
+    }
 
-    public MySqlDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public MySqlDataSource(Properties props) {
+        super(props);
     }
 
     @Override
     public List<String> getTableNames() throws SQLException {
         List<String> tableNames = new ArrayList<>();
-        try (Connection connection = dataSource.getConnection();
+        try (Connection connection = getConnection();
              Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery("SHOW DATABASES")) {
             while (rs.next())

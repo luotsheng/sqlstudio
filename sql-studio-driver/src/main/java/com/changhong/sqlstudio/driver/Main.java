@@ -1,10 +1,6 @@
 package com.changhong.sqlstudio.driver;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Properties;
 
 /**
@@ -17,12 +13,22 @@ public class Main {
 
         props.setProperty("jdbcUrl", "jdbc:mysql://127.0.0.1:3306?useSSL=false&serverTimezone=UTC");
         props.setProperty("username", "root");
-        props.setProperty("password", "root");
+        props.setProperty("password", "roo1t");
 
         props.setProperty("maximumPoolSize", "10");
-        props.setProperty("minimumIdle", "2");
+        props.setProperty("minimumIdle", "5");
 
-        HikariDataSource ds = new HikariDataSource(new HikariConfig(props));
-        MySqlDataSource dataSource = new MySqlDataSource(ds);
+        MySqlDataSource ds = null;
+
+        try {
+            ds = new MySqlDataSource(props);
+            System.out.println("连接池初始化成功");
+        } catch (Exception e) {
+            System.err.println("连接池初始化失败: " + e.getCause().getMessage());
+        } finally {
+            if (ds != null) {
+                ds.close();
+            }
+        }
     }
 }

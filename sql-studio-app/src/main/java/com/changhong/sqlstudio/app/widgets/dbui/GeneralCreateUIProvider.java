@@ -1,17 +1,21 @@
 package com.changhong.sqlstudio.app.widgets.dbui;
 
-import com.changhong.sqlstudio.core.event.notify.ConnectionConfigChangeEvent;
 import com.changhong.sqlstudio.core.common.DBType;
 import com.changhong.sqlstudio.core.event.Event;
 import com.changhong.sqlstudio.core.event.EventBus;
 import com.changhong.sqlstudio.core.event.EventListener;
+import com.changhong.sqlstudio.core.event.notify.ConnectionConfigChangeEvent;
+import com.changhong.sqlstudio.driver.DataSourceConfig;
+import com.changhong.sqlstudio.driver.MySqlDataSource;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.*;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
 /**
@@ -58,7 +62,10 @@ public class GeneralCreateUIProvider extends EventListener {
     private Shell dialog;
     private Composite container;
     private CTabFolder tabFolder;
-    private Text jdbcUrlText;
+    private CLabel status;
+    private Text jdbcUrl;
+    private Text user;
+    private Text passwd;
 
     static class ConnectionConfig {
         public String host = "127.0.0.1";
@@ -120,7 +127,25 @@ public class GeneralCreateUIProvider extends EventListener {
     @Override
     public void eventTigger(Event event) {
         if (event instanceof ConnectionConfigChangeEvent) {
-            jdbcUrlText.setText(config.build());
+            jdbcUrl.setText(config.build());
+        }
+    }
+
+    /**
+     * 测试数据库连接
+     */
+    public void testConnection() {
+        DataSourceConfig conf = new DataSourceConfig();
+        conf.setJdbcUrl(jdbcUrl.getText());
+        conf.setUsername(user.getText());
+        conf.setPassword(passwd.getText());
+
+        try (MySqlDataSource mySqlDataSource = new MySqlDataSource(conf)) {
+            status.setText("数据库连接成功");
+            status.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_DARK_GREEN));
+        } catch (Exception e) {
+            status.setText(e.getCause().getMessage());
+            status.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
         }
     }
 
@@ -149,13 +174,13 @@ public class GeneralCreateUIProvider extends EventListener {
             EventBus.publish(new ConnectionConfigChangeEvent());
         });
 
-        Text user = createLabeledTextField(content, "用户名", config.username);
+        user = createLabeledTextField(content, "用户名", config.username);
         user.addModifyListener(modifyEvent -> {
             config.username = user.getText();
             EventBus.publish(new ConnectionConfigChangeEvent());
         });
 
-        Text passwd = createLabeledTextField(content, "密码", config.password, SWT.PASSWORD);
+        passwd = createLabeledTextField(content, "密码", config.password, SWT.PASSWORD);
 
         new Label(content, SWT.NONE);
         new Label(content, SWT.NONE);
@@ -171,11 +196,10 @@ public class GeneralCreateUIProvider extends EventListener {
         Label filler1 = new Label(content, SWT.NONE);
         filler1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
 
-        CLabel status = new CLabel(content, SWT.NONE);
-        status.setText("Connection successful");
-        status.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_DARK_GREEN));
+        status = new CLabel(content, SWT.NONE);
         GridData gd = new GridData(SWT.BEGINNING, SWT.END, false, false);
         gd.horizontalSpan = 2;
+        gd.widthHint = 2048;
         status.setLayoutData(gd);
 
         /* 按钮区域 */
@@ -192,6 +216,12 @@ public class GeneralCreateUIProvider extends EventListener {
         GridData testBtnGridData = new GridData(SWT.LEFT, SWT.CENTER, true, false);
         testBtnGridData.widthHint = 90;
         testBtn.setLayoutData(testBtnGridData);
+        testBtn.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                testConnection();
+            }
+        });
 
         Label spacerLabel1 = new Label(buttonBar, SWT.NONE);
         spacerLabel1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -207,6 +237,12 @@ public class GeneralCreateUIProvider extends EventListener {
         GridData cancelBtnGridData = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
         cancelBtnGridData.widthHint = 80;
         cancelBtn.setLayoutData(cancelBtnGridData);
+        cancelBtn.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                dialog.dispose();
+            }
+        });
 
     }
 
@@ -218,7 +254,7 @@ public class GeneralCreateUIProvider extends EventListener {
         content.setLayout(new GridLayout(2, false));
         tabItem.setControl(content);
 
-        jdbcUrlText = createLabeledTextField(content, "JDBC URL", config.build());
+        jdbcUrl = createLabeledTextField(content, "JDBC URL", config.build());
 
         Label label = new Label(content, SWT.LEFT);
         label.setText("时区：");
