@@ -14,6 +14,10 @@ import java.util.List;
  * @author Luo Tiansheng
  * @since 2026/3/17
  */
+@SuppressWarnings({
+        "SqlNoDataSourceInspection",
+        "SqlDialectInspection",
+})
 public class MySqlDataSource implements DataSourceAdapter {
 
     private final DataSource dataSource;
