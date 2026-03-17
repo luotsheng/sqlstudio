@@ -13,7 +13,7 @@
         <module>sql-studio-core</module>
         <module>sql-studio-common</module>
         <module>sql-studio-editor</module>
-        <module>sql-studio-drivers</module>
+        <module>sql-studio-driver</module>
         <module>sql-studio-plugin</module>
     </modules>
 

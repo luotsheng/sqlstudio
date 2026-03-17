@@ -1,5 +1,10 @@
 package com.changhong.sqlstudio.app.ui;
 
+import com.changhong.sqlstudio.app.event.StartReadyEvent;
+import com.changhong.sqlstudio.app.widgets.NewConnectionDialog;
+import com.changhong.sqlstudio.core.event.Event;
+import com.changhong.sqlstudio.core.event.EventBus;
+import com.changhong.sqlstudio.core.event.EventListener;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
@@ -15,7 +20,7 @@ import static org.eclipse.swt.SWT.*;
  * @since 2026-03-01
  */
 @SuppressWarnings("FieldCanBeLocal")
-public class AppNavigator {
+public class AppNavigator extends EventListener {
 
     private final Composite container;
 
@@ -28,6 +33,14 @@ public class AppNavigator {
 
         createNavigatorTabItem(tabFolder);
         createProjectTabItem(tabFolder);
+
+        EventBus.subscribe(StartReadyEvent.class, this);
+    }
+
+    @Override
+    public void eventTigger(Event event) {
+        if (event instanceof StartReadyEvent)
+            openNewConnectionDialog();
     }
 
     private void createNavigatorTabItem(CTabFolder tabFolder) {
@@ -63,7 +76,7 @@ public class AppNavigator {
     }
 
     private void openNewConnectionDialog() {
-        /* TODO */
+        new NewConnectionDialog().open();
     }
 
     private void createProjectTabItem(CTabFolder tabFolder) {

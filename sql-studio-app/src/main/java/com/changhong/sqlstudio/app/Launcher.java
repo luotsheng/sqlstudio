@@ -1,6 +1,8 @@
 package com.changhong.sqlstudio.app;
 
+import com.changhong.sqlstudio.app.event.StartReadyEvent;
 import com.changhong.sqlstudio.app.window.Window;
+import com.changhong.sqlstudio.core.event.EventBus;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -26,9 +28,18 @@ public class Launcher  {
 
     public  static void eventLoop(Display display)
     {
+        boolean isPublish = false;
+
         while (!display.isDisposed()) {
-            if (!display.readAndDispatch())
+            if (!display.readAndDispatch()) {
+
+                if (!isPublish) {
+                    EventBus.publish(new StartReadyEvent());
+                    isPublish = true;
+                }
+
                 display.sleep();
+            }
         }
     }
 

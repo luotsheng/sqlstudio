@@ -48,11 +48,12 @@ public class Window {
         shell.setLayout(gridLayout);
         shell.setSize(1200, 800);
 
+        menuBar = new AppMenuBar(shell);
+        toolBar = new AppToolBar(shell);
+
         sashForm = new SashForm(shell, SWT.HORIZONTAL | SWT.BORDER);
         sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        menuBar = new AppMenuBar(shell);
-        toolBar = new AppToolBar(shell);
         navigator = new AppNavigator(sashForm);
         queryEditor = new AppQueryEditor(shell, sashForm);
 
