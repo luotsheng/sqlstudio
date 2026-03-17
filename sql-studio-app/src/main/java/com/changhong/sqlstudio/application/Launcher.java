@@ -15,8 +15,9 @@ public class Launcher  {
 
     public static void main(String[] args)
     {
-        try {
+        Users.initialize();
 
+        try {
             Window window = new Window(display);
             window.open();
 

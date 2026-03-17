@@ -26,6 +26,10 @@
             <groupId>com.changhong.sqlstudio</groupId>
             <artifactId>sql-studio-driver</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.changhong.sqlstudio</groupId>
+            <artifactId>sql-studio-common</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

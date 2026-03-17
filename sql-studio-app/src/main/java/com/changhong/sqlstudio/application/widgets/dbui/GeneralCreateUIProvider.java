@@ -1,10 +1,13 @@
 package com.changhong.sqlstudio.application.widgets.dbui;
 
+import com.changhong.sqlstudio.application.Users;
+import com.changhong.sqlstudio.application.config.ConnectionConfig;
 import com.changhong.sqlstudio.core.common.DBType;
 import com.changhong.sqlstudio.core.event.Event;
 import com.changhong.sqlstudio.core.event.EventBus;
 import com.changhong.sqlstudio.core.event.EventListener;
 import com.changhong.sqlstudio.core.event.notify.ConnectionConfigChangeEvent;
+import com.changhong.sqlstudio.core.event.notify.RefreshConnectionListEvent;
 import com.changhong.sqlstudio.driver.DataSourceConfig;
 import com.changhong.sqlstudio.driver.MySqlDataSource;
 import org.eclipse.swt.SWT;
@@ -66,28 +69,17 @@ public class GeneralCreateUIProvider extends EventListener {
     private Text jdbcUrl;
     private Text user;
     private Text passwd;
-
-    static class ConnectionConfig {
-        public String host = "127.0.0.1";
-        public String port = "3306";
-        public String jdbcType;
-        public String username = "root";
-        public String password;
-        public boolean useSSL = false;
-        public String timezone = "Asia/Shanghai";
-
-        public String build() {
-            return "jdbc:" + jdbcType + "://" + host + ":" + port
-                    + "?useSSL=" + useSSL + "&serverTimezone=" + timezone;
-        }
-
-    }
+    private Text connectionName;
 
     public GeneralCreateUIProvider(DBType dbType) {
         this.dialogTitle = "新建" + dbType.getName() + "连接";
 
-        this.config = new ConnectionConfig();
-        this.config.jdbcType = dbType.getJdbcType();
+        config = new ConnectionConfig();
+        config.setHost("127.0.0.1");
+        config.setPort(3306);
+        config.setTimezone("Asia/Shanghai");
+        config.setUseSSL(false);
+        config.setJdbcType(dbType.getJdbcType());
 
         parentShell = Display.getCurrent().getActiveShell();
 
@@ -127,7 +119,7 @@ public class GeneralCreateUIProvider extends EventListener {
     @Override
     public void eventTigger(Event event) {
         if (event instanceof ConnectionConfigChangeEvent) {
-            jdbcUrl.setText(config.build());
+            jdbcUrl.setText(config.buildJdbcUrl());
         }
     }
 
@@ -153,7 +145,9 @@ public class GeneralCreateUIProvider extends EventListener {
      * 保存连接
      */
     public void saveConnection() {
-
+        Users.saveOrUpdateConnection(connectionName.getText(), config);
+        dialog.dispose();
+        EventBus.publish(new RefreshConnectionListEvent());
     }
 
     private void createGeneralTab() {
@@ -164,30 +158,40 @@ public class GeneralCreateUIProvider extends EventListener {
         content.setLayout(new GridLayout(2, false));
         tabItem.setControl(content);
 
-        Text connectionName = createLabeledTextField(content, "连接名称", "本地数据库");
+        connectionName = createLabeledTextField(content, "连接名称", "本地数据库");
 
         new Label(content, SWT.NONE);
         new Label(content, SWT.NONE);
 
-        Text host = createLabeledTextField(content, "主机地址", config.host);
+        Text host = createLabeledTextField(content, "主机地址", config.getHost());
         host.addModifyListener(modifyEvent -> {
-            config.host = host.getText();
+            config.setHost(host.getText());
             EventBus.publish(new ConnectionConfigChangeEvent());
         });
 
-        Text port = createLabeledTextField(content, "端口号", config.port);
+        Text port = createLabeledTextField(content, "端口号", String.valueOf(config.getPort()));
+        host.addVerifyListener(e -> {
+            String string = e.text;
+            for (int i = 0; i < string.length(); i++) {
+                if (!Character.isDigit(string.charAt(i))) {
+                    e.doit = false;
+                    return;
+                }
+            }
+        });
+
         host.addModifyListener(modifyEvent -> {
-            config.port = port.getText();
+            config.setPort(Integer.parseInt(port.getText()));
             EventBus.publish(new ConnectionConfigChangeEvent());
         });
 
-        user = createLabeledTextField(content, "用户名", config.username);
+        user = createLabeledTextField(content, "用户名", config.getUsername());
         user.addModifyListener(modifyEvent -> {
-            config.username = user.getText();
+            config.setUsername(user.getText());
             EventBus.publish(new ConnectionConfigChangeEvent());
         });
 
-        passwd = createLabeledTextField(content, "密码", config.password, SWT.PASSWORD);
+        passwd = createLabeledTextField(content, "密码", config.getPassword(), SWT.PASSWORD);
 
         new Label(content, SWT.NONE);
         new Label(content, SWT.NONE);
@@ -238,6 +242,12 @@ public class GeneralCreateUIProvider extends EventListener {
         GridData saveBtnGridData = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
         saveBtnGridData.widthHint = 80;
         saveBtn.setLayoutData(saveBtnGridData);
+        saveBtn.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                saveConnection();
+            }
+        });
 
         Button cancelBtn = new Button(buttonBar, SWT.PUSH);
         cancelBtn.setText("取消");
@@ -261,7 +271,7 @@ public class GeneralCreateUIProvider extends EventListener {
         content.setLayout(new GridLayout(2, false));
         tabItem.setControl(content);
 
-        jdbcUrl = createLabeledTextField(content, "JDBC URL", config.build());
+        jdbcUrl = createLabeledTextField(content, "JDBC URL", config.buildJdbcUrl());
 
         Label label = new Label(content, SWT.LEFT);
         label.setText("时区：");
@@ -274,7 +284,7 @@ public class GeneralCreateUIProvider extends EventListener {
         timezoneCombo.setItems(COMMON_TIMEZONES);
         timezoneCombo.select(1);
         timezoneCombo.addModifyListener(modifyEvent -> {
-            config.timezone = timezoneCombo.getText();
+            config.setTimezone(timezoneCombo.getText());
             EventBus.publish(new ConnectionConfigChangeEvent());
         });
 
@@ -287,7 +297,7 @@ public class GeneralCreateUIProvider extends EventListener {
         useSSLBtn.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                config.useSSL = useSSLBtn.getSelection();
+                config.setUseSSL(useSSLBtn.getSelection());
                 EventBus.publish(new ConnectionConfigChangeEvent());
             }
         });
