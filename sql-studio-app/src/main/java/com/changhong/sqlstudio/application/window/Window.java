@@ -2,7 +2,7 @@ package com.changhong.sqlstudio.application.window;
 
 import com.changhong.sqlstudio.application.ui.AppMenuBar;
 import com.changhong.sqlstudio.application.ui.AppNavigator;
-import com.changhong.sqlstudio.application.ui.AppQueryEditor;
+import com.changhong.sqlstudio.application.ui.AppWorkbench;
 import com.changhong.sqlstudio.application.ui.AppToolBar;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -29,7 +29,7 @@ public class Window {
     private AppMenuBar menuBar;
     private AppToolBar toolBar;
     private AppNavigator navigator;
-    private AppQueryEditor queryEditor;
+    private AppWorkbench queryEditor;
 
     private static Window sWindow = null;
 
@@ -68,7 +68,7 @@ public class Window {
         sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         navigator = new AppNavigator(sashForm);
-        queryEditor = new AppQueryEditor(shell, sashForm);
+        queryEditor = new AppWorkbench(shell, sashForm);
 
         sashForm.setWeights(20, 80);
 

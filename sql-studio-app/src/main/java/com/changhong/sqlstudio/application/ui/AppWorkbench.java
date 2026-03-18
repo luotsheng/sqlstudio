@@ -1,9 +1,9 @@
 package com.changhong.sqlstudio.application.ui;
 
-import com.changhong.sqlstudio.core.event.notify.NewQueryScriptEvent;
+import com.changhong.sqlstudio.core.event.notify.OpenNewQueryScriptEvent;
 import com.changhong.sqlstudio.core.event.notify.ScriptTabCloseEvent;
 import com.changhong.sqlstudio.application.widgets.DragTabFolder;
-import com.changhong.sqlstudio.application.widgets.StyledTextEditor;
+import com.changhong.sqlstudio.application.widgets.QueryWorkbench;
 import com.changhong.sqlstudio.application.widgets.Widgets;
 import com.changhong.sqlstudio.core.event.Event;
 import com.changhong.sqlstudio.core.event.EventBus;
@@ -24,7 +24,7 @@ import static org.eclipse.swt.SWT.BORDER;
  * @since 2026-03-01
  */
 @SuppressWarnings("FieldCanBeLocal")
-public class AppQueryEditor extends EventListener {
+public class AppWorkbench extends EventListener {
 
     private int count = 1;
 
@@ -32,7 +32,7 @@ public class AppQueryEditor extends EventListener {
     private final Composite container;
     private final DragTabFolder tabFolder;
 
-    public AppQueryEditor(Shell shell, SashForm sashForm) {
+    public AppWorkbench(Shell shell, SashForm sashForm) {
         this.shell = shell;
         container = new Composite(sashForm, BORDER);
         container.setLayout(new FillLayout());
@@ -46,7 +46,7 @@ public class AppQueryEditor extends EventListener {
             }
         });
 
-        EventBus.subscribe(NewQueryScriptEvent.class, this);
+        EventBus.subscribe(OpenNewQueryScriptEvent.class, this);
         EventBus.subscribe(ScriptTabCloseEvent.class, this);
     }
 
@@ -54,7 +54,7 @@ public class AppQueryEditor extends EventListener {
     public void eventTigger(Event event) {
         if (event instanceof ScriptTabCloseEvent closeEvent) {
             CTabItem tabItem = closeEvent.getCTabItem();
-            StyledTextEditor codeEditor = (StyledTextEditor) tabItem.getControl();
+            QueryWorkbench codeEditor = (QueryWorkbench) tabItem.getControl();
 
             if (codeEditor.isDirty()) {
                 String tips = "文件 \"" + tabItem.getText() + "\" 已修改，是否保存？";
@@ -67,12 +67,12 @@ public class AppQueryEditor extends EventListener {
             return;
         }
 
-        if (event instanceof NewQueryScriptEvent)
+        if (event instanceof OpenNewQueryScriptEvent)
             newQueryScriptTab();
     }
 
     public void newQueryScriptTab() {
-        StyledTextEditor codeEditor = new StyledTextEditor(tabFolder.getTabFolder());
+        QueryWorkbench codeEditor = new QueryWorkbench(tabFolder);
         CTabItem cTabItem = tabFolder.addTab("新建查询" + "_" + (count++) + ".sql", codeEditor);
         codeEditor.setTabItem(cTabItem);
     }

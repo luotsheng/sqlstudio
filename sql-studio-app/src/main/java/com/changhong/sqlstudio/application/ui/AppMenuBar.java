@@ -1,6 +1,6 @@
 package com.changhong.sqlstudio.application.ui;
 
-import com.changhong.sqlstudio.core.event.notify.NewQueryScriptEvent;
+import com.changhong.sqlstudio.core.event.notify.OpenNewQueryScriptEvent;
 import com.changhong.sqlstudio.core.event.EventBus;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -56,7 +56,7 @@ public class AppMenuBar {
         newScriptItem.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                EventBus.publish(new NewQueryScriptEvent());
+                EventBus.publish(new OpenNewQueryScriptEvent());
             }
         });
     }

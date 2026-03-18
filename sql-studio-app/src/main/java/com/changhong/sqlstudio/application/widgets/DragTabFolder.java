@@ -19,8 +19,7 @@ import java.util.Map;
  *
  * @author Luo Tiansheng
  */
-public class DragTabFolder {
-    private final CTabFolder tabFolder;
+public class DragTabFolder extends CTabFolder{
     private final Map<CTabItem, Control> itemContentMap = new HashMap<>();
 
     /* 鼠标右键所在的标签 */
@@ -43,7 +42,7 @@ public class DragTabFolder {
     private static final int INSERT_MARKER_COLOR = SWT.COLOR_LIST_SELECTION;
 
     public DragTabFolder(Composite parent) {
-        this.tabFolder = new CTabFolder(parent, SWT.BORDER | SWT.CLOSE);
+        super(parent, SWT.BORDER | SWT.CLOSE);
 
         createContextMenu();
         configureTabFolder();
@@ -56,7 +55,7 @@ public class DragTabFolder {
      */
     private void createContextMenu() {
         /* 右键菜单相关 */
-        Menu contextMenu = new Menu(tabFolder);
+        Menu contextMenu = new Menu(this);
 
         /* 关闭当前标签 */
         MenuItem closeCurrentItem = new MenuItem(contextMenu, SWT.PUSH);
@@ -105,11 +104,11 @@ public class DragTabFolder {
         });
 
         /* 菜单检测监听器 */
-        tabFolder.addMenuDetectListener(new MenuDetectListener() {
+        this.addMenuDetectListener(new MenuDetectListener() {
             @Override
             public void menuDetected(MenuDetectEvent e) {
-                Point point = tabFolder.toControl(e.x, e.y);
-                CTabItem item = tabFolder.getItem(point);
+                Point point = toControl(e.x, e.y);
+                CTabItem item = getItem(point);
 
                 if (item == null) {
                     e.doit = false;
@@ -121,7 +120,7 @@ public class DragTabFolder {
             }
         });
 
-        tabFolder.setMenu(contextMenu);
+        this.setMenu(contextMenu);
     }
 
     /**
@@ -138,7 +137,7 @@ public class DragTabFolder {
             Constructor<CTabFolderEvent> constructor =
                     CTabFolderEvent.class.getDeclaredConstructor(Widget.class);
             constructor.setAccessible(true);
-            CTabFolderEvent event = constructor.newInstance(tabFolder);
+            CTabFolderEvent event = constructor.newInstance(this);
 
             event.item = item;
             event.doit = true;
@@ -164,7 +163,7 @@ public class DragTabFolder {
             field.setAccessible(true);
 
             CTabFolder2Listener[] listeners =
-                    (CTabFolder2Listener[]) field.get(tabFolder);
+                    (CTabFolder2Listener[]) field.get(this);
 
             if (listeners == null)
                 return new CTabFolder2Listener[0];
@@ -192,8 +191,8 @@ public class DragTabFolder {
         if (item == null || item.isDisposed())
             return;
 
-        int index = tabFolder.indexOf(item);
-        CTabItem[] items = tabFolder.getItems();
+        int index = this.indexOf(item);
+        CTabItem[] items = this.getItems();
 
         for (int i = items.length - 1; i > index; i--) {
             CTabItem rightItem = items[i];
@@ -210,7 +209,7 @@ public class DragTabFolder {
         if (item == null || item.isDisposed())
             return;
 
-        CTabItem[] items = tabFolder.getItems();
+        CTabItem[] items = this.getItems();
         for (CTabItem otherItem : items) {
             if (otherItem != item && !otherItem.isDisposed())
                 closeTabItem(otherItem);
@@ -221,7 +220,7 @@ public class DragTabFolder {
      * 关闭所有标签
      */
     private void closeAllTabs() {
-        CTabItem[] items = tabFolder.getItems();
+        CTabItem[] items = this.getItems();
         for (CTabItem item : items) {
             if (!item.isDisposed())
                 closeTabItem(item);
@@ -232,23 +231,23 @@ public class DragTabFolder {
      * 配置标签页外观
      */
     private void configureTabFolder() {
-        tabFolder.setBorderVisible(true);
-        tabFolder.setTabHeight(25);
-        tabFolder.setMinimumCharacters(15);
-        tabFolder.setUnselectedCloseVisible(true);
+        this.setBorderVisible(true);
+        this.setTabHeight(25);
+        this.setMinimumCharacters(15);
+        this.setUnselectedCloseVisible(true);
     }
 
     /**
      * 绘制插入标记
      */
     private void setupPaintListener() {
-        tabFolder.addPaintListener(new PaintListener() {
+        this.addPaintListener(new PaintListener() {
             @Override
             public void paintControl(PaintEvent e) {
                 if (!isDragging || insertIndex < 0)
                     return;
 
-                int itemCount = tabFolder.getItemCount();
+                int itemCount = getItemCount();
                 if (itemCount == 0)
                     return;
 
@@ -277,7 +276,7 @@ public class DragTabFolder {
      * 计算插入标记位置
      */
     private Rectangle calculateInsertMarkerRect() {
-        int itemCount = tabFolder.getItemCount();
+        int itemCount = this.getItemCount();
         if (itemCount == 0)
             return null;
 
@@ -289,12 +288,12 @@ public class DragTabFolder {
 
         Rectangle bounds;
         if (targetIndex >= itemCount) {
-            CTabItem lastItem = tabFolder.getItem(itemCount - 1);
+            CTabItem lastItem = this.getItem(itemCount - 1);
             bounds = lastItem.getBounds();
             return new Rectangle(bounds.x + bounds.width + 2, bounds.y,
                     INSERT_MARKER_WIDTH, bounds.height);
         } else {
-            CTabItem targetItem = tabFolder.getItem(targetIndex);
+            CTabItem targetItem = this.getItem(targetIndex);
             bounds = targetItem.getBounds();
 
             if (insertAfter) {
@@ -311,14 +310,14 @@ public class DragTabFolder {
      * 设置拖拽监听器
      */
     private void setupDragListeners() {
-        tabFolder.addMouseListener(new MouseAdapter() {
+        this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseDown(MouseEvent e) {
                 if (e.button != 1)
                     return;
 
                 Point pt = new Point(e.x, e.y);
-                dragSourceItem = tabFolder.getItem(pt);
+                dragSourceItem = getItem(pt);
 
                 if (dragSourceItem != null) {
                     dragStartPoint = pt;
@@ -336,12 +335,12 @@ public class DragTabFolder {
                 dragSourceItem = null;
                 dragStartPoint = null;
                 insertIndex = -1;
-                tabFolder.setCursor(null);
-                tabFolder.redraw();
+                setCursor(null);
+                redraw();
             }
         });
 
-        tabFolder.addMouseMoveListener(new MouseMoveListener() {
+        this.addMouseMoveListener(new MouseMoveListener() {
             @Override
             public void mouseMove(MouseEvent e) {
                 if (dragSourceItem == null || dragSourceItem.isDisposed())
@@ -358,7 +357,7 @@ public class DragTabFolder {
 
                     if (distance > DRAG_THRESHOLD) {
                         isDragging = true;
-                        tabFolder.setCursor(Display.getCurrent()
+                        setCursor(Display.getCurrent()
                                 .getSystemCursor(SWT.CURSOR_SIZEALL));
                     } else {
                         return;
@@ -377,13 +376,13 @@ public class DragTabFolder {
         int oldInsertIndex = insertIndex;
         boolean oldInsertAfter = insertAfter;
 
-        CTabItem targetItem = tabFolder.getItem(mousePos);
-        int itemCount = tabFolder.getItemCount();
+        CTabItem targetItem = this.getItem(mousePos);
+        int itemCount = this.getItemCount();
 
         if (targetItem == null) {
             if (itemCount > 0) {
-                CTabItem firstItem = tabFolder.getItem(0);
-                CTabItem lastItem = tabFolder.getItem(itemCount - 1);
+                CTabItem firstItem = this.getItem(0);
+                CTabItem lastItem = this.getItem(itemCount - 1);
 
                 if (mousePos.x < firstItem.getBounds().x) {
                     insertIndex = 0;
@@ -404,12 +403,12 @@ public class DragTabFolder {
             } else {
                 Rectangle bounds = targetItem.getBounds();
                 insertAfter = mousePos.x > (bounds.x + bounds.width / 2);
-                insertIndex = tabFolder.indexOf(targetItem);
+                insertIndex = this.indexOf(targetItem);
             }
         }
 
         if (oldInsertIndex != insertIndex || oldInsertAfter != insertAfter)
-            tabFolder.redraw();
+            this.redraw();
     }
 
     /**
@@ -421,10 +420,10 @@ public class DragTabFolder {
         if (insertIndex < 0)
             return;
 
-        int sourceIndex = tabFolder.indexOf(dragSourceItem);
+        int sourceIndex = this.indexOf(dragSourceItem);
         int targetIndex = insertIndex;
 
-        if (insertAfter && targetIndex < tabFolder.getItemCount())
+        if (insertAfter && targetIndex < this.getItemCount())
             targetIndex++;
 
         if (sourceIndex < targetIndex)
@@ -440,13 +439,13 @@ public class DragTabFolder {
      * 移动标签页
      */
     private void moveItem(int fromIndex, int toIndex) {
-        CTabItem fromItem = tabFolder.getItem(fromIndex);
+        CTabItem fromItem = this.getItem(fromIndex);
         String text = fromItem.getText();
         String toolTip = fromItem.getToolTipText();
         Image image = fromItem.getImage();
         Object data = fromItem.getData();
         Control control = itemContentMap.get(fromItem);
-        boolean isSelected = (tabFolder.getSelection() == fromItem);
+        boolean isSelected = (this.getSelection() == fromItem);
 
         if (control == null || control.isDisposed())
             control = fromItem.getControl();
@@ -455,7 +454,7 @@ public class DragTabFolder {
         fromItem.setControl(null);
         fromItem.dispose();
 
-        CTabItem newItem = new CTabItem(tabFolder, SWT.CLOSE, toIndex);
+        CTabItem newItem = new CTabItem(this, SWT.CLOSE, toIndex);
         newItem.setText(text);
         if (toolTip != null)
             newItem.setToolTipText(toolTip);
@@ -467,9 +466,9 @@ public class DragTabFolder {
         itemContentMap.put(newItem, control);
 
         if (isSelected)
-            tabFolder.setSelection(newItem);
+            this.setSelection(newItem);
 
-        tabFolder.redraw();
+        this.redraw();
     }
 
     /**
@@ -477,30 +476,12 @@ public class DragTabFolder {
      */
     @SuppressWarnings("UnusedReturnValue")
     public CTabItem addTab(String title, Control content) {
-        CTabItem item = new CTabItem(tabFolder, SWT.CLOSE);
+        CTabItem item = new CTabItem(this, SWT.CLOSE);
         item.setText(title);
         item.setControl(content);
         itemContentMap.put(item, content);
-        tabFolder.setSelection(item);
+        this.setSelection(item);
         return item;
-    }
-
-    /**
-     * 获取当前选中的标签页
-     */
-    public CTabItem getSelection() {
-        return tabFolder.getSelection();
-    }
-
-    /**
-     * 获取底层的 CTabFolder
-     */
-    public CTabFolder getTabFolder() {
-        return tabFolder;
-    }
-
-    public void addCTabFolder2Listener(CTabFolder2Listener listener) {
-        tabFolder.addCTabFolder2Listener(listener);
     }
 
 }

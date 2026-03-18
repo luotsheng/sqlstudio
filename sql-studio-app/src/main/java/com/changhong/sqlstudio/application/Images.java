@@ -23,6 +23,7 @@ public class Images {
     public static Image DATABASE_1 = getScaled("database1.png");
     public static Image TABLE = getScaled("table.png");
     public static Image SQL = getScaled("sql.png");
+    public static Image RUN_0 = getScaled("run0.png");
 
     private static final int ICON_SIZE = 16;
     private static Map<String, Image> iconsMap = null;
