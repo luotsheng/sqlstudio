@@ -1,8 +1,10 @@
 package com.changhong.sqlstudio.application.ui;
 
+import com.changhong.sqlstudio.application.Images;
 import com.changhong.sqlstudio.application.Users;
 import com.changhong.sqlstudio.application.config.ConnectionConfig;
 import com.changhong.sqlstudio.application.obj.Connection;
+import com.changhong.sqlstudio.application.obj.Database;
 import com.changhong.sqlstudio.application.widgets.Widgets;
 import com.changhong.sqlstudio.application.widgets.dbui.GeneralConnectionCreateUI;
 import com.changhong.sqlstudio.core.common.DBType;
@@ -80,12 +82,20 @@ public class AppNavigator extends EventListener
         }
 
         private void connectionItemDoubleClickEvent(TreeItem item) {
-                Connection connection = connectionItems.get(item.getText());
-
-                if (connection == null)
+                if (item == null)
                         return;
 
-                connection.open();
+                if (item.getData() instanceof Connection) {
+                        Connection connection = connectionItems.get(item.getText());
+
+                        if (connection == null)
+                                return;
+
+                        connection.open();
+                }
+
+                if (item.getData() instanceof Database db)
+                        db.open();
         }
 
         private void createNavigatorTabItem(CTabFolder tabFolder)
@@ -98,6 +108,7 @@ public class AppNavigator extends EventListener
 
                 connectionListChild = new TreeItem(tree, NONE);
                 connectionListChild.setText("我的连接");
+                connectionListChild.setImage(Images.CHAIN);
 
                 Menu menu = new Menu(tree);
                 tree.setMenu(menu);

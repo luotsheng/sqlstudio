@@ -1,5 +1,6 @@
 package com.changhong.sqlstudio.application.obj;
 
+import com.changhong.sqlstudio.application.Images;
 import com.changhong.sqlstudio.application.config.ConnectionConfig;
 import com.changhong.sqlstudio.application.window.Window;
 import com.changhong.sqlstudio.core.event.EventBus;
@@ -49,6 +50,7 @@ public class Connection
                 item = new TreeItem(parent, NONE);
                 item.setText(name);
                 item.setData(this);
+                item.setImage(Images.DATABASE_0);
 
                 configureMenu();
         }
@@ -96,7 +98,7 @@ public class Connection
                         for (String databaseName : databaseNames) {
                                 if (databases.containsKey(databaseName))
                                         continue;
-                                databases.put(databaseName, new Database(item, databaseName));
+                                databases.put(databaseName, new Database(ds, item, databaseName));
                         }
                 } catch (SQLException e) {
                         EventBus.publish(new RuntimeErrorEvent(item.getText(), e));
@@ -132,7 +134,7 @@ public class Connection
                 if (ds != null)
                         ds.close();
 
-                databases.values().forEach(Database::destroy);
+                databases.values().forEach(Database::close);
                 databases.clear();
 
                 openFlag = false;

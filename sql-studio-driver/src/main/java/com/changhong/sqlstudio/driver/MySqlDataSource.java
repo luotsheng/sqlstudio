@@ -17,27 +17,49 @@ import java.util.Properties;
 @SuppressWarnings({
         "SqlNoDataSourceInspection",
         "SqlDialectInspection",
+        "SqlSourceToSinkFlow",
 })
-public class MySqlDataSource extends HikariDataSourceAdapter {
-
-    public MySqlDataSource(DataSourceConfig config) {
-        super(config);
-    }
-
-    public MySqlDataSource(Properties props) {
-        super(props);
-    }
-
-    @Override
-    public List<String> getDatabases() throws SQLException {
-        List<String> databases = new ArrayList<>();
-        try (Connection connection = getConnection();
-             Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery("SHOW DATABASES")) {
-            while (rs.next())
-                databases.add(rs.getString(1));
+public class MySqlDataSource extends HikariDataSourceAdapter
+{
+        public MySqlDataSource(DataSourceConfig config)
+        {
+                super(config);
         }
-        return databases;
-    }
 
+        public MySqlDataSource(Properties props)
+        {
+                super(props);
+        }
+
+        @Override
+        public List<String> getDatabases() throws SQLException
+        {
+                List<String> databases = new ArrayList<>();
+                try (Connection connection = getConnection();
+                     Statement stmt = connection.createStatement();
+                     ResultSet rs = stmt.executeQuery("SHOW DATABASES;")) {
+                        while (rs.next())
+                                databases.add(rs.getString(1));
+                }
+                return databases;
+        }
+
+        @Override
+        public List<String> getTables(String dbName) throws SQLException
+        {
+                ResultSet rs = null;
+                List<String> tables = new ArrayList<>();
+
+                try (Connection connection = getConnection();
+                     Statement stmt = connection.createStatement()) {
+                        rs = stmt.executeQuery("SHOW TABLES FROM " + dbName);
+                        while (rs.next())
+                                tables.add(rs.getString(1));
+                } finally {
+                        if (rs != null)
+                                rs.close();
+                }
+
+                return tables;
+        }
 }
