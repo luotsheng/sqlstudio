@@ -15,9 +15,11 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 
 import java.sql.SQLException;
@@ -38,6 +40,8 @@ public class GridViewer extends Composite
         private int start = 0;
         private int count = 50;
         private QueryResultSet queryResultSet;
+
+        private static final Color NULL_COLOR = new Color(Launcher.display, 128, 128, 128);
 
         public GridViewer(Composite parent, DBTable tableNode)
         {
@@ -253,9 +257,19 @@ public class GridViewer extends Composite
                         queryResultSet.getRows().forEach(row -> {
                                 GridItem item = new GridItem(grid, SWT.NONE);
 
+                                int rowIndex = grid.indexOf(item);
+                                if (rowIndex % 2 == 0)
+                                        item.setBackground(Launcher.display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+
                                 for (int i = 0; i < row.size(); i++) {
-                                        String value = row.get(i) != null ? row.get(i) : "";
-                                        item.setText(i, value);
+                                        String value = row.get(i);
+
+                                        if (value != null) {
+                                                item.setText(i, value);
+                                        } else {
+                                                item.setText(i, "(N/A)");
+                                                item.setForeground(i, NULL_COLOR);
+                                        }
                                 }
 
                                 item.setHeight(25);
