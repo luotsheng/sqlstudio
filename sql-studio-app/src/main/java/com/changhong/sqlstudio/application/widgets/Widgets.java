@@ -18,9 +18,22 @@ public class Widgets {
     /**
      * 显示保存确认对话框
      */
-    public static int showQuestionDialog(String tips) {
+    public static int showSaveDialog(String tips) {
         MessageBox dialog = new MessageBox(Window.shell(),
                 SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_QUESTION);
+
+        dialog.setText(Cores.SQL_STUDIO_TITLE);
+        dialog.setMessage(tips);
+
+        return dialog.open();
+    }
+
+    /**
+     * 显示问题确认对话框
+     */
+    public static int showQuestionDialog(String tips) {
+        MessageBox dialog = new MessageBox(Window.shell(),
+                SWT.YES | SWT.NO | SWT.ICON_QUESTION);
 
         dialog.setText(Cores.SQL_STUDIO_TITLE);
         dialog.setMessage(tips);

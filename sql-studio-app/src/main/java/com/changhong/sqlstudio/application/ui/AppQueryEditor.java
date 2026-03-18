@@ -58,7 +58,7 @@ public class AppQueryEditor extends EventListener {
 
             if (codeEditor.isDirty()) {
                 String tips = "文件 \"" + tabItem.getText() + "\" 已修改，是否保存？";
-                switch (Widgets.showQuestionDialog(tips)) {
+                switch (Widgets.showSaveDialog(tips)) {
                     case SWT.CANCEL -> closeEvent.setDoit(false);
                     case SWT.NO -> closeEvent.setDoit(true);
                 }

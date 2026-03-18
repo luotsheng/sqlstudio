@@ -3,13 +3,14 @@ package com.changhong.sqlstudio.application.ui;
 import com.changhong.sqlstudio.application.Users;
 import com.changhong.sqlstudio.application.config.ConnectionConfig;
 import com.changhong.sqlstudio.application.obj.Connection;
-import com.changhong.sqlstudio.core.event.notify.ApplicationReadyEvent;
-import com.changhong.sqlstudio.core.event.notify.OpenDBCreateUIEvent;
+import com.changhong.sqlstudio.application.widgets.Widgets;
 import com.changhong.sqlstudio.application.widgets.dbui.GeneralConnectionCreateUI;
 import com.changhong.sqlstudio.core.common.DBType;
 import com.changhong.sqlstudio.core.event.Event;
 import com.changhong.sqlstudio.core.event.EventBus;
 import com.changhong.sqlstudio.core.event.EventListener;
+import com.changhong.sqlstudio.core.event.notify.ApplicationReadyEvent;
+import com.changhong.sqlstudio.core.event.notify.OpenDBCreateUIEvent;
 import com.changhong.sqlstudio.core.event.notify.RefreshConnectionListEvent;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -19,11 +20,9 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.eclipse.swt.SWT.*;
@@ -156,6 +155,22 @@ public class AppNavigator extends EventListener
 
                 MenuItem closeAllConnectionItem = new MenuItem(menu, PUSH);
                 closeAllConnectionItem.setText("关闭所有连接");
+                closeAllConnectionItem.addSelectionListener(new SelectionAdapter() {
+                        @Override
+                        public void widgetSelected(SelectionEvent e)
+                        {
+                                List<Connection> values = connectionItems.values().stream()
+                                        .filter(Connection::isOpen)
+                                        .toList();
+
+                                if (values.isEmpty())
+                                        return;
+
+                                int r = Widgets.showQuestionDialog("是否关闭所有连接？");
+                                if (r == YES)
+                                        connectionItems.values().forEach(Connection::close);
+                        }
+                });
 
                 new MenuItem(menu, SEPARATOR);
 

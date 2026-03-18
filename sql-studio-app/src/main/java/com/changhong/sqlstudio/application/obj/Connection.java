@@ -36,7 +36,7 @@ public class Connection
         private final String name;
         private final TreeItem item;
         private Menu menu;
-        private boolean isOpen;
+        private boolean openFlag;
         private HikariDataSourceAdapter ds;
         private final Map<String, Database> databases = new LinkedHashMap<>();
 
@@ -44,7 +44,7 @@ public class Connection
         {
                 this.name = name;
                 this.config = config;
-                this.isOpen = false;
+                this.openFlag = false;
 
                 item = new TreeItem(parent, NONE);
                 item.setText(name);
@@ -105,11 +105,11 @@ public class Connection
 
         public void open()
         {
-                if (isOpen)
+                if (openFlag)
                         return;
 
                 new Thread(() -> {
-                        isOpen = true;
+                        openFlag = true;
                         DataSourceConfig cnf = config.getDataSourceConfig();
 
                         Throwable throwable = DataSourceUtils.testConnect(cnf);
@@ -126,7 +126,7 @@ public class Connection
 
         public void close()
         {
-                if (!isOpen)
+                if (!openFlag)
                         return;
 
                 if (ds != null)
@@ -135,7 +135,12 @@ public class Connection
                 databases.values().forEach(Database::destroy);
                 databases.clear();
 
-                isOpen = false;
+                openFlag = false;
+        }
+
+        public boolean isOpen()
+        {
+                return openFlag;
         }
 
         public Menu getMenu()
