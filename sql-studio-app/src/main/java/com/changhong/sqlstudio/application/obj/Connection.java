@@ -15,25 +15,34 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.eclipse.swt.SWT.NONE;
+
 /**
  * 连接属性
  *
  * @author Luo Tiansheng
  * @since 2026/3/18
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class Connection
 {
         private final ConnectionConfig config;
+        private final String name;
+        private final TreeItem parent;
         private final TreeItem item;
         private boolean isOpen;
         private HikariDataSourceAdapter ds;
         private final Map<String, Database> databases = new LinkedHashMap<>();
 
-        public Connection(TreeItem item, ConnectionConfig config)
+        public Connection(String name, TreeItem parent, ConnectionConfig config)
         {
-                this.item = item;
+                this.name = name;
                 this.config = config;
+                this.parent = parent;
                 this.isOpen = false;
+
+                item = new TreeItem(parent, NONE);
+                item.setText(name);
         }
 
         private void asyncOpen(DataSourceConfig cnf)
@@ -75,6 +84,9 @@ public class Connection
         {
                 if (!isOpen)
                         return;
+
+                if (ds != null)
+                        ds.close();
 
                 isOpen = false;
         }

@@ -77,10 +77,7 @@ public class AppNavigator extends EventListener
         {
                 if (myConnectionItems.containsKey(name))
                         return;
-
-                TreeItem childItem = new TreeItem(myConnections, NONE);
-                childItem.setText(name);
-                myConnectionItems.put(name, new Connection(childItem, config));
+                myConnectionItems.put(name, new Connection(name, myConnections, config));
         }
 
         private void connectionItemDoubleClickEvent(TreeItem item) {
