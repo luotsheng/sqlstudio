@@ -23,7 +23,7 @@ import java.sql.SQLException;
  * @author Luo Tiansheng
  * @since 2026-03-01
  */
-public class GridViewer extends Composite
+public class DataTable extends Composite
 {
         private final Grid grid;
         private final NNTable tableNode;
@@ -33,7 +33,7 @@ public class GridViewer extends Composite
         private int count = 50;
         private QueryResultSet queryResultSet;
 
-        public GridViewer(Composite parent, NNTable tableNode)
+        public DataTable(Composite parent, NNTable tableNode)
         {
                 super(parent, SWT.NONE);
                 setLayout(new FillLayout());
