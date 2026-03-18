@@ -3,13 +3,12 @@ package com.changhong.sqlstudio.application.ui;
 import com.changhong.sqlstudio.application.Users;
 import com.changhong.sqlstudio.application.config.ConnectionConfig;
 import com.changhong.sqlstudio.core.event.notify.OpenDBCreateUIEvent;
-import com.changhong.sqlstudio.application.widgets.dbui.GeneralCreateUIProvider;
+import com.changhong.sqlstudio.application.widgets.dbui.GeneralConnectionCreateUI;
 import com.changhong.sqlstudio.core.common.DBType;
 import com.changhong.sqlstudio.core.event.Event;
 import com.changhong.sqlstudio.core.event.EventBus;
 import com.changhong.sqlstudio.core.event.EventListener;
 import com.changhong.sqlstudio.core.event.notify.RefreshConnectionListEvent;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
@@ -18,7 +17,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
 
-import java.util.List;
 import java.util.Map;
 
 import static org.eclipse.swt.SWT.*;
@@ -51,7 +49,7 @@ public class AppNavigator extends EventListener {
     public void eventTigger(Event event) {
         if (event instanceof OpenDBCreateUIEvent openDBCreateUIEvent) {
             DBType dbType = openDBCreateUIEvent.dbType();
-            new GeneralCreateUIProvider(dbType).open();
+            new GeneralConnectionCreateUI(dbType).open();
         }
 
         if (event instanceof RefreshConnectionListEvent) {

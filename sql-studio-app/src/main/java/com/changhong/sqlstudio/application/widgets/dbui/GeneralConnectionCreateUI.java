@@ -16,7 +16,6 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
@@ -31,7 +30,7 @@ import org.eclipse.swt.widgets.*;
         "FieldCanBeLocal",
         "unused",
 })
-public class GeneralCreateUIProvider extends EventListener {
+public class GeneralConnectionCreateUI extends EventListener {
 
     private static final int DIALOG_WIDTH = 600;
     private static final int DIALOG_HEIGHT = 500;
@@ -71,7 +70,7 @@ public class GeneralCreateUIProvider extends EventListener {
     private Text passwd;
     private Text connectionName;
 
-    public GeneralCreateUIProvider(DBType dbType) {
+    public GeneralConnectionCreateUI(DBType dbType) {
         this.dialogTitle = "新建" + dbType.getName() + "连接";
 
         config = new ConnectionConfig();
@@ -105,10 +104,8 @@ public class GeneralCreateUIProvider extends EventListener {
 
     private void configureContainer() {
         container = new Composite(dialog, SWT.NONE);
-        container.setLayout(new FillLayout());
-        GridData containerGridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        containerGridData.grabExcessVerticalSpace = true;
-        container.setLayoutData(containerGridData);
+        container.setLayout(new GridLayout(1, false));
+        container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
     }
 
     private void configureTabFolder() {
