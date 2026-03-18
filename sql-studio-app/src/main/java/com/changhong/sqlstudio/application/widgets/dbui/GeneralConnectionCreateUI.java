@@ -143,7 +143,8 @@ public class GeneralConnectionCreateUI extends EventListener {
      * 保存连接
      */
     public void saveConnection() {
-        Users.saveOrUpdateConnection(connectionName.getText(), config);
+        if (!Users.saveConnection(connectionName.getText(), config))
+            return;
         dialog.dispose();
         EventBus.publish(new RefreshConnectionListEvent());
     }
@@ -200,6 +201,12 @@ public class GeneralConnectionCreateUI extends EventListener {
         checkBoxBtnGridData.horizontalSpan = 2;
         checkBoxBtnGridData.horizontalIndent = HORIZONTAL_INDENT;
         checkBoxBtn.setLayoutData(checkBoxBtnGridData);
+        checkBoxBtn.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                config.setSavePassword(checkBoxBtn.getSelection());
+            }
+        });
 
         /* 提示状态 */
         Label filler1 = new Label(content, SWT.NONE);

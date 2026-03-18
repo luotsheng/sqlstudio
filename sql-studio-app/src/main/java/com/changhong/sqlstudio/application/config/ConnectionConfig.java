@@ -1,5 +1,7 @@
 package com.changhong.sqlstudio.application.config;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 /**
  * 连接配置
  *
@@ -15,6 +17,9 @@ public class ConnectionConfig {
     private String password;
     private boolean useSSL;
     private String timezone;
+
+    @JSONField(serialize = false)
+    private boolean savePassword;
 
     public String getHost() {
         return host;
@@ -70,6 +75,14 @@ public class ConnectionConfig {
 
     public void setTimezone(String timezone) {
         this.timezone = timezone;
+    }
+
+    public boolean isSavePassword() {
+        return savePassword;
+    }
+
+    public void setSavePassword(boolean savePassword) {
+        this.savePassword = savePassword;
     }
 
     public String buildJdbcUrl() {

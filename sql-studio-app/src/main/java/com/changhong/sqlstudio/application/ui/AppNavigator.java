@@ -2,6 +2,7 @@ package com.changhong.sqlstudio.application.ui;
 
 import com.changhong.sqlstudio.application.Users;
 import com.changhong.sqlstudio.application.config.ConnectionConfig;
+import com.changhong.sqlstudio.core.event.notify.ApplicationReadyEvent;
 import com.changhong.sqlstudio.core.event.notify.OpenDBCreateUIEvent;
 import com.changhong.sqlstudio.application.widgets.dbui.GeneralConnectionCreateUI;
 import com.changhong.sqlstudio.core.common.DBType;
@@ -42,6 +43,7 @@ public class AppNavigator extends EventListener {
         createProjectTabItem(tabFolder);
 
         EventBus.subscribe(OpenDBCreateUIEvent.class, this);
+        EventBus.subscribe(ApplicationReadyEvent.class, this);
         EventBus.subscribe(RefreshConnectionListEvent.class, this);
     }
 
@@ -52,7 +54,7 @@ public class AppNavigator extends EventListener {
             new GeneralConnectionCreateUI(dbType).open();
         }
 
-        if (event instanceof RefreshConnectionListEvent) {
+        if (event instanceof ApplicationReadyEvent || event instanceof RefreshConnectionListEvent) {
             Map<String, ConnectionConfig> connectionList = Users.getConnectionList();
             connectionList.forEach((k, v) -> {
                 TreeItem childItem = new TreeItem(myConnections, NONE);
@@ -70,8 +72,6 @@ public class AppNavigator extends EventListener {
 
         myConnections = new TreeItem(connectionTree, NONE);
         myConnections.setText("我的连接");
-
-        EventBus.publish(new RefreshConnectionListEvent());
 
         Menu menu = new Menu(connectionTree);
         connectionTree.setMenu(menu);

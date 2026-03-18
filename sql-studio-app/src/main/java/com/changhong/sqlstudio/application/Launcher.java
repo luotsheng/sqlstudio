@@ -1,5 +1,6 @@
 package com.changhong.sqlstudio.application;
 
+import com.changhong.sqlstudio.application.ui.AppThrowable;
 import com.changhong.sqlstudio.core.event.notify.ApplicationReadyEvent;
 import com.changhong.sqlstudio.application.window.Window;
 import com.changhong.sqlstudio.core.event.EventBus;
@@ -30,6 +31,9 @@ public class Launcher  {
     public  static void eventLoop(Display display)
     {
         boolean isPublish = false;
+
+        AppThrowable appThrowable = new AppThrowable();
+        appThrowable.subscribe();
 
         while (!display.isDisposed()) {
             if (!display.readAndDispatch()) {
