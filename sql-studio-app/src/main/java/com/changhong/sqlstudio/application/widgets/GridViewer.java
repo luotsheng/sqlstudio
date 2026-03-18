@@ -11,18 +11,17 @@ import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.nebula.widgets.grid.GridEditor;
 import org.eclipse.nebula.widgets.grid.GridItem;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.C;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 import java.sql.SQLException;
+import java.util.*;
 
 /**
  * 数据页
@@ -82,44 +81,67 @@ public class GridViewer extends Composite
                 });
         }
 
-        private void copySelection() {
-                GridItem[] selection = grid.getSelection();
-                if (selection.length == 0) {
+        private void copySelection()
+        {
+                // 获取选中的单元格（Point[]，x=列索引，y=行索引）
+                Point[] selectedCells = grid.getCellSelection();
+                if (selectedCells == null || selectedCells.length == 0) {
                         return;
                 }
 
-                // 获取列顺序
+                // 分析选中的区域
+                Set<Integer> selectedRows = new TreeSet<>();
+                Set<Integer> selectedCols = new TreeSet<>();
+
+                for (Point cell : selectedCells) {
+                        selectedRows.add(cell.y);
+                        selectedCols.add(cell.x);
+                }
+
+                // 转换为有序列表
+                List<Integer> rows = new ArrayList<>(selectedRows);
+                List<Integer> cols = new ArrayList<>(selectedCols);
+                Collections.sort(rows);
+                Collections.sort(cols);
+
+                // 获取列顺序（考虑用户调整列顺序）
                 int[] columnOrder = grid.getColumnOrder();
 
                 StringBuilder sb = new StringBuilder();
 
-                // 复制每一行
-                for (GridItem item : selection) {
-                        for (int i = 0; i < grid.getColumnCount(); i++) {
-                                if (i > 0) {
-                                        sb.append("\t");
+                // 按行、列顺序输出选中的单元格
+                for (int row : rows) {
+                        GridItem item = grid.getItem(row);
+                        if (item == null || item.isDisposed()) continue;
+
+                        for (int i = 0; i < cols.size(); i++) {
+                                if (i > 0) sb.append("\t");
+
+                                int col = cols.get(i);
+                                // 找到实际显示顺序的列索引
+                                int actualColIndex = -1;
+                                for (int j = 0; j < columnOrder.length; j++) {
+                                        if (columnOrder[j] == col) {
+                                                actualColIndex = j;
+                                                break;
+                                        }
                                 }
 
-                                // 获取实际显示的文本（考虑列顺序）
-                                int actualColumnIndex = columnOrder[i];
-                                String text = item.getText(actualColumnIndex);
-                                sb.append(text != null ? text : "");
+                                if (actualColIndex != -1) {
+                                        String text = item.getText(col);
+                                        sb.append(text != null ? text : "");
+                                }
                         }
-
-                        // 使用系统换行符
-                        sb.append(System.lineSeparator());
                 }
 
-                // 复制到系统剪贴板
+                // 复制到剪贴板
                 TextTransfer textTransfer = TextTransfer.getInstance();
-                Clipboard clipboard = new Clipboard(Launcher.display);
-                clipboard.setContents(
-                        new Object[]{sb.toString()},
-                        new Transfer[] { textTransfer }
-                );
+                Launcher.clipboard.setContents(new Object[]{sb.toString()}, new Transfer[]{textTransfer});
         }
 
-        private void selectAll() {
+
+        private void selectAll()
+        {
                 grid.selectAll();
         }
 
