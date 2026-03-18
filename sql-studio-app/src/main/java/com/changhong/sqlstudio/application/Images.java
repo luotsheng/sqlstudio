@@ -1,11 +1,10 @@
 package com.changhong.sqlstudio.application;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -36,55 +35,14 @@ public class Images {
 
     private static Image scaleImage(Image src)
     {
-        Image current = src;
+        ImageData data = src.getImageData();
 
-        while (true) {
-            Rectangle b = current.getBounds();
-
-            if (b.width / 2 < Images.ICON_SIZE)
-                break;
-
-            int w = b.width / 2;
-            int h = b.height / 2;
-
-            Image tmp = new Image(Launcher.display, w, h);
-            GC gc = new GC(tmp);
-            gc.setAntialias(SWT.ON);
-            gc.setInterpolation(SWT.HIGH);
-
-            gc.drawImage(
-                    current,
-                    0, 0, b.width, b.height,
-                    0, 0, w, h
-            );
-
-            gc.dispose();
-
-            if (current != src)
-                current.dispose();
-
-            current = tmp;
-        }
-
-        Rectangle b = current.getBounds();
-
-        Image result = new Image(Launcher.display, Images.ICON_SIZE, Images.ICON_SIZE);
-        GC gc = new GC(result);
-        gc.setAntialias(SWT.ON);
-        gc.setInterpolation(SWT.HIGH);
-
-        gc.drawImage(
-                current,
-                0, 0, b.width, b.height,
-                0, 0, Images.ICON_SIZE, Images.ICON_SIZE
+        ImageData scaled = data.scaledTo(
+                Images.ICON_SIZE,
+                Images.ICON_SIZE
         );
 
-        gc.dispose();
-
-        if (current != src)
-            current.dispose();
-
-        return result;
+        return new Image(Launcher.display, scaled);
     }
 
     private static void initializeImageLibrary() {
