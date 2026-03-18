@@ -1,7 +1,7 @@
 package com.changhong.sqlstudio.application.ui;
 
 import com.changhong.sqlstudio.application.treenode.NNTable;
-import com.changhong.sqlstudio.application.widgets.DataTable;
+import com.changhong.sqlstudio.application.widgets.GridViewer;
 import com.changhong.sqlstudio.core.event.notify.ApplicationReadyEvent;
 import com.changhong.sqlstudio.core.event.notify.OpenDataTableTabEvent;
 import com.changhong.sqlstudio.core.event.notify.OpenNewQueryScriptEvent;
@@ -90,8 +90,8 @@ public class AppWorkbench extends EventListener {
 
     public void newDataTableTab(OpenDataTableTabEvent event) {
         NNTable table = event.table();
-        DataTable dataTable = new DataTable(tabFolder, table);
-        tabFolder.addTab(table.name(), dataTable);
+        GridViewer gridViewer = new GridViewer(tabFolder, table);
+        tabFolder.addTab(table.name(), gridViewer);
     }
 
 }

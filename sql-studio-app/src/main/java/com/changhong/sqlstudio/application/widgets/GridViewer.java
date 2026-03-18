@@ -1,5 +1,6 @@
 package com.changhong.sqlstudio.application.widgets;
 
+import com.changhong.sqlstudio.application.Launcher;
 import com.changhong.sqlstudio.application.treenode.NNDatabase;
 import com.changhong.sqlstudio.application.treenode.NNTable;
 import com.changhong.sqlstudio.core.event.EventBus;
@@ -10,7 +11,13 @@ import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.nebula.widgets.grid.GridEditor;
 import org.eclipse.nebula.widgets.grid.GridItem;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.C;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -23,7 +30,7 @@ import java.sql.SQLException;
  * @author Luo Tiansheng
  * @since 2026-03-01
  */
-public class DataTable extends Composite
+public class GridViewer extends Composite
 {
         private final Grid grid;
         private final NNTable tableNode;
@@ -33,7 +40,7 @@ public class DataTable extends Composite
         private int count = 50;
         private QueryResultSet queryResultSet;
 
-        public DataTable(Composite parent, NNTable tableNode)
+        public GridViewer(Composite parent, NNTable tableNode)
         {
                 super(parent, SWT.NONE);
                 setLayout(new FillLayout());
@@ -50,9 +57,70 @@ public class DataTable extends Composite
 
                 gridEditor = new GridEditor(grid);
 
+                addKeyListener();
                 enableEditing();
 
                 render();
+        }
+
+        private void addKeyListener()
+        {
+                grid.addKeyListener(new KeyAdapter()
+                {
+                        @Override
+                        public void keyPressed(KeyEvent e)
+                        {
+                                // Ctrl+C 复制
+                                if ((e.stateMask & SWT.CTRL) != 0 && e.keyCode == 'c') {
+                                        copySelection();
+                                }
+                                // Ctrl+A 全选
+                                if ((e.stateMask & SWT.CTRL) != 0 && e.keyCode == 'a') {
+                                        selectAll();
+                                }
+                        }
+                });
+        }
+
+        private void copySelection() {
+                GridItem[] selection = grid.getSelection();
+                if (selection.length == 0) {
+                        return;
+                }
+
+                // 获取列顺序
+                int[] columnOrder = grid.getColumnOrder();
+
+                StringBuilder sb = new StringBuilder();
+
+                // 复制每一行
+                for (GridItem item : selection) {
+                        for (int i = 0; i < grid.getColumnCount(); i++) {
+                                if (i > 0) {
+                                        sb.append("\t");
+                                }
+
+                                // 获取实际显示的文本（考虑列顺序）
+                                int actualColumnIndex = columnOrder[i];
+                                String text = item.getText(actualColumnIndex);
+                                sb.append(text != null ? text : "");
+                        }
+
+                        // 使用系统换行符
+                        sb.append(System.lineSeparator());
+                }
+
+                // 复制到系统剪贴板
+                TextTransfer textTransfer = TextTransfer.getInstance();
+                Clipboard clipboard = new Clipboard(Launcher.display);
+                clipboard.setContents(
+                        new Object[]{sb.toString()},
+                        new Transfer[] { textTransfer }
+                );
+        }
+
+        private void selectAll() {
+                grid.selectAll();
         }
 
         private void enableEditing()
@@ -81,7 +149,8 @@ public class DataTable extends Composite
         /**
          * 开始编辑单元格
          */
-        private void startEditing(GridItem item, int columnIndex) {
+        private void startEditing(GridItem item, int columnIndex)
+        {
                 // 创建文本输入框
                 Text text = new Text(grid, SWT.BORDER);
                 text.setText(item.getText(columnIndex));
@@ -130,7 +199,8 @@ public class DataTable extends Composite
         /**
          * 保存编辑结果
          */
-        private void saveEditing(GridItem item, int columnIndex, String newValue) {
+        private void saveEditing(GridItem item, int columnIndex, String newValue)
+        {
                 String oldValue = item.getText(columnIndex);
                 if (oldValue.equals(newValue)) {
                         return;
