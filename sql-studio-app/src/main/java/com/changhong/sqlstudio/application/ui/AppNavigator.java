@@ -3,8 +3,9 @@ package com.changhong.sqlstudio.application.ui;
 import com.changhong.sqlstudio.application.Images;
 import com.changhong.sqlstudio.application.Users;
 import com.changhong.sqlstudio.application.config.ConnectionConfig;
-import com.changhong.sqlstudio.application.obj.Connection;
-import com.changhong.sqlstudio.application.obj.Database;
+import com.changhong.sqlstudio.application.treenode.NNConnection;
+import com.changhong.sqlstudio.application.treenode.NNDatabase;
+import com.changhong.sqlstudio.application.treenode.NNTable;
 import com.changhong.sqlstudio.application.widgets.Widgets;
 import com.changhong.sqlstudio.application.widgets.dbui.GeneralConnectionCreateUI;
 import com.changhong.sqlstudio.core.common.DBType;
@@ -41,7 +42,7 @@ public class AppNavigator extends EventListener
         private Tree tree;
         private TreeItem connectionListChild;
 
-        private final Map<String, Connection> connectionItems
+        private final Map<String, NNConnection> connectionItems
                 = new LinkedHashMap<>();
 
         public AppNavigator(SashForm sashForm)
@@ -78,24 +79,27 @@ public class AppNavigator extends EventListener
         {
                 if (connectionItems.containsKey(name))
                         return;
-                connectionItems.put(name, new Connection(name, connectionListChild, config));
+                connectionItems.put(name, new NNConnection(name, connectionListChild, config));
         }
 
-        private void connectionItemDoubleClickEvent(TreeItem item) {
+        private void doubleClickEvent(TreeItem item) {
                 if (item == null)
                         return;
 
-                if (item.getData() instanceof Connection) {
-                        Connection connection = connectionItems.get(item.getText());
+                if (item.getData() instanceof NNConnection) {
+                        NNConnection NNConnection = connectionItems.get(item.getText());
 
-                        if (connection == null)
+                        if (NNConnection == null)
                                 return;
 
-                        connection.open();
+                        NNConnection.open();
                 }
 
-                if (item.getData() instanceof Database db)
+                if (item.getData() instanceof NNDatabase db)
                         db.open();
+
+                if (item.getData() instanceof NNTable table)
+                        table.openDataTabelTab();
         }
 
         private void createNavigatorTabItem(CTabFolder tabFolder)
@@ -123,7 +127,7 @@ public class AppNavigator extends EventListener
 
                         if (item == connectionListChild) {
                                 tree.setMenu(menu);
-                        } else if (item.getData() instanceof Connection conn) {
+                        } else if (item.getData() instanceof NNConnection conn) {
                                 tree.setMenu(conn.getMenu());
                         } else {
                                 tree.setMenu(null);
@@ -132,9 +136,11 @@ public class AppNavigator extends EventListener
 
                 tree.addListener(MouseDoubleClick, event -> {
                         TreeItem item = tree.getItem(new Point(event.x, event.y));
-                        if (item == connectionListChild)
+
+                        if (item == null || item == connectionListChild)
                                 return;
-                        connectionItemDoubleClickEvent(item);
+
+                        doubleClickEvent(item);
                 });
 
                 MenuItem newConnectionItem = new MenuItem(menu, CASCADE);
@@ -173,8 +179,8 @@ public class AppNavigator extends EventListener
                         @Override
                         public void widgetSelected(SelectionEvent e)
                         {
-                                List<Connection> values = connectionItems.values().stream()
-                                        .filter(Connection::isOpen)
+                                List<NNConnection> values = connectionItems.values().stream()
+                                        .filter(NNConnection::isOpen)
                                         .toList();
 
                                 if (values.isEmpty())
@@ -182,7 +188,7 @@ public class AppNavigator extends EventListener
 
                                 int r = Widgets.showQuestionDialog("是否关闭所有连接？");
                                 if (r == YES)
-                                        connectionItems.values().forEach(Connection::close);
+                                        connectionItems.values().forEach(NNConnection::close);
                         }
                 });
 

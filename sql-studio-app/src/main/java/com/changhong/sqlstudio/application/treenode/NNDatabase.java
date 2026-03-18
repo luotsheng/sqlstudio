@@ -1,9 +1,10 @@
-package com.changhong.sqlstudio.application.obj;
+package com.changhong.sqlstudio.application.treenode;
 
 import com.changhong.sqlstudio.application.Images;
 import com.changhong.sqlstudio.core.event.EventBus;
 import com.changhong.sqlstudio.core.event.notify.RuntimeErrorEvent;
 import com.changhong.sqlstudio.driver.HikariDataSourceAdapter;
+import com.changhong.sqlstudio.driver.TableData;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -21,7 +22,7 @@ import java.util.Map;
 @SuppressWarnings({
         "FieldCanBeLocal",
 })
-public class Database
+public class NNDatabase
 {
         private final HikariDataSourceAdapter ds;
         private final TreeItem parent;
@@ -30,9 +31,9 @@ public class Database
         private TreeItem item;
         private TreeItem tabelItem;
         private TreeItem queryItem;
-        private final Map<String, TreeItem> tables = new LinkedHashMap<>();
+        private final Map<String, NNTable> tables = new LinkedHashMap<>();
 
-        public Database(HikariDataSourceAdapter ds, TreeItem parent, String name)
+        public NNDatabase(HikariDataSourceAdapter ds, TreeItem parent, String name)
         {
                 this.ds = ds;
                 this.parent = parent;
@@ -47,12 +48,8 @@ public class Database
         private void showTables() {
                 try {
                         List<String> tableNames = ds.getTables(item.getText());
-                        for (String tableName : tableNames) {
-                                TreeItem tableItem = new TreeItem(tabelItem, SWT.NONE);
-                                tableItem.setText(tableName);
-                                tableItem.setImage(Images.TABLE);
-                                tables.put(tableName, tableItem);
-                        }
+                        for (String tableName : tableNames)
+                                tables.put(tableName, new NNTable(tableName, this, tabelItem));
                 } catch (SQLException e) {
                         EventBus.publish(new RuntimeErrorEvent(e));
                 }
@@ -83,7 +80,7 @@ public class Database
                 if (!openFlag)
                         return;
 
-                tables.values().forEach(TreeItem::dispose);
+                tables.values().forEach(NNTable::close);
                 tabelItem.dispose();
                 queryItem.dispose();
         }
@@ -91,5 +88,9 @@ public class Database
         public boolean isOpen()
         {
                 return openFlag;
+        }
+
+        public TableData selectTableData(String tableName, int start, int count) throws SQLException {
+                return ds.selectTableData(name, tableName, start, count);
         }
 }

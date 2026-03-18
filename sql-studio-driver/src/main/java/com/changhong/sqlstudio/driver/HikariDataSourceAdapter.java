@@ -27,4 +27,9 @@ public abstract class HikariDataSourceAdapter extends HikariDataSource {
      */
     public abstract List<String> getTables(String dbName) throws SQLException;
 
+    /**
+     * 查询表数据
+     */
+    public abstract TableData selectTableData(String dbName, String tableName, int start, int count) throws SQLException;
+
 }

@@ -1,4 +1,4 @@
-package com.changhong.sqlstudio.application.obj;
+package com.changhong.sqlstudio.application.treenode;
 
 import com.changhong.sqlstudio.application.Images;
 import com.changhong.sqlstudio.application.config.ConnectionConfig;
@@ -31,7 +31,7 @@ import static org.eclipse.swt.SWT.NONE;
         "FieldCanBeLocal",
         "unused",
 })
-public class Connection
+public class NNConnection
 {
         private final ConnectionConfig config;
         private final String name;
@@ -39,9 +39,9 @@ public class Connection
         private Menu menu;
         private boolean openFlag;
         private HikariDataSourceAdapter ds;
-        private final Map<String, Database> databases = new LinkedHashMap<>();
+        private final Map<String, NNDatabase> databases = new LinkedHashMap<>();
 
-        public Connection(String name, TreeItem parent, ConnectionConfig config)
+        public NNConnection(String name, TreeItem parent, ConnectionConfig config)
         {
                 this.name = name;
                 this.config = config;
@@ -98,7 +98,7 @@ public class Connection
                         for (String databaseName : databaseNames) {
                                 if (databases.containsKey(databaseName))
                                         continue;
-                                databases.put(databaseName, new Database(ds, item, databaseName));
+                                databases.put(databaseName, new NNDatabase(ds, item, databaseName));
                         }
                 } catch (SQLException e) {
                         EventBus.publish(new RuntimeErrorEvent(item.getText(), e));
@@ -134,7 +134,7 @@ public class Connection
                 if (ds != null)
                         ds.close();
 
-                databases.values().forEach(Database::close);
+                databases.values().forEach(NNDatabase::close);
                 databases.clear();
 
                 openFlag = false;

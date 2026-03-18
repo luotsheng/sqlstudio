@@ -1,9 +1,13 @@
 package com.changhong.sqlstudio.application.ui;
 
+import com.changhong.sqlstudio.application.treenode.NNTable;
+import com.changhong.sqlstudio.application.widgets.DataTable;
+import com.changhong.sqlstudio.core.event.notify.ApplicationReadyEvent;
+import com.changhong.sqlstudio.core.event.notify.OpenDataTableTabEvent;
 import com.changhong.sqlstudio.core.event.notify.OpenNewQueryScriptEvent;
 import com.changhong.sqlstudio.core.event.notify.ScriptTabCloseEvent;
 import com.changhong.sqlstudio.application.widgets.DragTabFolder;
-import com.changhong.sqlstudio.application.widgets.QueryWorkbench;
+import com.changhong.sqlstudio.application.widgets.QueryEditor;
 import com.changhong.sqlstudio.application.widgets.Widgets;
 import com.changhong.sqlstudio.core.event.Event;
 import com.changhong.sqlstudio.core.event.EventBus;
@@ -38,6 +42,7 @@ public class AppWorkbench extends EventListener {
         container.setLayout(new FillLayout());
 
         tabFolder = new DragTabFolder(container);
+        tabFolder.setSimple(true);
 
         tabFolder.addCTabFolder2Listener(new CTabFolder2Adapter() {
             @Override
@@ -47,14 +52,16 @@ public class AppWorkbench extends EventListener {
         });
 
         EventBus.subscribe(OpenNewQueryScriptEvent.class, this);
+        EventBus.subscribe(OpenDataTableTabEvent.class, this);
         EventBus.subscribe(ScriptTabCloseEvent.class, this);
+        EventBus.subscribe(ApplicationReadyEvent.class, this);
     }
 
     @Override
     public void eventTigger(Event event) {
         if (event instanceof ScriptTabCloseEvent closeEvent) {
             CTabItem tabItem = closeEvent.getCTabItem();
-            QueryWorkbench codeEditor = (QueryWorkbench) tabItem.getControl();
+            QueryEditor codeEditor = (QueryEditor) tabItem.getControl();
 
             if (codeEditor.isDirty()) {
                 String tips = "文件 \"" + tabItem.getText() + "\" 已修改，是否保存？";
@@ -69,12 +76,21 @@ public class AppWorkbench extends EventListener {
 
         if (event instanceof OpenNewQueryScriptEvent)
             newQueryScriptTab();
+
+        if (event instanceof OpenDataTableTabEvent openDataTableTabEvent)
+            newDataTableTab(openDataTableTabEvent);
     }
 
     public void newQueryScriptTab() {
-        QueryWorkbench codeEditor = new QueryWorkbench(tabFolder);
+        QueryEditor codeEditor = new QueryEditor(tabFolder);
         CTabItem cTabItem = tabFolder.addTab("新建查询" + "_" + (count++) + ".sql", codeEditor);
         codeEditor.setTabItem(cTabItem);
+    }
+
+    public void newDataTableTab(OpenDataTableTabEvent event) {
+        NNTable table = event.table();
+        DataTable dataTable = new DataTable(tabFolder, table);
+        tabFolder.addTab(table.name(), dataTable);
     }
 
 }

@@ -19,7 +19,7 @@ import java.util.Map;
  *
  * @author Luo Tiansheng
  */
-public class DragTabFolder extends CTabFolder{
+public class DragTabFolder extends CTabFolder {
     private final Map<CTabItem, Control> itemContentMap = new HashMap<>();
 
     /* 鼠标右键所在的标签 */

@@ -11,7 +11,6 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
@@ -27,7 +26,7 @@ import java.util.ArrayList;
         "FieldMayBeFinal",
         "FieldCanBeLocal",
 })
-public class QueryWorkbench extends Composite
+public class QueryEditor extends Composite
 {
         private static final int EDITOR_FONT_SIZE = 18;
 
@@ -44,7 +43,7 @@ public class QueryWorkbench extends Composite
         private CTabItem tabItem;
         private boolean dirty = false;
 
-        public QueryWorkbench(Composite parent)
+        public QueryEditor(Composite parent)
         {
                 super(parent, SWT.NONE);
 

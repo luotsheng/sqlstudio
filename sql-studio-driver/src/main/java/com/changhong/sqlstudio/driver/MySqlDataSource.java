@@ -1,9 +1,6 @@
 package com.changhong.sqlstudio.driver;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -29,6 +26,10 @@ public class MySqlDataSource extends HikariDataSourceAdapter
         public MySqlDataSource(Properties props)
         {
                 super(props);
+        }
+
+        private void use(Statement statement, String dbName) throws SQLException {
+                statement.execute("USE " + dbName + ";");
         }
 
         @Override
@@ -61,5 +62,49 @@ public class MySqlDataSource extends HikariDataSourceAdapter
                 }
 
                 return tables;
+        }
+
+        @Override
+        public TableData selectTableData(String dbName, String tableName, int start, int count) throws SQLException {
+                TableData tableData = new TableData();
+                List<String> columns = new ArrayList<>();
+                List<List<String>> rows = new ArrayList<>();
+
+                String sql = "SELECT * FROM " + tableName + " LIMIT ? OFFSET ?;";
+
+                try (Connection conn = getConnection();
+                     PreparedStatement ps = conn.prepareStatement(sql)) {
+
+                        use(ps, dbName);
+
+                        ps.setInt(1, count);
+                        ps.setInt(2, start);
+
+                        try (ResultSet rs = ps.executeQuery()) {
+                                ResultSetMetaData meta = rs.getMetaData();
+                                int colCount = meta.getColumnCount();
+
+                                // 填充列名
+                                for (int i = 1; i <= colCount; i++) {
+                                        columns.add(meta.getColumnLabel(i));
+                                }
+
+                                // 填充数据
+                                while (rs.next()) {
+                                        List<String> row = new ArrayList<>();
+                                        for (int i = 1; i <= colCount; i++) {
+                                                Object val = rs.getObject(i);
+                                                row.add(val != null ? val.toString() : null);
+                                        }
+                                        rows.add(row);
+                                }
+                        }
+
+                }
+
+                tableData.setColumn(columns);
+                tableData.setData(rows);
+
+                return tableData;
         }
 }

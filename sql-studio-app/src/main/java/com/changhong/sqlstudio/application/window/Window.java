@@ -29,7 +29,7 @@ public class Window {
     private AppMenuBar menuBar;
     private AppToolBar toolBar;
     private AppNavigator navigator;
-    private AppWorkbench queryEditor;
+    private AppWorkbench workbench;
 
     private static Window sWindow = null;
 
@@ -68,7 +68,7 @@ public class Window {
         sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         navigator = new AppNavigator(sashForm);
-        queryEditor = new AppWorkbench(shell, sashForm);
+        workbench = new AppWorkbench(shell, sashForm);
 
         sashForm.setWeights(20, 80);
 
