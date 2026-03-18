@@ -76,6 +76,7 @@ public class GeneralConnectionCreateUI extends EventListener {
         config = new ConnectionConfig();
         config.setHost("127.0.0.1");
         config.setPort(3306);
+        config.setUsername("root");
         config.setTimezone("Asia/Shanghai");
         config.setUseSSL(false);
         config.setJdbcType(dbType.getJdbcType());
