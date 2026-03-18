@@ -193,6 +193,10 @@ public class GeneralConnectionCreateUI extends EventListener {
         });
 
         passwd = createLabeledTextField(content, "密码", config.getPassword(), SWT.PASSWORD);
+        passwd.addModifyListener(modifyEvent -> {
+            config.setPassword(passwd.getText());
+            EventBus.publish(new ConnectionConfigChangeEvent());
+        });
 
         new Label(content, SWT.NONE);
         new Label(content, SWT.NONE);

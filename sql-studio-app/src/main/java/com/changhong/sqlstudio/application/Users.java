@@ -43,7 +43,7 @@ public class Users {
     public static boolean saveConnection(String name, ConnectionConfig config) {
         File connectionFile = getConnectionFile(name);
 
-        if (config.isSavePassword())
+        if (!config.isSavePassword())
             config.setPassword(null);
 
         if (connectionFile.exists()) {
@@ -73,7 +73,7 @@ public class Users {
                 JSONObject obj = systemResource.toJSONObject();
                 if (obj == null)
                     continue;
-                confs.put(systemResource.getCleanName(), obj.toJavaObject(ConnectionConfig.class));
+                confs.put(systemResource.getName(), obj.toJavaObject(ConnectionConfig.class));
             }
         }
 

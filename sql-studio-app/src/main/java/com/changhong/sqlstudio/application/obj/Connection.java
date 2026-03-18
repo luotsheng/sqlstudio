@@ -6,8 +6,14 @@ import com.changhong.sqlstudio.core.event.notify.RuntimeErrorEvent;
 import com.changhong.sqlstudio.driver.DataSourceConfig;
 import com.changhong.sqlstudio.driver.DataSourceUtils;
 import com.changhong.sqlstudio.driver.HikariDataSourceAdapter;
+import com.changhong.sqlstudio.driver.MySqlDataSource;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeItem;
+
+import java.sql.SQLException;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 连接属性
@@ -21,12 +27,30 @@ public class Connection
         private final TreeItem item;
         private boolean isOpen;
         private HikariDataSourceAdapter ds;
+        private final Map<String, Database> databases = new LinkedHashMap<>();
 
         public Connection(TreeItem item, ConnectionConfig config)
         {
                 this.item = item;
                 this.config = config;
                 this.isOpen = false;
+        }
+
+        private void asyncOpen(DataSourceConfig cnf)
+        {
+                ds = new MySqlDataSource(cnf);
+
+                try {
+                        List<String> databaseNames = ds.getDatabases();
+
+                        for (String databaseName : databaseNames) {
+                                if (databases.containsKey(databaseName))
+                                        continue;
+                                databases.put(databaseName, new Database(item, databaseName));
+                        }
+                } catch (SQLException e) {
+                        EventBus.publish(new RuntimeErrorEvent(item.getText(), e));
+                }
         }
 
         public void open()
@@ -40,12 +64,18 @@ public class Connection
                                 Display.getDefault().asyncExec(() -> {
                                         EventBus.publish(new RuntimeErrorEvent(item.getText(), throwable));
                                 });
+                                return;
                         }
+
+                        Display.getDefault().asyncExec(() -> asyncOpen(cnf));
                 }).start();
         }
 
         public void close()
         {
+                if (!isOpen)
+                        return;
+
                 isOpen = false;
         }
 }

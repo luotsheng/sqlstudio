@@ -29,15 +29,15 @@ public class MySqlDataSource extends HikariDataSourceAdapter {
     }
 
     @Override
-    public List<String> getTableNames() throws SQLException {
-        List<String> tableNames = new ArrayList<>();
+    public List<String> getDatabases() throws SQLException {
+        List<String> databases = new ArrayList<>();
         try (Connection connection = getConnection();
              Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery("SHOW DATABASES")) {
             while (rs.next())
-                tableNames.add(rs.getString(1));
+                databases.add(rs.getString(1));
         }
-        return tableNames;
+        return databases;
     }
 
 }
