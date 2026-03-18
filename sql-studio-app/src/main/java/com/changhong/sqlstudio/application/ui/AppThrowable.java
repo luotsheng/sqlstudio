@@ -5,7 +5,7 @@ import com.changhong.sqlstudio.application.widgets.Widgets;
 import com.changhong.sqlstudio.core.event.Event;
 import com.changhong.sqlstudio.core.event.EventBus;
 import com.changhong.sqlstudio.core.event.EventListener;
-import com.changhong.sqlstudio.core.event.notify.ThrowExceptionEvent;
+import com.changhong.sqlstudio.core.event.notify.RuntimeErrorEvent;
 
 /**
  * @author Luo Tiansheng
@@ -18,13 +18,13 @@ public class AppThrowable extends EventListener {
     }
 
     public void subscribe() {
-        EventBus.subscribe(ThrowExceptionEvent.class, this);
+        EventBus.subscribe(RuntimeErrorEvent.class, this);
     }
 
     @Override
     public void eventTigger(Event event) {
-        if (event instanceof ThrowExceptionEvent throwEvent) {
-            Widgets.showErrorDialog(throwEvent.getMessage());
+        if (event instanceof RuntimeErrorEvent throwEvent) {
+            Widgets.showErrorDialog(throwEvent.getTitle(), throwEvent.getMessage());
         }
     }
 

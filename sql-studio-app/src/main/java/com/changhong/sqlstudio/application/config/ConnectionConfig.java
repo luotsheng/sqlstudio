@@ -1,6 +1,7 @@
 package com.changhong.sqlstudio.application.config;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.changhong.sqlstudio.driver.DataSourceConfig;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * 连接配置
@@ -17,8 +18,6 @@ public class ConnectionConfig {
     private String password;
     private boolean useSSL;
     private String timezone;
-
-    @JSONField(serialize = false)
     private boolean savePassword;
 
     public String getHost() {
@@ -88,6 +87,15 @@ public class ConnectionConfig {
     public String buildJdbcUrl() {
         return "jdbc:" + jdbcType + "://" + host + ":" + port
                 + "?useSSL=" + useSSL + "&serverTimezone=" + timezone;
+    }
+
+    @JsonIgnore
+    public DataSourceConfig getDataSourceConfig() {
+        DataSourceConfig cnf = new DataSourceConfig();
+        cnf.setJdbcUrl(buildJdbcUrl());
+        cnf.setUsername(username);
+        cnf.setPassword(password == null ? "" : password);
+        return cnf;
     }
 
 }

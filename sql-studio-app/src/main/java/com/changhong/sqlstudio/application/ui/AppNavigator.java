@@ -38,9 +38,9 @@ public class AppNavigator extends EventListener
 
         private final Composite container;
         private Tree connectionTree;
-        private TreeItem connections;
+        private TreeItem myConnections;
 
-        private final Map<String, Connection> connectionItems
+        private final Map<String, Connection> myConnectionItems
                 = new LinkedHashMap<>();
 
         public AppNavigator(SashForm sashForm)
@@ -75,17 +75,21 @@ public class AppNavigator extends EventListener
 
         private void addConnectionItem(String name, ConnectionConfig config)
         {
-                if (connectionItems.containsKey(name))
+                if (myConnectionItems.containsKey(name))
                         return;
 
-                TreeItem childItem = new TreeItem(connections, NONE);
+                TreeItem childItem = new TreeItem(myConnections, NONE);
                 childItem.setText(name);
-                connectionItems.put(name, new Connection(childItem, config));
+                myConnectionItems.put(name, new Connection(childItem, config));
+        }
 
-                childItem.addListener(MouseDoubleClick, event -> {
-                        TreeItem item = connectionTree.getItem(new Point(event.x, event.y));
-                        System.out.println("双击事件，" + item.getText());
-                });
+        private void connectionItemDoubleClickEvent(TreeItem item) {
+                Connection connection = myConnectionItems.get(item.getText());
+
+                if (connection == null)
+                        return;
+
+                connection.open();
         }
 
         private void createNavigatorTabItem(CTabFolder tabFolder)
@@ -96,8 +100,8 @@ public class AppNavigator extends EventListener
                 connectionTree = new Tree(tabFolder, NONE);
                 navigatorItem.setControl(connectionTree);
 
-                connections = new TreeItem(connectionTree, NONE);
-                connections.setText("我的连接");
+                myConnections = new TreeItem(connectionTree, NONE);
+                myConnections.setText("我的连接");
 
                 Menu menu = new Menu(connectionTree);
                 connectionTree.setMenu(menu);
@@ -107,11 +111,18 @@ public class AppNavigator extends EventListener
                         Point point = connectionTree.toControl(event.x, event.y);
                         TreeItem item = connectionTree.getItem(point);
 
-                        if (item == connections) {
+                        if (item == myConnections) {
                                 connectionTree.setMenu(menu);
                         } else {
                                 connectionTree.setMenu(null);
                         }
+                });
+
+                connectionTree.addListener(MouseDoubleClick, event -> {
+                        TreeItem item = connectionTree.getItem(new Point(event.x, event.y));
+                        if (item == myConnections)
+                                return;
+                        connectionItemDoubleClickEvent(item);
                 });
 
                 MenuItem newConnectionItem = new MenuItem(menu, CASCADE);

@@ -1,23 +1,19 @@
 package com.changhong.sqlstudio.application;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.changhong.sqlstudio.application.config.ConnectionConfig;
-import com.changhong.sqlstudio.common.io.IOUtils;
 import com.changhong.sqlstudio.common.io.SystemResource;
-import com.changhong.sqlstudio.common.utils.Assert;
 import com.changhong.sqlstudio.common.utils.Captor;
 import com.changhong.sqlstudio.core.event.EventBus;
-import com.changhong.sqlstudio.core.event.notify.RefreshConnectionListEvent;
-import com.changhong.sqlstudio.core.event.notify.ThrowExceptionEvent;
+import com.changhong.sqlstudio.core.event.notify.RuntimeErrorEvent;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,14 +47,14 @@ public class Users {
             config.setPassword(null);
 
         if (connectionFile.exists()) {
-            EventBus.publish(new ThrowExceptionEvent(new FileAlreadyExistsException(name + " - 名称已存在")));
+            EventBus.publish(new RuntimeErrorEvent(new FileAlreadyExistsException(name + " - 名称已存在")));
             return false;
         }
 
         Captor.call(connectionFile::createNewFile);
 
         try (FileOutputStream fileOutputStream = new FileOutputStream(connectionFile)) {
-            String serializeString = JSONObject.toJSONString(config);
+            String serializeString = JSON.toJSONString(config);
             fileOutputStream.write(serializeString.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -75,6 +71,8 @@ public class Users {
             for (File file : files) {
                 SystemResource systemResource = new SystemResource(file);
                 JSONObject obj = systemResource.toJSONObject();
+                if (obj == null)
+                    continue;
                 confs.put(systemResource.getCleanName(), obj.toJavaObject(ConnectionConfig.class));
             }
         }

@@ -37,6 +37,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Properties;
 
+import static com.changhong.sqlstudio.common.utils.TypeCvt.atos;
+
 /**
  * 扩展了 `java.io.File` 的自定义文件类，提供了增强的文件操作功能。
  * <p>
@@ -634,7 +636,7 @@ public class SystemResource extends File {
      * @return 解析后的 {@link JSONObject} 对象
      */
     public JSONObject toJSONObject() {
-        return (JSONObject) JSONObject.parse(readAllBytes());
+        return (JSONObject) JSONObject.parse(atos(readAllBytes()));
     }
 
     /**
@@ -646,7 +648,7 @@ public class SystemResource extends File {
      * @return 解析后的 {@link JSONArray} 对象
      */
     public JSONArray toJSONArray() {
-        return (JSONArray) JSONArray.parse(readAllBytes());
+        return (JSONArray) JSONArray.parse(atos(readAllBytes()));
     }
 
 }
