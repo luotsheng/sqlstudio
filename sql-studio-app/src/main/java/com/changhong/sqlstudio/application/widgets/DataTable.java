@@ -4,7 +4,7 @@ import com.changhong.sqlstudio.application.treenode.NNDatabase;
 import com.changhong.sqlstudio.application.treenode.NNTable;
 import com.changhong.sqlstudio.core.event.EventBus;
 import com.changhong.sqlstudio.core.event.notify.RuntimeErrorEvent;
-import com.changhong.sqlstudio.driver.TableData;
+import com.changhong.sqlstudio.driver.QueryResultSet;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -47,14 +47,14 @@ public class DataTable extends Composite {
         NNDatabase db = tableNode.db();
 
         try {
-            TableData data = db.selectTableData(tableNode.name(), start, count);
+            QueryResultSet data = db.selectTableData(tableNode.name(), start, count);
 
-            data.getColumn().forEach(v -> {
+            data.getColumns().forEach(col -> {
                 TableColumn column = new TableColumn(table, SWT.NONE);
-                column.setText(v);
+                column.setText(col);
             });
 
-            data.getData().forEach(row -> {
+            data.getRows().forEach(row -> {
                 TableItem item = new TableItem(table, SWT.NONE);
                 IntStream.range(0, row.size()).forEach(i -> item.setText(i, row.get(i) != null ? row.get(i) : ""));
             });

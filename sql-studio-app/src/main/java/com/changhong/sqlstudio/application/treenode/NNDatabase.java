@@ -4,7 +4,7 @@ import com.changhong.sqlstudio.application.Images;
 import com.changhong.sqlstudio.core.event.EventBus;
 import com.changhong.sqlstudio.core.event.notify.RuntimeErrorEvent;
 import com.changhong.sqlstudio.driver.HikariDataSourceAdapter;
-import com.changhong.sqlstudio.driver.TableData;
+import com.changhong.sqlstudio.driver.QueryResultSet;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -90,7 +90,7 @@ public class NNDatabase
                 return openFlag;
         }
 
-        public TableData selectTableData(String tableName, int start, int count) throws SQLException {
+        public QueryResultSet selectTableData(String tableName, int start, int count) throws SQLException {
                 return ds.selectTableData(name, tableName, start, count);
         }
 }

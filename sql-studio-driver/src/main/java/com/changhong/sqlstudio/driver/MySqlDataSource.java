@@ -28,7 +28,8 @@ public class MySqlDataSource extends HikariDataSourceAdapter
                 super(props);
         }
 
-        private void use(Statement statement, String dbName) throws SQLException {
+        private void use(Statement statement, String dbName) throws SQLException
+        {
                 statement.execute("USE " + dbName + ";");
         }
 
@@ -65,8 +66,8 @@ public class MySqlDataSource extends HikariDataSourceAdapter
         }
 
         @Override
-        public TableData selectTableData(String dbName, String tableName, int start, int count) throws SQLException {
-                TableData tableData = new TableData();
+        public QueryResultSet selectTableData(String dbName, String tableName, int start, int count) throws SQLException
+        {
                 List<String> columns = new ArrayList<>();
                 List<List<String>> rows = new ArrayList<>();
 
@@ -84,12 +85,9 @@ public class MySqlDataSource extends HikariDataSourceAdapter
                                 ResultSetMetaData meta = rs.getMetaData();
                                 int colCount = meta.getColumnCount();
 
-                                // 填充列名
-                                for (int i = 1; i <= colCount; i++) {
+                                for (int i = 1; i <= colCount; i++)
                                         columns.add(meta.getColumnLabel(i));
-                                }
 
-                                // 填充数据
                                 while (rs.next()) {
                                         List<String> row = new ArrayList<>();
                                         for (int i = 1; i <= colCount; i++) {
@@ -102,9 +100,6 @@ public class MySqlDataSource extends HikariDataSourceAdapter
 
                 }
 
-                tableData.setColumn(columns);
-                tableData.setData(rows);
-
-                return tableData;
+                return QueryResultSet.of(columns, rows);
         }
 }
