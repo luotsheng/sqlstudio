@@ -6,6 +6,7 @@ import com.changhong.sqlstudio.core.event.notify.RuntimeErrorEvent;
 import com.changhong.sqlstudio.driver.DataSourceConfig;
 import com.changhong.sqlstudio.driver.DataSourceUtils;
 import com.changhong.sqlstudio.driver.HikariDataSourceAdapter;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
@@ -21,19 +22,26 @@ public class Connection
         private boolean isOpen;
         private HikariDataSourceAdapter ds;
 
-        public Connection(TreeItem item, ConnectionConfig config) {
+        public Connection(TreeItem item, ConnectionConfig config)
+        {
                 this.item = item;
                 this.config = config;
                 this.isOpen = false;
         }
 
-        public void open() {
-                isOpen = true;
-                DataSourceConfig cnf = config.getDataSourceConfig();
+        public void open()
+        {
+                new Thread(() -> {
+                        isOpen = true;
+                        DataSourceConfig cnf = config.getDataSourceConfig();
 
-                Throwable throwable = DataSourceUtils.testConnect(cnf);
-                if (throwable != null)
-                        EventBus.publish(new RuntimeErrorEvent(item.getText(), throwable));
+                        Throwable throwable = DataSourceUtils.testConnect(cnf);
+                        if (throwable != null) {
+                                Display.getDefault().asyncExec(() -> {
+                                        EventBus.publish(new RuntimeErrorEvent(item.getText(), throwable));
+                                });
+                        }
+                }).start();
         }
 
         public void close()

@@ -19,7 +19,7 @@ public class Launcher  {
         Users.initialize();
 
         try {
-            Window window = new Window(display);
+            Window window = Window.initialize(display);
             window.open();
 
             eventLoop(display);

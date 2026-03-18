@@ -31,8 +31,23 @@ public class Window {
     private AppNavigator navigator;
     private AppQueryEditor queryEditor;
 
-    public Window(Display display) {
+    private static Window sWindow = null;
+
+    private Window(Display display) {
         this.display = display;
+    }
+
+    public static Window initialize(Display display) {
+        if (sWindow != null)
+            return sWindow;
+
+        sWindow = new Window(display);
+
+        return sWindow;
+    }
+
+    public static synchronized Shell shell() {
+        return sWindow.shell;
     }
 
     public void open() {
