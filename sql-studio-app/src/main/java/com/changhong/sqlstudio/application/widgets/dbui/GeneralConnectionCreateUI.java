@@ -61,6 +61,7 @@ public class GeneralConnectionCreateUI extends EventListener {
     private final Shell parentShell;
     private final String dialogTitle;
     private final ConnectionConfig config;
+    private final boolean isUpdate;
     private Shell dialog;
     private Composite container;
     private CTabFolder tabFolder;
@@ -70,8 +71,9 @@ public class GeneralConnectionCreateUI extends EventListener {
     private Text passwd;
     private Text connectionName;
 
-    public GeneralConnectionCreateUI(DBType dbType) {
+    public GeneralConnectionCreateUI(DBType dbType, boolean isUpdate) {
         this.dialogTitle = "新建" + dbType.getName() + "连接";
+        this.isUpdate = isUpdate;
 
         config = new ConnectionConfig();
         config.setHost("127.0.0.1");

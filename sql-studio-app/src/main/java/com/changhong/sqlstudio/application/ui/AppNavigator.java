@@ -13,11 +13,18 @@ import com.changhong.sqlstudio.core.event.notify.RefreshConnectionListEvent;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.MenuDetectEvent;
+import org.eclipse.swt.events.MenuDetectListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 
+import java.awt.*;
 import java.util.Map;
 
 import static org.eclipse.swt.SWT.*;
@@ -51,7 +58,7 @@ public class AppNavigator extends EventListener {
     public void eventTigger(Event event) {
         if (event instanceof OpenDBCreateUIEvent openDBCreateUIEvent) {
             DBType dbType = openDBCreateUIEvent.dbType();
-            new GeneralConnectionCreateUI(dbType).open();
+            new GeneralConnectionCreateUI(dbType, false).open();
         }
 
         if (event instanceof ApplicationReadyEvent || event instanceof RefreshConnectionListEvent) {
@@ -67,14 +74,26 @@ public class AppNavigator extends EventListener {
         CTabItem navigatorItem = new CTabItem(tabFolder, NONE);
         navigatorItem.setText("连接管理");
 
-        Tree connectionTree = new Tree(tabFolder, NONE);
-        navigatorItem.setControl(connectionTree);
+        Tree tree = new Tree(tabFolder, NONE);
+        navigatorItem.setControl(tree);
 
-        myConnections = new TreeItem(connectionTree, NONE);
+        myConnections = new TreeItem(tree, NONE);
         myConnections.setText("我的连接");
 
-        Menu menu = new Menu(connectionTree);
-        connectionTree.setMenu(menu);
+        Menu menu = new Menu(tree);
+        tree.setMenu(menu);
+
+        /* 不允许其他子节点调用菜单 */
+        tree.addMenuDetectListener(event -> {
+            Point point = tree.toControl(event.x, event.y);
+            TreeItem item = tree.getItem(point);
+
+            if (item == myConnections) {
+                tree.setMenu(menu);
+            } else {
+                tree.setMenu(null);
+            }
+        });
 
         MenuItem newConnectionItem = new MenuItem(menu, CASCADE);
         newConnectionItem.setText("创建连接");
