@@ -2,6 +2,7 @@ package com.changhong.sqlstudio.application.ui;
 
 import com.changhong.sqlstudio.application.Users;
 import com.changhong.sqlstudio.application.config.ConnectionConfig;
+import com.changhong.sqlstudio.application.obj.Connection;
 import com.changhong.sqlstudio.core.event.notify.ApplicationReadyEvent;
 import com.changhong.sqlstudio.core.event.notify.OpenDBCreateUIEvent;
 import com.changhong.sqlstudio.application.widgets.dbui.GeneralConnectionCreateUI;
@@ -13,8 +14,6 @@ import com.changhong.sqlstudio.core.event.notify.RefreshConnectionListEvent;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.events.MenuDetectEvent;
-import org.eclipse.swt.events.MenuDetectListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -24,7 +23,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
-import java.awt.*;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.eclipse.swt.SWT.*;
@@ -34,111 +33,145 @@ import static org.eclipse.swt.SWT.*;
  * @since 2026-03-01
  */
 @SuppressWarnings("FieldCanBeLocal")
-public class AppNavigator extends EventListener {
+public class AppNavigator extends EventListener
+{
 
-    private final Composite container;
-    private TreeItem myConnections;
+        private final Composite container;
+        private Tree connectionTree;
+        private TreeItem connections;
 
-    public AppNavigator(SashForm sashForm) {
-        container = new Composite(sashForm, BORDER);
+        private final Map<String, Connection> connectionItems
+                = new LinkedHashMap<>();
 
-        container.setLayout(new FillLayout());
-        CTabFolder tabFolder = new CTabFolder(container, HORIZONTAL);
-        tabFolder.setSimple(false);
+        public AppNavigator(SashForm sashForm)
+        {
+                container = new Composite(sashForm, BORDER);
 
-        createNavigatorTabItem(tabFolder);
-        createProjectTabItem(tabFolder);
+                container.setLayout(new FillLayout());
+                CTabFolder tabFolder = new CTabFolder(container, HORIZONTAL);
+                tabFolder.setSimple(false);
 
-        EventBus.subscribe(OpenDBCreateUIEvent.class, this);
-        EventBus.subscribe(ApplicationReadyEvent.class, this);
-        EventBus.subscribe(RefreshConnectionListEvent.class, this);
-    }
+                createNavigatorTabItem(tabFolder);
+                createProjectTabItem(tabFolder);
 
-    @Override
-    public void eventTigger(Event event) {
-        if (event instanceof OpenDBCreateUIEvent openDBCreateUIEvent) {
-            DBType dbType = openDBCreateUIEvent.dbType();
-            new GeneralConnectionCreateUI(dbType, false).open();
+                EventBus.subscribe(OpenDBCreateUIEvent.class, this);
+                EventBus.subscribe(ApplicationReadyEvent.class, this);
+                EventBus.subscribe(RefreshConnectionListEvent.class, this);
         }
 
-        if (event instanceof ApplicationReadyEvent || event instanceof RefreshConnectionListEvent) {
-            Map<String, ConnectionConfig> connectionList = Users.getConnectionList();
-            connectionList.forEach((k, v) -> {
-                TreeItem childItem = new TreeItem(myConnections, NONE);
-                childItem.setText(k);
-            });
+        @Override
+        public void eventTigger(Event event)
+        {
+                if (event instanceof OpenDBCreateUIEvent openDBCreateUIEvent) {
+                        DBType dbType = openDBCreateUIEvent.dbType();
+                        new GeneralConnectionCreateUI(dbType, false).open();
+                }
+
+                if (event instanceof ApplicationReadyEvent || event instanceof RefreshConnectionListEvent) {
+                        Map<String, ConnectionConfig> connectionList = Users.getConnectionList();
+                        connectionList.forEach(this::addConnectionItem);
+                }
         }
-    }
 
-    private void createNavigatorTabItem(CTabFolder tabFolder) {
-        CTabItem navigatorItem = new CTabItem(tabFolder, NONE);
-        navigatorItem.setText("连接管理");
+        private void addConnectionItem(String name, ConnectionConfig config)
+        {
+                if (connectionItems.containsKey(name))
+                        return;
 
-        Tree tree = new Tree(tabFolder, NONE);
-        navigatorItem.setControl(tree);
+                TreeItem childItem = new TreeItem(connections, NONE);
+                childItem.setText(name);
+                connectionItems.put(name, new Connection(childItem, config));
 
-        myConnections = new TreeItem(tree, NONE);
-        myConnections.setText("我的连接");
+                childItem.addListener(MouseDoubleClick, event -> {
+                        TreeItem item = connectionTree.getItem(new Point(event.x, event.y));
+                        System.out.println("双击事件，" + item.getText());
+                });
+        }
 
-        Menu menu = new Menu(tree);
-        tree.setMenu(menu);
+        private void createNavigatorTabItem(CTabFolder tabFolder)
+        {
+                CTabItem navigatorItem = new CTabItem(tabFolder, NONE);
+                navigatorItem.setText("连接管理");
 
-        /* 不允许其他子节点调用菜单 */
-        tree.addMenuDetectListener(event -> {
-            Point point = tree.toControl(event.x, event.y);
-            TreeItem item = tree.getItem(point);
+                connectionTree = new Tree(tabFolder, NONE);
+                navigatorItem.setControl(connectionTree);
 
-            if (item == myConnections) {
-                tree.setMenu(menu);
-            } else {
-                tree.setMenu(null);
-            }
-        });
+                connections = new TreeItem(connectionTree, NONE);
+                connections.setText("我的连接");
 
-        MenuItem newConnectionItem = new MenuItem(menu, CASCADE);
-        newConnectionItem.setText("创建连接");
+                Menu menu = new Menu(connectionTree);
+                connectionTree.setMenu(menu);
 
-        Menu newConnectionSubMenu = new Menu(newConnectionItem);
-        newConnectionItem.setMenu(newConnectionSubMenu);
+                /* 不允许其他子节点调用菜单 */
+                connectionTree.addMenuDetectListener(event -> {
+                        Point point = connectionTree.toControl(event.x, event.y);
+                        TreeItem item = connectionTree.getItem(point);
 
-        for (DBType type : DBType.values()) {
-            MenuItem newDBConnectionItem = new MenuItem(newConnectionSubMenu, PUSH);
-            newDBConnectionItem.setText(type.getName());
+                        if (item == connections) {
+                                connectionTree.setMenu(menu);
+                        } else {
+                                connectionTree.setMenu(null);
+                        }
+                });
 
-            switch (type) {
-                case PostgreSQL:
-                case Oracle:
-                case SQL_SERVER:
-                case DM:
-                case MySQL:
-                    newDBConnectionItem.addSelectionListener(new SelectionAdapter() {
+                MenuItem newConnectionItem = new MenuItem(menu, CASCADE);
+                newConnectionItem.setText("创建连接");
+
+                Menu newConnectionSubMenu = new Menu(newConnectionItem);
+                newConnectionItem.setMenu(newConnectionSubMenu);
+
+                for (DBType type : DBType.values()) {
+                        MenuItem newDBConnectionItem = new MenuItem(newConnectionSubMenu, PUSH);
+                        newDBConnectionItem.setText(type.getName());
+
+                        switch (type) {
+                                case PostgreSQL:
+                                case Oracle:
+                                case SQL_SERVER:
+                                case DM:
+                                case MySQL:
+                                        newDBConnectionItem.addSelectionListener(new SelectionAdapter() {
+                                                @Override
+                                                public void widgetSelected(SelectionEvent e)
+                                                {
+                                                        EventBus.publish(new OpenDBCreateUIEvent(type, e));
+                                                }
+                                        });
+                                        break;
+                                case SQLite:
+                                        break;
+                        }
+
+                }
+
+                MenuItem closeAllConnectionItem = new MenuItem(menu, PUSH);
+                closeAllConnectionItem.setText("关闭所有连接");
+
+                new MenuItem(menu, SEPARATOR);
+
+                MenuItem refreshConnectionsItem = new MenuItem(menu, PUSH);
+                refreshConnectionsItem.setText("刷新连接");
+                refreshConnectionsItem.addSelectionListener(new SelectionAdapter() {
                         @Override
                         public void widgetSelected(SelectionEvent e) {
-                            EventBus.publish(new OpenDBCreateUIEvent(type, e));
+                                EventBus.publish(new RefreshConnectionListEvent());
                         }
-                    });
-                    break;
-                case SQLite: break;
-            }
-
+                });
         }
 
-        MenuItem closeAllConnectionItem = new MenuItem(menu, PUSH);
-        closeAllConnectionItem.setText("关闭所有连接");
-    }
+        private void createProjectTabItem(CTabFolder tabFolder)
+        {
+                CTabItem projectItem = new CTabItem(tabFolder, NONE);
+                projectItem.setText("项目管理");
 
-    private void createProjectTabItem(CTabFolder tabFolder) {
-        CTabItem projectItem = new CTabItem(tabFolder, NONE);
-        projectItem.setText("项目管理");
+                Tree projectTree = new Tree(tabFolder, NONE);
+                projectItem.setControl(projectTree);
 
-        Tree projectTree = new Tree(tabFolder, NONE);
-        projectItem.setControl(projectTree);
+                TreeItem projectTreeRoot = new TreeItem(projectTree, NONE);
+                projectTreeRoot.setText("我的项目");
 
-        TreeItem projectTreeRoot = new TreeItem(projectTree, NONE);
-        projectTreeRoot.setText("我的项目");
-
-        TreeItem projectTreeSample = new TreeItem(projectTreeRoot, NONE);
-        projectTreeSample.setText("项目样例");
-    }
+                TreeItem projectTreeSample = new TreeItem(projectTreeRoot, NONE);
+                projectTreeSample.setText("项目样例");
+        }
 
 }
