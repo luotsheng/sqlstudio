@@ -11,21 +11,25 @@ import com.changhong.sqlstudio.core.event.notify.RuntimeErrorEvent;
  * @author Luo Tiansheng
  * @since 2026/3/18
  */
-public class AppThrowable extends EventListener {
+public class AppThrowable extends EventListener
+{
 
-    public AppThrowable() {
-        /* do nothing... */
-    }
-
-    public void subscribe() {
-        EventBus.subscribe(RuntimeErrorEvent.class, this);
-    }
-
-    @Override
-    public void eventTigger(Event event) {
-        if (event instanceof RuntimeErrorEvent throwEvent) {
-            Widgets.showErrorDialog(throwEvent.getTitle(), throwEvent.getMessage());
+        public AppThrowable()
+        {
+                /* do nothing... */
         }
-    }
+
+        public void subscribe()
+        {
+                EventBus.subscribe(RuntimeErrorEvent.class, this);
+        }
+
+        @Override
+        public void eventTigger(Event event)
+        {
+                if (event instanceof RuntimeErrorEvent throwEvent) {
+                        Widgets.showErrorDialog(throwEvent.getTitle(), throwEvent.getMessage());
+                }
+        }
 
 }

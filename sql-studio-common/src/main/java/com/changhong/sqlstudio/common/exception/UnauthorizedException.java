@@ -26,42 +26,47 @@ package com.changhong.sqlstudio.common.exception;
  *
  * <p>支持多种构造方式，可直接创建异常、携带异常原因或格式化错误消息。
  */
-public class UnauthorizedException extends SystemRuntimeException {
+public class UnauthorizedException extends SystemRuntimeException
+{
 
-    /**
-     * 无参构造，创建默认的未经授权异常。
-     */
-    public UnauthorizedException() {
-    }
+        /**
+         * 无参构造，创建默认的未经授权异常。
+         */
+        public UnauthorizedException()
+        {
+        }
 
-    /**
-     * 使用指定的异常作为原因创建未经授权异常。
-     *
-     * @param e 异常原因
-     */
-    public UnauthorizedException(Throwable e) {
-        super(e);
-    }
+        /**
+         * 使用指定的异常作为原因创建未经授权异常。
+         *
+         * @param e 异常原因
+         */
+        public UnauthorizedException(Throwable e)
+        {
+                super(e);
+        }
 
-    /**
-     * 使用格式化字符串创建未经授权异常。
-     *
-     * @param fmt  错误消息格式
-     * @param args 格式化参数
-     */
-    public UnauthorizedException(String fmt, Object... args) {
-        super(fmt, args);
-    }
+        /**
+         * 使用格式化字符串创建未经授权异常。
+         *
+         * @param fmt  错误消息格式
+         * @param args 格式化参数
+         */
+        public UnauthorizedException(String fmt, Object... args)
+        {
+                super(fmt, args);
+        }
 
-    /**
-     * 使用格式化字符串和异常原因创建未经授权异常。
-     *
-     * @param fmt  错误消息格式
-     * @param e    异常原因
-     * @param args 格式化参数
-     */
-    public UnauthorizedException(String fmt, Throwable e, Object... args) {
-        super(fmt, e, args);
-    }
+        /**
+         * 使用格式化字符串和异常原因创建未经授权异常。
+         *
+         * @param fmt  错误消息格式
+         * @param e    异常原因
+         * @param args 格式化参数
+         */
+        public UnauthorizedException(String fmt, Throwable e, Object... args)
+        {
+                super(fmt, e, args);
+        }
 }
 

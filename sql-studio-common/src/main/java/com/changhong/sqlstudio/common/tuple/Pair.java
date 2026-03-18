@@ -45,70 +45,77 @@ import static com.changhong.sqlstudio.common.utils.Comparators.anyeq;
  * @author Luo Tiansheng
  */
 @SuppressWarnings("ClassCanBeRecord")
-public class Pair<A, B> {
+public class Pair<A, B>
+{
 
-    /**
-     * 第一个元素
-     */
-    private final A first;
+        /**
+         * 第一个元素
+         */
+        private final A first;
 
-    /**
-     * 第二个元素
-     */
-    private final B second;
+        /**
+         * 第二个元素
+         */
+        private final B second;
 
-    /**
-     * 构造一个 `Pair` 实例，封装两个指定的元素。
-     *
-     * @param first 作为第一个元素的值
-     * @param second 作为第二个元素的值
-     */
-    public Pair(A first, B second) {
-        this.first = first;
-        this.second = second;
-    }
+        /**
+         * 构造一个 `Pair` 实例，封装两个指定的元素。
+         *
+         * @param first  作为第一个元素的值
+         * @param second 作为第二个元素的值
+         */
+        public Pair(A first, B second)
+        {
+                this.first = first;
+                this.second = second;
+        }
 
-    /**
-     * 获取 `Pair` 中的第一个元素。
-     *
-     * @return `Pair` 中的第一个元素
-     */
-    public A first() {
-        return first;
-    }
+        public static <A, B> Pair<A, B> of(A first, B second)
+        {
+                return new Pair<>(first, second);
+        }
 
-    /**
-     * 获取 `Pair` 中的第二个元素。
-     *
-     * @return `Pair` 中的第二个元素
-     */
-    public B second() {
-        return second;
-    }
+        /**
+         * 获取 `Pair` 中的第一个元素。
+         *
+         * @return `Pair` 中的第一个元素
+         */
+        public A first()
+        {
+                return first;
+        }
 
-    public static <A, B> Pair<A, B> of(A first, B second) {
-        return new Pair<>(first, second);
-    }
+        /**
+         * 获取 `Pair` 中的第二个元素。
+         *
+         * @return `Pair` 中的第二个元素
+         */
+        public B second()
+        {
+                return second;
+        }
 
-    /**
-     * 计算 `Pair` 对象的哈希值，基于封装的 `Tuple` 实例。
-     *
-     * @return `Pair` 的哈希值
-     */
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
+        /**
+         * 计算 `Pair` 对象的哈希值，基于封装的 `Tuple` 实例。
+         *
+         * @return `Pair` 的哈希值
+         */
+        @Override
+        public int hashCode()
+        {
+                return super.hashCode();
+        }
 
-    /**
-     * 判断当前 `Pair` 是否与指定的另一个 `Pair` 相等。
-     * 通过比较两个 `Pair` 中封装的 `Tuple` 实例来判断。
-     *
-     * @param pair 要比较的 `Pair` 对象
-     * @return 如果两个 `Pair` 相等，返回 `true`，否则返回 `false`
-     */
-    public boolean equals(Pair<A, B> pair) {
-        return anyeq(first, pair.first) && anyeq(second, pair.second);
-    }
+        /**
+         * 判断当前 `Pair` 是否与指定的另一个 `Pair` 相等。
+         * 通过比较两个 `Pair` 中封装的 `Tuple` 实例来判断。
+         *
+         * @param pair 要比较的 `Pair` 对象
+         * @return 如果两个 `Pair` 相等，返回 `true`，否则返回 `false`
+         */
+        public boolean equals(Pair<A, B> pair)
+        {
+                return anyeq(first, pair.first) && anyeq(second, pair.second);
+        }
 
 }

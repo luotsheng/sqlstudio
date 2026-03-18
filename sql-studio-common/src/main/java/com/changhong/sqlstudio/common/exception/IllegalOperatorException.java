@@ -25,43 +25,48 @@ package com.changhong.sqlstudio.common.exception;
  * 用户尝试执行不被允许的操作或违反了操作的规则。
  * </p>
  */
-public class IllegalOperatorException extends SystemRuntimeException {
+public class IllegalOperatorException extends SystemRuntimeException
+{
 
-    /**
-     * 默认构造函数
-     */
-    public IllegalOperatorException() {
-    }
+        /**
+         * 默认构造函数
+         */
+        public IllegalOperatorException()
+        {
+        }
 
-    /**
-     * 使用指定的异常作为原因构造一个新的 IllegalOperatorException。
-     *
-     * @param e 异常原因
-     */
-    public IllegalOperatorException(Throwable e) {
-        super(e);
-    }
+        /**
+         * 使用指定的异常作为原因构造一个新的 IllegalOperatorException。
+         *
+         * @param e 异常原因
+         */
+        public IllegalOperatorException(Throwable e)
+        {
+                super(e);
+        }
 
-    /**
-     * 使用指定的格式化信息和参数构造一个新的 IllegalOperatorException。
-     *
-     * @param fmt  格式化字符串
-     * @param args 格式化参数
-     */
-    public IllegalOperatorException(String fmt, Object... args) {
-        super(fmt, args);
-    }
+        /**
+         * 使用指定的格式化信息和参数构造一个新的 IllegalOperatorException。
+         *
+         * @param fmt  格式化字符串
+         * @param args 格式化参数
+         */
+        public IllegalOperatorException(String fmt, Object... args)
+        {
+                super(fmt, args);
+        }
 
-    /**
-     * 使用指定的格式化信息、异常原因和参数构造一个新的 IllegalOperatorException。
-     *
-     * @param fmt  格式化字符串
-     * @param e    异常原因
-     * @param args 格式化参数
-     */
-    public IllegalOperatorException(String fmt, Throwable e, Object... args) {
-        super(fmt, e, args);
-    }
+        /**
+         * 使用指定的格式化信息、异常原因和参数构造一个新的 IllegalOperatorException。
+         *
+         * @param fmt  格式化字符串
+         * @param e    异常原因
+         * @param args 格式化参数
+         */
+        public IllegalOperatorException(String fmt, Throwable e, Object... args)
+        {
+                super(fmt, e, args);
+        }
 
 }
 

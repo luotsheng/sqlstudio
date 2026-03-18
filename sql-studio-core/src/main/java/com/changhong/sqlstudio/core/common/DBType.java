@@ -6,30 +6,32 @@ package com.changhong.sqlstudio.core.common;
  * @author Luo Tiansheng
  * @since 2026-03-17
  */
-public enum DBType {
+public enum DBType
+{
+        MySQL("MySQL", "mysql"),
+        PostgreSQL("PostgreSQL", "postgresql"),
+        Oracle("Oracle", "oracle"),
+        SQL_SERVER("SQL Server", "sqlserver"),
+        SQLite("SQLite", "sqlite"),
+        DM("达梦数据库", "dm"),
+        ;
 
-    MySQL("MySQL", "mysql"),
-    PostgreSQL("PostgreSQL", "postgresql"),
-    Oracle("Oracle", "oracle"),
-    SQL_SERVER("SQL Server", "sqlserver"),
-    SQLite("SQLite", "sqlite"),
-    DM("达梦数据库", "dm"),
-    ;
+        private final String name;
+        private final String jdbcType;
 
-    private final String name;
-    private final String jdbcType;
+        DBType(String name, String jdbcType)
+        {
+                this.name = name;
+                this.jdbcType = jdbcType;
+        }
 
-    DBType(String name, String jdbcType) {
-        this.name = name;
-        this.jdbcType = jdbcType;
-    }
+        public String getName()
+        {
+                return name;
+        }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getJdbcType() {
-        return jdbcType;
-    }
-
+        public String getJdbcType()
+        {
+                return jdbcType;
+        }
 }

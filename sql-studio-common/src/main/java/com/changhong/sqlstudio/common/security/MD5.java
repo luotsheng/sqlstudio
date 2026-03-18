@@ -10,74 +10,75 @@ import com.changhong.sqlstudio.common.security.codec.MD5Codec;
  * 返回不同格式的 MD5 哈希值。
  *
  * @author Luo Tiansheng
- * @since 1.0
  * @see MD5Codec 实现类示例
+ * @since 1.0
  */
-public interface MD5 {
+public interface MD5
+{
 
-    /**
-     * #brief: 生成字符串的 32 位小写 MD5 哈希值
-     *
-     * @param source 要进行 MD5 哈希的字符串
-     * @return 32 位小写 MD5 哈希值
-     */
-    String lower32(String source);
+        /**
+         * #brief: 生成字符串的 32 位小写 MD5 哈希值
+         *
+         * @param source 要进行 MD5 哈希的字符串
+         * @return 32 位小写 MD5 哈希值
+         */
+        String lower32(String source);
 
-    /**
-     * #brief: 生成字节数组的 32 位小写 MD5 哈希值
-     *
-     * @param b 要进行 MD5 哈希的字节数组
-     * @return 32 位小写 MD5 哈希值
-     */
-    String lower32(byte[] b);
+        /**
+         * #brief: 生成字节数组的 32 位小写 MD5 哈希值
+         *
+         * @param b 要进行 MD5 哈希的字节数组
+         * @return 32 位小写 MD5 哈希值
+         */
+        String lower32(byte[] b);
 
-    /**
-     * #brief: 生成字符串的 16 位小写 MD5 哈希值
-     *
-     * @param source 要进行 MD5 哈希的字符串
-     * @return 16 位小写 MD5 哈希值
-     */
-    String lower16(String source);
+        /**
+         * #brief: 生成字符串的 16 位小写 MD5 哈希值
+         *
+         * @param source 要进行 MD5 哈希的字符串
+         * @return 16 位小写 MD5 哈希值
+         */
+        String lower16(String source);
 
-    /**
-     * #brief: 生成字节数组的 16 位小写 MD5 哈希值
-     *
-     * @param b 要进行 MD5 哈希的字节数组
-     * @return 16 位小写 MD5 哈希值
-     */
-    String lower16(byte[] b);
+        /**
+         * #brief: 生成字节数组的 16 位小写 MD5 哈希值
+         *
+         * @param b 要进行 MD5 哈希的字节数组
+         * @return 16 位小写 MD5 哈希值
+         */
+        String lower16(byte[] b);
 
-    /**
-     * #brief: 生成字符串的 32 位大写 MD5 哈希值
-     *
-     * @param source 要进行 MD5 哈希的字符串
-     * @return 32 位大写 MD5 哈希值
-     */
-    String upper32(String source);
+        /**
+         * #brief: 生成字符串的 32 位大写 MD5 哈希值
+         *
+         * @param source 要进行 MD5 哈希的字符串
+         * @return 32 位大写 MD5 哈希值
+         */
+        String upper32(String source);
 
-    /**
-     * #brief: 生成字节数组的 32 位大写 MD5 哈希值
-     *
-     * @param b 要进行 MD5 哈希的字节数组
-     * @return 32 位大写 MD5 哈希值
-     */
-    String upper32(byte[] b);
+        /**
+         * #brief: 生成字节数组的 32 位大写 MD5 哈希值
+         *
+         * @param b 要进行 MD5 哈希的字节数组
+         * @return 32 位大写 MD5 哈希值
+         */
+        String upper32(byte[] b);
 
-    /**
-     * #brief: 生成字符串的 16 位大写 MD5 哈希值
-     *
-     * @param source 要进行 MD5 哈希的字符串
-     * @return 16 位大写 MD5 哈希值
-     */
-    String upper16(String source);
+        /**
+         * #brief: 生成字符串的 16 位大写 MD5 哈希值
+         *
+         * @param source 要进行 MD5 哈希的字符串
+         * @return 16 位大写 MD5 哈希值
+         */
+        String upper16(String source);
 
-    /**
-     * #brief: 生成字节数组的 16 位大写 MD5 哈希值
-     *
-     * @param b 要进行 MD5 哈希的字节数组
-     * @return 16 位大写 MD5 哈希值
-     */
-    String upper16(byte[] b);
+        /**
+         * #brief: 生成字节数组的 16 位大写 MD5 哈希值
+         *
+         * @param b 要进行 MD5 哈希的字节数组
+         * @return 16 位大写 MD5 哈希值
+         */
+        String upper16(byte[] b);
 
 }
 

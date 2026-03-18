@@ -1,8 +1,8 @@
 package com.changhong.sqlstudio.application.widgets;
 
 import com.changhong.sqlstudio.application.Launcher;
-import com.changhong.sqlstudio.application.treenode.NNDatabase;
-import com.changhong.sqlstudio.application.treenode.NNTable;
+import com.changhong.sqlstudio.application.treenode.DBDatabase;
+import com.changhong.sqlstudio.application.treenode.DBTable;
 import com.changhong.sqlstudio.core.event.EventBus;
 import com.changhong.sqlstudio.core.event.notify.RuntimeErrorEvent;
 import com.changhong.sqlstudio.driver.QueryResultSet;
@@ -32,14 +32,14 @@ import java.util.*;
 public class GridViewer extends Composite
 {
         private final Grid grid;
-        private final NNTable tableNode;
+        private final DBTable tableNode;
         private final GridEditor gridEditor;
 
         private int start = 0;
         private int count = 50;
         private QueryResultSet queryResultSet;
 
-        public GridViewer(Composite parent, NNTable tableNode)
+        public GridViewer(Composite parent, DBTable tableNode)
         {
                 super(parent, SWT.NONE);
                 setLayout(new FillLayout());
@@ -235,7 +235,7 @@ public class GridViewer extends Composite
         {
                 grid.setRedraw(false);
 
-                NNDatabase db = tableNode.db();
+                DBDatabase db = tableNode.db();
 
                 try {
                         queryResultSet = db.queryResultSet(tableNode.name(), start, count);

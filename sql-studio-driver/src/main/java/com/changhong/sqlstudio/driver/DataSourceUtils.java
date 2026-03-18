@@ -7,14 +7,16 @@ package com.changhong.sqlstudio.driver;
  * @since 2026/3/17
  */
 @SuppressWarnings("unused")
-public class DataSourceUtils {
+public class DataSourceUtils
+{
 
-    public static Throwable testConnect(DataSourceConfig config) {
-        try (MySqlDataSource ds = new MySqlDataSource(config)) {
-            return null;
-        } catch (Exception e) {
-            return e.getCause();
+        public static Throwable testConnect(DataSourceConfig config)
+        {
+                try (MySqlDataSource ds = new MySqlDataSource(config)) {
+                        return null;
+                } catch (Exception e) {
+                        return e.getCause();
+                }
         }
-    }
 
 }

@@ -47,268 +47,280 @@ package com.changhong.sqlstudio.common.utils;
  * @author Luo Tiansheng
  * @since 1.8
  */
-public class ArrayUtils {
+public class ArrayUtils
+{
 
-    /**
-     * 数据拷贝时对长度进行截断，使得数据可以像指针一样，在某个段落中前后操作
-     * 数据。
-     *
-     * @param size 数组大小
-     * @param off  偏移量
-     * @param len  长度
-     * @return 返回截断后的数据长度
-     */
-    public static int truncate(int size, int off, int len) {
-        return len <= 0 ? (size - off) - Math.abs(len) : len;
-    }
+        /**
+         * 数据拷贝时对长度进行截断，使得数据可以像指针一样，在某个段落中前后操作
+         * 数据。
+         *
+         * @param size 数组大小
+         * @param off  偏移量
+         * @param len  长度
+         * @return 返回截断后的数据长度
+         */
+        public static int truncate(int size, int off, int len)
+        {
+                return len <= 0 ? (size - off) - Math.abs(len) : len;
+        }
 
-    /**
-     * #brief：检查数组偏移量和长度是否在数组大小范围内。
-     *
-     * <p>该方法用于检查偏移量 {@code off} 和长度 {@code len} 的和是否超出数组的大小 {@code size}。
-     * 如果超出范围，则会抛出异常，提示索引越界的错误。
-     *
-     * <p>该方法通常用于确保在进行数组操作时不会发生越界，保证偏移量和长度合法。
-     *
-     * @param off  偏移量，从该位置开始进行数组操作
-     * @param len  要操作的长度
-     * @param size 数组的总大小，用于判断是否越界
-     *
-     * @throws IllegalArgumentException 如果偏移量和长度的和超出数组大小范围
-     */
-    public static void checkIndexSize(int off, int len, int size) {
-        Assert.isTrue(!((off + len ) > size), "Array offset and size out of index: %s", size);
-    }
+        /**
+         * #brief：检查数组偏移量和长度是否在数组大小范围内。
+         *
+         * <p>该方法用于检查偏移量 {@code off} 和长度 {@code len} 的和是否超出数组的大小 {@code size}。
+         * 如果超出范围，则会抛出异常，提示索引越界的错误。
+         *
+         * <p>该方法通常用于确保在进行数组操作时不会发生越界，保证偏移量和长度合法。
+         *
+         * @param off  偏移量，从该位置开始进行数组操作
+         * @param len  要操作的长度
+         * @param size 数组的总大小，用于判断是否越界
+         * @throws IllegalArgumentException 如果偏移量和长度的和超出数组大小范围
+         */
+        public static void checkIndexSize(int off, int len, int size)
+        {
+                Assert.isTrue(!((off + len) > size), "Array offset and size out of index: %s", size);
+        }
 
-    /**
-     * #brief：拷贝数组中的数据到另一个新实例化的数组中
-     *
-     * <p>将数组总的数据拷贝到一个新的数组中，数组的长度介于 {@code original.length} 到
-     * {@code -original.length} 之间。可以通过数组切片的形式拷贝数组。当 {@code len} 参
-     * 数为负数时，那么则表示 {@code len=original.length - len} 的新数组长度。也就是从数组
-     * 最后开始计算。如果 {@code len} 是 {@code 0} 则表示 从 original[off] - original[original.length]
-     * 之间的数据。
-     *
-     * <p>该函数有很多相似函数，支持泛型对象拷贝。
-     *
-     * @param original 原数组对象，将从这个数组对象中拷贝数据到新的数组对象中。
-     * @param off 偏移量，拷贝起始位置将从 {@code origin[off]} 开始算。
-     * @param len 拷贝长度
-     * @return 拷贝后的新数组对象。
-     */
-    public static byte[] copyOf(byte[] original, int off, int len) {
-        len = truncate(original.length, off, len);
-        byte[] ret = new byte[len];
-        System.arraycopy(original, off, ret, 0, len);
-        return ret;
-    }
+        /**
+         * #brief：拷贝数组中的数据到另一个新实例化的数组中
+         *
+         * <p>将数组总的数据拷贝到一个新的数组中，数组的长度介于 {@code original.length} 到
+         * {@code -original.length} 之间。可以通过数组切片的形式拷贝数组。当 {@code len} 参
+         * 数为负数时，那么则表示 {@code len=original.length - len} 的新数组长度。也就是从数组
+         * 最后开始计算。如果 {@code len} 是 {@code 0} 则表示 从 original[off] - original[original.length]
+         * 之间的数据。
+         *
+         * <p>该函数有很多相似函数，支持泛型对象拷贝。
+         *
+         * @param original 原数组对象，将从这个数组对象中拷贝数据到新的数组对象中。
+         * @param off      偏移量，拷贝起始位置将从 {@code origin[off]} 开始算。
+         * @param len      拷贝长度
+         * @return 拷贝后的新数组对象。
+         */
+        public static byte[] copyOf(byte[] original, int off, int len)
+        {
+                len = truncate(original.length, off, len);
+                byte[] ret = new byte[len];
+                System.arraycopy(original, off, ret, 0, len);
+                return ret;
+        }
 
-    /**
-     * #brief：拷贝数组中的数据到另一个新实例化的数组中
-     *
-     * <p>将数组总的数据拷贝到一个新的数组中，数组的长度介于 {@code original.length} 到
-     * {@code -original.length} 之间。可以通过数组切片的形式拷贝数组。当 {@code len} 参
-     * 数为负数时，那么则表示 {@code len=original.length - len} 的新数组长度。也就是从数组
-     * 最后开始计算。如果 {@code len} 是 {@code 0} 则表示 从 original[off] - original[original.length]
-     * 之间的数据。
-     *
-     * <p>该函数有很多相似函数，支持泛型对象拷贝。
-     *
-     * @param original 原数组对象，将从这个数组对象中拷贝数据到新的数组对象中。
-     * @param off 偏移量，拷贝起始位置将从 {@code origin[off]} 开始算。
-     * @param len 拷贝长度
-     * @return 拷贝后的新数组对象。
-     */
-    public static char[] copyOf(char[] original, int off, int len) {
-        len = truncate(original.length, off, len);
-        char[] ret = new char[len];
-        System.arraycopy(original, off, ret, 0, len);
-        return ret;
-    }
+        /**
+         * #brief：拷贝数组中的数据到另一个新实例化的数组中
+         *
+         * <p>将数组总的数据拷贝到一个新的数组中，数组的长度介于 {@code original.length} 到
+         * {@code -original.length} 之间。可以通过数组切片的形式拷贝数组。当 {@code len} 参
+         * 数为负数时，那么则表示 {@code len=original.length - len} 的新数组长度。也就是从数组
+         * 最后开始计算。如果 {@code len} 是 {@code 0} 则表示 从 original[off] - original[original.length]
+         * 之间的数据。
+         *
+         * <p>该函数有很多相似函数，支持泛型对象拷贝。
+         *
+         * @param original 原数组对象，将从这个数组对象中拷贝数据到新的数组对象中。
+         * @param off      偏移量，拷贝起始位置将从 {@code origin[off]} 开始算。
+         * @param len      拷贝长度
+         * @return 拷贝后的新数组对象。
+         */
+        public static char[] copyOf(char[] original, int off, int len)
+        {
+                len = truncate(original.length, off, len);
+                char[] ret = new char[len];
+                System.arraycopy(original, off, ret, 0, len);
+                return ret;
+        }
 
-    /**
-     * #brief：拷贝数组中的数据到另一个新实例化的数组中
-     *
-     * <p>将数组总的数据拷贝到一个新的数组中，数组的长度介于 {@code original.length} 到
-     * {@code -original.length} 之间。可以通过数组切片的形式拷贝数组。当 {@code len} 参
-     * 数为负数时，那么则表示 {@code len=original.length - len} 的新数组长度。也就是从数组
-     * 最后开始计算。如果 {@code len} 是 {@code 0} 则表示 从 original[off] - original[original.length]
-     * 之间的数据。
-     *
-     * <p>该函数有很多相似函数，支持泛型对象拷贝。
-     *
-     * @param original 原数组对象，将从这个数组对象中拷贝数据到新的数组对象中。
-     * @param off 偏移量，拷贝起始位置将从 {@code origin[off]} 开始算。
-     * @param len 拷贝长度
-     * @return 拷贝后的新数组对象。
-     */
-    public static short[] copyOf(short[] original, int off, int len) {
-        len = truncate(original.length, off, len);
-        short[] ret = new short[len];
-        System.arraycopy(original, off, ret, 0, len);
-        return ret;
-    }
+        /**
+         * #brief：拷贝数组中的数据到另一个新实例化的数组中
+         *
+         * <p>将数组总的数据拷贝到一个新的数组中，数组的长度介于 {@code original.length} 到
+         * {@code -original.length} 之间。可以通过数组切片的形式拷贝数组。当 {@code len} 参
+         * 数为负数时，那么则表示 {@code len=original.length - len} 的新数组长度。也就是从数组
+         * 最后开始计算。如果 {@code len} 是 {@code 0} 则表示 从 original[off] - original[original.length]
+         * 之间的数据。
+         *
+         * <p>该函数有很多相似函数，支持泛型对象拷贝。
+         *
+         * @param original 原数组对象，将从这个数组对象中拷贝数据到新的数组对象中。
+         * @param off      偏移量，拷贝起始位置将从 {@code origin[off]} 开始算。
+         * @param len      拷贝长度
+         * @return 拷贝后的新数组对象。
+         */
+        public static short[] copyOf(short[] original, int off, int len)
+        {
+                len = truncate(original.length, off, len);
+                short[] ret = new short[len];
+                System.arraycopy(original, off, ret, 0, len);
+                return ret;
+        }
 
-    /**
-     * #brief：拷贝数组中的数据到另一个新实例化的数组中
-     *
-     * <p>将数组总的数据拷贝到一个新的数组中，数组的长度介于 {@code original.length} 到
-     * {@code -original.length} 之间。可以通过数组切片的形式拷贝数组。当 {@code len} 参
-     * 数为负数时，那么则表示 {@code len=original.length - len} 的新数组长度。也就是从数组
-     * 最后开始计算。如果 {@code len} 是 {@code 0} 则表示 从 original[off] - original[original.length]
-     * 之间的数据。
-     *
-     * <p>该函数有很多相似函数，支持泛型对象拷贝。
-     *
-     * @param original 原数组对象，将从这个数组对象中拷贝数据到新的数组对象中。
-     * @param off 偏移量，拷贝起始位置将从 {@code origin[off]} 开始算。
-     * @param len 拷贝长度
-     * @return 拷贝后的新数组对象。
-     */
-    public static int[] copyOf(int[] original, int off, int len) {
-        len = truncate(original.length, off, len);
-        int[] ret = new int[len];
-        System.arraycopy(original, off, ret, 0, len);
-        return ret;
-    }
+        /**
+         * #brief：拷贝数组中的数据到另一个新实例化的数组中
+         *
+         * <p>将数组总的数据拷贝到一个新的数组中，数组的长度介于 {@code original.length} 到
+         * {@code -original.length} 之间。可以通过数组切片的形式拷贝数组。当 {@code len} 参
+         * 数为负数时，那么则表示 {@code len=original.length - len} 的新数组长度。也就是从数组
+         * 最后开始计算。如果 {@code len} 是 {@code 0} 则表示 从 original[off] - original[original.length]
+         * 之间的数据。
+         *
+         * <p>该函数有很多相似函数，支持泛型对象拷贝。
+         *
+         * @param original 原数组对象，将从这个数组对象中拷贝数据到新的数组对象中。
+         * @param off      偏移量，拷贝起始位置将从 {@code origin[off]} 开始算。
+         * @param len      拷贝长度
+         * @return 拷贝后的新数组对象。
+         */
+        public static int[] copyOf(int[] original, int off, int len)
+        {
+                len = truncate(original.length, off, len);
+                int[] ret = new int[len];
+                System.arraycopy(original, off, ret, 0, len);
+                return ret;
+        }
 
-    /**
-     * #brief：拷贝数组中的数据到另一个新实例化的数组中
-     *
-     * <p>将数组总的数据拷贝到一个新的数组中，数组的长度介于 {@code original.length} 到
-     * {@code -original.length} 之间。可以通过数组切片的形式拷贝数组。当 {@code len} 参
-     * 数为负数时，那么则表示 {@code len=original.length - len} 的新数组长度。也就是从数组
-     * 最后开始计算。如果 {@code len} 是 {@code 0} 则表示 从 original[off] - original[original.length]
-     * 之间的数据。
-     *
-     * <p>该函数有很多相似函数，支持泛型对象拷贝。
-     *
-     * @param original 原数组对象，将从这个数组对象中拷贝数据到新的数组对象中。
-     * @param off 偏移量，拷贝起始位置将从 {@code origin[off]} 开始算。
-     * @param len 拷贝长度
-     * @return 拷贝后的新数组对象。
-     */
-    public static long[] copyOf(long[] original, int off, int len) {
-        len = truncate(original.length, off, len);
-        long[] ret = new long[len];
-        System.arraycopy(original, off, ret, 0, len);
-        return ret;
-    }
+        /**
+         * #brief：拷贝数组中的数据到另一个新实例化的数组中
+         *
+         * <p>将数组总的数据拷贝到一个新的数组中，数组的长度介于 {@code original.length} 到
+         * {@code -original.length} 之间。可以通过数组切片的形式拷贝数组。当 {@code len} 参
+         * 数为负数时，那么则表示 {@code len=original.length - len} 的新数组长度。也就是从数组
+         * 最后开始计算。如果 {@code len} 是 {@code 0} 则表示 从 original[off] - original[original.length]
+         * 之间的数据。
+         *
+         * <p>该函数有很多相似函数，支持泛型对象拷贝。
+         *
+         * @param original 原数组对象，将从这个数组对象中拷贝数据到新的数组对象中。
+         * @param off      偏移量，拷贝起始位置将从 {@code origin[off]} 开始算。
+         * @param len      拷贝长度
+         * @return 拷贝后的新数组对象。
+         */
+        public static long[] copyOf(long[] original, int off, int len)
+        {
+                len = truncate(original.length, off, len);
+                long[] ret = new long[len];
+                System.arraycopy(original, off, ret, 0, len);
+                return ret;
+        }
 
-    /**
-     * #brief：拷贝数组中的数据到另一个新实例化的数组中
-     *
-     * <p>将数组总的数据拷贝到一个新的数组中，数组的长度介于 {@code original.length} 到
-     * {@code -original.length} 之间。可以通过数组切片的形式拷贝数组。当 {@code len} 参
-     * 数为负数时，那么则表示 {@code len=original.length - len} 的新数组长度。也就是从数组
-     * 最后开始计算。如果 {@code len} 是 {@code 0} 则表示 从 original[off] - original[original.length]
-     * 之间的数据。
-     *
-     * <p>该函数有很多相似函数，支持泛型对象拷贝。
-     *
-     * @param original 原数组对象，将从这个数组对象中拷贝数据到新的数组对象中。
-     * @param off 偏移量，拷贝起始位置将从 {@code origin[off]} 开始算。
-     * @param len 拷贝长度
-     * @return 拷贝后的新数组对象。
-     */
-    public static float[] copyOf(float[] original, int off, int len) {
-        len = truncate(original.length, off, len);
-        float[] ret = new float[len];
-        System.arraycopy(original, off, ret, 0, len);
-        return ret;
-    }
+        /**
+         * #brief：拷贝数组中的数据到另一个新实例化的数组中
+         *
+         * <p>将数组总的数据拷贝到一个新的数组中，数组的长度介于 {@code original.length} 到
+         * {@code -original.length} 之间。可以通过数组切片的形式拷贝数组。当 {@code len} 参
+         * 数为负数时，那么则表示 {@code len=original.length - len} 的新数组长度。也就是从数组
+         * 最后开始计算。如果 {@code len} 是 {@code 0} 则表示 从 original[off] - original[original.length]
+         * 之间的数据。
+         *
+         * <p>该函数有很多相似函数，支持泛型对象拷贝。
+         *
+         * @param original 原数组对象，将从这个数组对象中拷贝数据到新的数组对象中。
+         * @param off      偏移量，拷贝起始位置将从 {@code origin[off]} 开始算。
+         * @param len      拷贝长度
+         * @return 拷贝后的新数组对象。
+         */
+        public static float[] copyOf(float[] original, int off, int len)
+        {
+                len = truncate(original.length, off, len);
+                float[] ret = new float[len];
+                System.arraycopy(original, off, ret, 0, len);
+                return ret;
+        }
 
-    /**
-     * #brief：拷贝数组中的数据到另一个新实例化的数组中
-     *
-     * <p>将数组总的数据拷贝到一个新的数组中，数组的长度介于 {@code original.length} 到
-     * {@code -original.length} 之间。可以通过数组切片的形式拷贝数组。当 {@code len} 参
-     * 数为负数时，那么则表示 {@code len=original.length - len} 的新数组长度。也就是从数组
-     * 最后开始计算。如果 {@code len} 是 {@code 0} 则表示 从 original[off] - original[original.length]
-     * 之间的数据。
-     *
-     * <p>该函数有很多相似函数，支持泛型对象拷贝。
-     *
-     * @param original 原数组对象，将从这个数组对象中拷贝数据到新的数组对象中。
-     * @param off 偏移量，拷贝起始位置将从 {@code origin[off]} 开始算。
-     * @param len 拷贝长度
-     * @return 拷贝后的新数组对象。
-     */
-    public static double[] copyOf(double[] original, int off, int len) {
-        len = truncate(original.length, off, len);
-        double[] ret = new double[len];
-        System.arraycopy(original, off, ret, 0, len);
-        return ret;
-    }
+        /**
+         * #brief：拷贝数组中的数据到另一个新实例化的数组中
+         *
+         * <p>将数组总的数据拷贝到一个新的数组中，数组的长度介于 {@code original.length} 到
+         * {@code -original.length} 之间。可以通过数组切片的形式拷贝数组。当 {@code len} 参
+         * 数为负数时，那么则表示 {@code len=original.length - len} 的新数组长度。也就是从数组
+         * 最后开始计算。如果 {@code len} 是 {@code 0} 则表示 从 original[off] - original[original.length]
+         * 之间的数据。
+         *
+         * <p>该函数有很多相似函数，支持泛型对象拷贝。
+         *
+         * @param original 原数组对象，将从这个数组对象中拷贝数据到新的数组对象中。
+         * @param off      偏移量，拷贝起始位置将从 {@code origin[off]} 开始算。
+         * @param len      拷贝长度
+         * @return 拷贝后的新数组对象。
+         */
+        public static double[] copyOf(double[] original, int off, int len)
+        {
+                len = truncate(original.length, off, len);
+                double[] ret = new double[len];
+                System.arraycopy(original, off, ret, 0, len);
+                return ret;
+        }
 
-    /**
-     * #brief：拷贝数组中的数据到另一个新实例化的数组中
-     *
-     * <p>将数组总的数据拷贝到一个新的数组中，数组的长度介于 {@code original.length} 到
-     * {@code -original.length} 之间。可以通过数组切片的形式拷贝数组。当 {@code len} 参
-     * 数为负数时，那么则表示 {@code len=original.length - len} 的新数组长度。也就是从数组
-     * 最后开始计算。如果 {@code len} 是 {@code 0} 则表示 从 original[off] - original[original.length]
-     * 之间的数据。
-     *
-     * <p>该函数有很多相似函数，支持泛型对象拷贝。
-     *
-     * @param original 原数组对象，将从这个数组对象中拷贝数据到新的数组对象中。
-     * @param off 偏移量，拷贝起始位置将从 {@code origin[off]} 开始算。
-     * @param len 拷贝长度
-     * @return 拷贝后的新数组对象。
-     */
-    public static boolean[] copyOf(boolean[] original, int off, int len) {
-        len = truncate(original.length, off, len);
-        boolean[] ret = new boolean[len];
-        System.arraycopy(original, off, ret, 0, len);
-        return ret;
-    }
+        /**
+         * #brief：拷贝数组中的数据到另一个新实例化的数组中
+         *
+         * <p>将数组总的数据拷贝到一个新的数组中，数组的长度介于 {@code original.length} 到
+         * {@code -original.length} 之间。可以通过数组切片的形式拷贝数组。当 {@code len} 参
+         * 数为负数时，那么则表示 {@code len=original.length - len} 的新数组长度。也就是从数组
+         * 最后开始计算。如果 {@code len} 是 {@code 0} 则表示 从 original[off] - original[original.length]
+         * 之间的数据。
+         *
+         * <p>该函数有很多相似函数，支持泛型对象拷贝。
+         *
+         * @param original 原数组对象，将从这个数组对象中拷贝数据到新的数组对象中。
+         * @param off      偏移量，拷贝起始位置将从 {@code origin[off]} 开始算。
+         * @param len      拷贝长度
+         * @return 拷贝后的新数组对象。
+         */
+        public static boolean[] copyOf(boolean[] original, int off, int len)
+        {
+                len = truncate(original.length, off, len);
+                boolean[] ret = new boolean[len];
+                System.arraycopy(original, off, ret, 0, len);
+                return ret;
+        }
 
-    /**
-     * #brief：拷贝数组中的数据到另一个新实例化的数组中
-     *
-     * <p>将数组总的数据拷贝到一个新的数组中，数组的长度介于 {@code original.length} 到
-     * {@code -original.length} 之间。可以通过数组切片的形式拷贝数组。当 {@code len} 参
-     * 数为负数时，那么则表示 {@code len=original.length - len} 的新数组长度。也就是从数组
-     * 最后开始计算。如果 {@code len} 是 {@code 0} 则表示 从 original[off] - original[original.length]
-     * 之间的数据。
-     *
-     * <p>该函数有很多相似函数，支持泛型对象拷贝。
-     *
-     * @param original 原数组对象，将从这个数组对象中拷贝数据到新的数组对象中。
-     * @param off 偏移量，拷贝起始位置将从 {@code origin[off]} 开始算。
-     * @param len 拷贝长度
-     * @return 拷贝后的新数组对象。
-     */
-    public static String[] copyOf(String[] original, int off, int len) {
-        len = truncate(original.length, off, len);
-        String[] ret = new String[len];
-        System.arraycopy(original, off, ret, 0, len);
-        return ret;
-    }
+        /**
+         * #brief：拷贝数组中的数据到另一个新实例化的数组中
+         *
+         * <p>将数组总的数据拷贝到一个新的数组中，数组的长度介于 {@code original.length} 到
+         * {@code -original.length} 之间。可以通过数组切片的形式拷贝数组。当 {@code len} 参
+         * 数为负数时，那么则表示 {@code len=original.length - len} 的新数组长度。也就是从数组
+         * 最后开始计算。如果 {@code len} 是 {@code 0} 则表示 从 original[off] - original[original.length]
+         * 之间的数据。
+         *
+         * <p>该函数有很多相似函数，支持泛型对象拷贝。
+         *
+         * @param original 原数组对象，将从这个数组对象中拷贝数据到新的数组对象中。
+         * @param off      偏移量，拷贝起始位置将从 {@code origin[off]} 开始算。
+         * @param len      拷贝长度
+         * @return 拷贝后的新数组对象。
+         */
+        public static String[] copyOf(String[] original, int off, int len)
+        {
+                len = truncate(original.length, off, len);
+                String[] ret = new String[len];
+                System.arraycopy(original, off, ret, 0, len);
+                return ret;
+        }
 
-    /**
-     * #brief：拷贝数组中的数据到另一个新实例化的数组中
-     *
-     * <p>将数组总的数据拷贝到一个新的数组中，数组的长度介于 {@code original.length} 到
-     * {@code -original.length} 之间。可以通过数组切片的形式拷贝数组。当 {@code len} 参
-     * 数为负数时，那么则表示 {@code len=original.length - len} 的新数组长度。也就是从数组
-     * 最后开始计算。如果 {@code len} 是 {@code 0} 则表示 从 original[off] - original[original.length]
-     * 之间的数据。
-     *
-     * <p>该函数有很多相似函数，支持泛型对象拷贝。
-     *
-     * @param original 原数组对象，将从这个数组对象中拷贝数据到新的数组对象中。
-     * @param off 偏移量，拷贝起始位置将从 {@code origin[off]} 开始算。
-     * @param len 拷贝长度
-     * @return 拷贝后的新数组对象。
-     */
-    public static Object[] copyOf(Object[] original, int off, int len) {
-        len = truncate(original.length, off, len);
-        Object[] ret = new Object[len];
-        System.arraycopy(original, off, ret, 0, len);
-        return ret;
-    }
+        /**
+         * #brief：拷贝数组中的数据到另一个新实例化的数组中
+         *
+         * <p>将数组总的数据拷贝到一个新的数组中，数组的长度介于 {@code original.length} 到
+         * {@code -original.length} 之间。可以通过数组切片的形式拷贝数组。当 {@code len} 参
+         * 数为负数时，那么则表示 {@code len=original.length - len} 的新数组长度。也就是从数组
+         * 最后开始计算。如果 {@code len} 是 {@code 0} 则表示 从 original[off] - original[original.length]
+         * 之间的数据。
+         *
+         * <p>该函数有很多相似函数，支持泛型对象拷贝。
+         *
+         * @param original 原数组对象，将从这个数组对象中拷贝数据到新的数组对象中。
+         * @param off      偏移量，拷贝起始位置将从 {@code origin[off]} 开始算。
+         * @param len      拷贝长度
+         * @return 拷贝后的新数组对象。
+         */
+        public static Object[] copyOf(Object[] original, int off, int len)
+        {
+                len = truncate(original.length, off, len);
+                Object[] ret = new Object[len];
+                System.arraycopy(original, off, ret, 0, len);
+                return ret;
+        }
 
 
 }

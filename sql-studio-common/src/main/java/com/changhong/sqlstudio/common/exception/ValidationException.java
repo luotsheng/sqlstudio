@@ -25,43 +25,48 @@ package com.changhong.sqlstudio.common.exception;
  *
  * <p>支持无参构造、异常包装及格式化错误消息，以便提供详细的错误信息。
  */
-public class ValidationException extends SystemRuntimeException {
+public class ValidationException extends SystemRuntimeException
+{
 
-    /**
-     * 无参构造，创建默认的验证异常。
-     */
-    public ValidationException() {
-    }
+        /**
+         * 无参构造，创建默认的验证异常。
+         */
+        public ValidationException()
+        {
+        }
 
-    /**
-     * 使用指定的异常作为原因创建验证异常。
-     *
-     * @param e 异常原因
-     */
-    public ValidationException(Throwable e) {
-        super(e);
-    }
+        /**
+         * 使用指定的异常作为原因创建验证异常。
+         *
+         * @param e 异常原因
+         */
+        public ValidationException(Throwable e)
+        {
+                super(e);
+        }
 
-    /**
-     * 使用格式化字符串创建验证异常。
-     *
-     * @param fmt  错误消息格式
-     * @param args 格式化参数
-     */
-    public ValidationException(String fmt, Object... args) {
-        super(fmt, args);
-    }
+        /**
+         * 使用格式化字符串创建验证异常。
+         *
+         * @param fmt  错误消息格式
+         * @param args 格式化参数
+         */
+        public ValidationException(String fmt, Object... args)
+        {
+                super(fmt, args);
+        }
 
-    /**
-     * 使用格式化字符串和异常原因创建验证异常。
-     *
-     * @param fmt  错误消息格式
-     * @param e    异常原因
-     * @param args 格式化参数
-     */
-    public ValidationException(String fmt, Throwable e, Object... args) {
-        super(fmt, e, args);
-    }
+        /**
+         * 使用格式化字符串和异常原因创建验证异常。
+         *
+         * @param fmt  错误消息格式
+         * @param e    异常原因
+         * @param args 格式化参数
+         */
+        public ValidationException(String fmt, Throwable e, Object... args)
+        {
+                super(fmt, e, args);
+        }
 
 }
 

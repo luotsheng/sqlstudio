@@ -35,43 +35,46 @@ import java.io.*;
  * @author Luo Tiansheng
  * @see SystemResource
  */
-public class ObjectSerializer {
+public class ObjectSerializer
+{
 
-    /**
-     * #brief: 将对象序列化并写入文件
-     *
-     * <p>将给定的对象序列化为字节流，并写入指定的文件中。若序列化过程中发生错误，则会记录
-     * 错误信息到日志中，方便后续调试和错误排查。
-     *
-     * @param object 要序列化的对象
-     * @param systemResource 要写入的文件
-     */
-    public static void serialize(Object object, SystemResource systemResource) {
-        try (FileOutputStream FileOutputStream = systemResource.openOutputStream();
-             ObjectOutputStream objectOutputStream = new ObjectOutputStream(FileOutputStream)) {
-            objectOutputStream.writeObject(object);
-        } catch (IOException e) {
-            throw new SerializationException(e);
+        /**
+         * #brief: 将对象序列化并写入文件
+         *
+         * <p>将给定的对象序列化为字节流，并写入指定的文件中。若序列化过程中发生错误，则会记录
+         * 错误信息到日志中，方便后续调试和错误排查。
+         *
+         * @param object         要序列化的对象
+         * @param systemResource 要写入的文件
+         */
+        public static void serialize(Object object, SystemResource systemResource)
+        {
+                try (FileOutputStream FileOutputStream = systemResource.openOutputStream();
+                     ObjectOutputStream objectOutputStream = new ObjectOutputStream(FileOutputStream)) {
+                        objectOutputStream.writeObject(object);
+                } catch (IOException e) {
+                        throw new SerializationException(e);
+                }
         }
-    }
 
-    /**
-     * #brief: 从文件反序列化对象
-     *
-     * <p>从指定文件中读取字节流，并将其反序列化为对象。如果反序列化过程中出现错误，相关
-     * 错误信息将被记录，并抛出 DeserializeException，以便调用者进行处理。
-     *
-     * @param systemResource 要读取的文件
-     * @return 反序列化得到的对象
-     * @throws SerializationException 如果反序列化失败
-     */
-    public static Object deserialize(SystemResource systemResource) {
-        try (FileInputStream inputStream = systemResource.openInputStream();
-             ObjectInputStream objectInputStream = new ObjectInputStream(inputStream)) {
-            return objectInputStream.readObject();
-        } catch (Exception e) {
-            throw new SerializationException(e);
+        /**
+         * #brief: 从文件反序列化对象
+         *
+         * <p>从指定文件中读取字节流，并将其反序列化为对象。如果反序列化过程中出现错误，相关
+         * 错误信息将被记录，并抛出 DeserializeException，以便调用者进行处理。
+         *
+         * @param systemResource 要读取的文件
+         * @return 反序列化得到的对象
+         * @throws SerializationException 如果反序列化失败
+         */
+        public static Object deserialize(SystemResource systemResource)
+        {
+                try (FileInputStream inputStream = systemResource.openInputStream();
+                     ObjectInputStream objectInputStream = new ObjectInputStream(inputStream)) {
+                        return objectInputStream.readObject();
+                } catch (Exception e) {
+                        throw new SerializationException(e);
+                }
         }
-    }
 
 }

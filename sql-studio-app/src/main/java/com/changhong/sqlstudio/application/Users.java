@@ -23,65 +23,71 @@ import java.util.Map;
  * @since 2026/3/17
  */
 @SuppressWarnings("ResultOfMethodCallIgnored")
-public class Users {
+public class Users
+{
 
-    private static final String userHome = System.getProperty("user.home")
-            .replaceAll("\\\\", "/");
-    private static final String connectionSavePath = userHome + "/.sqlstudio/connections";
-    private static final File connectionDir = new File(connectionSavePath);
+        private static final String userHome = System.getProperty("user.home")
+                .replaceAll("\\\\", "/");
+        private static final String connectionSavePath = userHome + "/.sqlstudio/connections";
+        private static final File connectionDir = new File(connectionSavePath);
 
-    private static File getConnectionFile(String name) {
-        return new File(connectionSavePath + "/" + name);
-    }
-
-    public static void initialize() {
-        File file = new File(connectionSavePath);
-        if (!file.exists())
-            file.mkdirs();
-    }
-
-    public static boolean saveConnection(String name, ConnectionConfig config) {
-        File connectionFile = getConnectionFile(name);
-
-        if (!config.isSavePassword())
-            config.setPassword(null);
-
-        if (connectionFile.exists()) {
-            EventBus.publish(new RuntimeErrorEvent(new FileAlreadyExistsException(name + " - 名称已存在")));
-            return false;
+        private static File getConnectionFile(String name)
+        {
+                return new File(connectionSavePath + "/" + name);
         }
 
-        Captor.call(connectionFile::createNewFile);
-
-        try (FileOutputStream fileOutputStream = new FileOutputStream(connectionFile)) {
-            String serializeString = JSON.toJSONString(config);
-            fileOutputStream.write(serializeString.getBytes(StandardCharsets.UTF_8));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        public static void initialize()
+        {
+                File file = new File(connectionSavePath);
+                if (!file.exists())
+                        file.mkdirs();
         }
 
-        return true;
-    }
+        public static boolean saveConnection(String name, ConnectionConfig config)
+        {
+                File connectionFile = getConnectionFile(name);
 
-    public static Map<String, ConnectionConfig> getConnectionList() {
-        Map<String, ConnectionConfig> confs = new LinkedHashMap<>();
-        File[] files = connectionDir.listFiles();
+                if (!config.isSavePassword())
+                        config.setPassword(null);
 
-        if (files != null) {
-            for (File file : files) {
-                SystemResource systemResource = new SystemResource(file);
-                JSONObject obj = systemResource.toJSONObject();
-                if (obj == null)
-                    continue;
-                confs.put(systemResource.getName(), obj.toJavaObject(ConnectionConfig.class));
-            }
+                if (connectionFile.exists()) {
+                        EventBus.publish(new RuntimeErrorEvent(new FileAlreadyExistsException(name + " - 名称已存在")));
+                        return false;
+                }
+
+                Captor.call(connectionFile::createNewFile);
+
+                try (FileOutputStream fileOutputStream = new FileOutputStream(connectionFile)) {
+                        String serializeString = JSON.toJSONString(config);
+                        fileOutputStream.write(serializeString.getBytes(StandardCharsets.UTF_8));
+                } catch (IOException e) {
+                        throw new RuntimeException(e);
+                }
+
+                return true;
         }
 
-        return confs;
-    }
+        public static Map<String, ConnectionConfig> getConnectionList()
+        {
+                Map<String, ConnectionConfig> confs = new LinkedHashMap<>();
+                File[] files = connectionDir.listFiles();
 
-    public static boolean checkConnectionExists(String name) {
-        return getConnectionFile(name).exists();
-    }
+                if (files != null) {
+                        for (File file : files) {
+                                SystemResource systemResource = new SystemResource(file);
+                                JSONObject obj = systemResource.toJSONObject();
+                                if (obj == null)
+                                        continue;
+                                confs.put(systemResource.getName(), obj.toJavaObject(ConnectionConfig.class));
+                        }
+                }
+
+                return confs;
+        }
+
+        public static boolean checkConnectionExists(String name)
+        {
+                return getConnectionFile(name).exists();
+        }
 
 }

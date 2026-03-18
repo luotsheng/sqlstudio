@@ -48,65 +48,72 @@ import static com.changhong.sqlstudio.common.utils.Comparators.anyeq;
  * @author Luo Tiansheng
  */
 @SuppressWarnings("ClassCanBeRecord")
-public class Tuple<A, B, C> {
+public class Tuple<A, B, C>
+{
 
-    private final A first;
-    private final B second;
-    private final C third;
+        private final A first;
+        private final B second;
+        private final C third;
 
-    /**
-     * 构造一个包含三个元素的元组。
-     *
-     * @param first 第一个元素
-     * @param second 第二个元素
-     * @param third 第三个元素
-     */
-    public Tuple(A first, B second, C third) {
-        this.first = first;
-        this.second = second;
-        this.third = third;
-    }
+        /**
+         * 构造一个包含三个元素的元组。
+         *
+         * @param first  第一个元素
+         * @param second 第二个元素
+         * @param third  第三个元素
+         */
+        public Tuple(A first, B second, C third)
+        {
+                this.first = first;
+                this.second = second;
+                this.third = third;
+        }
 
-    /**
-     * 获取元组的第一个元素。
-     *
-     * @return 第一个元素
-     */
-    public A first() {
-        return first;
-    }
+        /**
+         * 获取元组的第一个元素。
+         *
+         * @return 第一个元素
+         */
+        public A first()
+        {
+                return first;
+        }
 
-    /**
-     * 获取元组的第二个元素。
-     *
-     * @return 第二个元素
-     */
-    public B second() {
-        return second;
-    }
+        /**
+         * 获取元组的第二个元素。
+         *
+         * @return 第二个元素
+         */
+        public B second()
+        {
+                return second;
+        }
 
-    /**
-     * 获取元组的第三个元素。
-     *
-     * @return 第三个元素
-     */
-    public C third() {
-        return third;
-    }
+        /**
+         * 获取元组的第三个元素。
+         *
+         * @return 第三个元素
+         */
+        public C third()
+        {
+                return third;
+        }
 
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
+        @Override
+        public int hashCode()
+        {
+                return super.hashCode();
+        }
 
-    /**
-     * 比较当前元组与另一个元组是否相等。
-     *
-     * @param tuple 要比较的元组
-     * @return 如果元组的三个元素都相等，则返回 `true`，否则返回 `false`
-     */
-    public boolean equals(Tuple<A, B, C> tuple) {
-        return anyeq(first, tuple.first) && anyeq(second, tuple.second) && anyeq(third, tuple.third);
-    }
+        /**
+         * 比较当前元组与另一个元组是否相等。
+         *
+         * @param tuple 要比较的元组
+         * @return 如果元组的三个元素都相等，则返回 `true`，否则返回 `false`
+         */
+        public boolean equals(Tuple<A, B, C> tuple)
+        {
+                return anyeq(first, tuple.first) && anyeq(second, tuple.second) && anyeq(third, tuple.third);
+        }
 
 }

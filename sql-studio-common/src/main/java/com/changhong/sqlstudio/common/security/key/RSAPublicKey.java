@@ -38,36 +38,43 @@ import static com.changhong.sqlstudio.common.io.IOUtils.strread;
 /**
  * @author Luo Tiansheng
  */
-public class RSAPublicKey extends AbstractKey {
+public class RSAPublicKey extends AbstractKey
+{
 
-    public RSAPublicKey(Key key) {
-        super(key);
-    }
+        public RSAPublicKey(Key key)
+        {
+                super(key);
+        }
 
-    public RSAPublicKey(byte[] encoded) {
-        super(encoded);
-    }
+        public RSAPublicKey(byte[] encoded)
+        {
+                super(encoded);
+        }
 
-    public PublicKey toPublicKey() {
-        return Captor.call(() -> {
-            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(getEncoded());
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            return keyFactory.generatePublic(keySpec);
-        });
-    }
+        public static RSAPublicKey fromKeyFile(String filepath)
+        {
+                SystemResource keyfile = new SystemResource(filepath);
+                return fromPEMFormat(strread(keyfile));
+        }
 
-    public static RSAPublicKey fromKeyFile(String filepath) {
-        SystemResource keyfile = new SystemResource(filepath);
-        return fromPEMFormat(strread(keyfile));
-    }
+        public static RSAPublicKey fromPEMFormat(String pem)
+        {
+                return new RSAPublicKey(decodePEMFormat(pem));
+        }
 
-    public static RSAPublicKey fromPEMFormat(String pem) {
-        return new RSAPublicKey(decodePEMFormat(pem));
-    }
+        public PublicKey toPublicKey()
+        {
+                return Captor.call(() -> {
+                        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(getEncoded());
+                        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+                        return keyFactory.generatePublic(keySpec);
+                });
+        }
 
-    @Override
-    public String toPEMFormat() {
-        return toPEMFormat0("PUBLIC KEY", getEncoded());
-    }
+        @Override
+        public String toPEMFormat()
+        {
+                return toPEMFormat0("PUBLIC KEY", getEncoded());
+        }
 
 }

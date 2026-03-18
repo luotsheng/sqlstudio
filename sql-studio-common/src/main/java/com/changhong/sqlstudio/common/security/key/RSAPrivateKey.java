@@ -38,36 +38,43 @@ import static com.changhong.sqlstudio.common.io.IOUtils.strread;
 /**
  * @author Luo Tiansheng
  */
-public class RSAPrivateKey extends AbstractKey {
+public class RSAPrivateKey extends AbstractKey
+{
 
-    public RSAPrivateKey(Key key) {
-        super(key);
-    }
+        public RSAPrivateKey(Key key)
+        {
+                super(key);
+        }
 
-    public RSAPrivateKey(byte[] encoded) {
-        super(encoded);
-    }
+        public RSAPrivateKey(byte[] encoded)
+        {
+                super(encoded);
+        }
 
-    public PrivateKey toPrivateKey() {
-        return Captor.call(() -> {
-            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(getEncoded());
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            return keyFactory.generatePrivate(keySpec);
-        });
-    }
+        public static RSAPrivateKey fromKeyFile(String filepath)
+        {
+                SystemResource keyfile = new SystemResource(filepath);
+                return fromPEMFormat(strread(keyfile));
+        }
 
-    public static RSAPrivateKey fromKeyFile(String filepath) {
-        SystemResource keyfile = new SystemResource(filepath);
-        return fromPEMFormat(strread(keyfile));
-    }
+        public static RSAPrivateKey fromPEMFormat(String pem)
+        {
+                return new RSAPrivateKey(decodePEMFormat(pem));
+        }
 
-    public static RSAPrivateKey fromPEMFormat(String pem) {
-        return new RSAPrivateKey(decodePEMFormat(pem));
-    }
+        public PrivateKey toPrivateKey()
+        {
+                return Captor.call(() -> {
+                        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(getEncoded());
+                        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+                        return keyFactory.generatePrivate(keySpec);
+                });
+        }
 
-    @Override
-    public String toPEMFormat() {
-        return toPEMFormat0("PRIVATE KEY", getEncoded());
-    }
+        @Override
+        public String toPEMFormat()
+        {
+                return toPEMFormat0("PRIVATE KEY", getEncoded());
+        }
 
 }

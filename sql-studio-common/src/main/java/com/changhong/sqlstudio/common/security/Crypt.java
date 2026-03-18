@@ -50,9 +50,10 @@ import com.changhong.sqlstudio.common.security.cipher.RSACipher;
  * @author Luo Tiansheng
  * @since 1.0
  */
-public final class Crypt {
+public final class Crypt
+{
 
-    public static final AES AES = new AESCipher();    // AES
-    public static final RSA RSA = new RSACipher();    // RSA
+        public static final AES AES = new AESCipher();    // AES
+        public static final RSA RSA = new RSACipher();    // RSA
 
 }

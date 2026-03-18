@@ -22,18 +22,18 @@ import java.util.Map;
 @SuppressWarnings({
         "FieldCanBeLocal",
 })
-public class NNDatabase
+public class DBDatabase
 {
         private final HikariDataSourceAdapter ds;
         private final TreeItem parent;
         private final String name;
+        private final Map<String, DBTable> tables = new LinkedHashMap<>();
         private boolean openFlag;
         private TreeItem item;
         private TreeItem tabelItem;
         private TreeItem queryItem;
-        private final Map<String, NNTable> tables = new LinkedHashMap<>();
 
-        public NNDatabase(HikariDataSourceAdapter ds, TreeItem parent, String name)
+        public DBDatabase(HikariDataSourceAdapter ds, TreeItem parent, String name)
         {
                 this.ds = ds;
                 this.parent = parent;
@@ -45,11 +45,12 @@ public class NNDatabase
                 item.setImage(Images.DATABASE_1);
         }
 
-        private void showTables() {
+        private void showTables()
+        {
                 try {
                         List<String> tableNames = ds.getTables(item.getText());
                         for (String tableName : tableNames)
-                                tables.put(tableName, new NNTable(tableName, this, tabelItem));
+                                tables.put(tableName, new DBTable(tableName, this, tabelItem));
                 } catch (SQLException e) {
                         EventBus.publish(new RuntimeErrorEvent(e));
                 }
@@ -80,7 +81,7 @@ public class NNDatabase
                 if (!openFlag)
                         return;
 
-                tables.values().forEach(NNTable::close);
+                tables.values().forEach(DBTable::close);
                 tabelItem.dispose();
                 queryItem.dispose();
         }
@@ -90,7 +91,8 @@ public class NNDatabase
                 return openFlag;
         }
 
-        public QueryResultSet queryResultSet(String tableName, int start, int count) throws SQLException {
+        public QueryResultSet queryResultSet(String tableName, int start, int count) throws SQLException
+        {
                 return ds.queryResultSet(name, tableName, start, count);
         }
 }

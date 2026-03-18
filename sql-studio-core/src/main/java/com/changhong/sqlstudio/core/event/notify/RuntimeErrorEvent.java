@@ -10,30 +10,36 @@ import com.changhong.sqlstudio.core.event.Event;
  * @author Luo Tiansheng
  * @since 2026/3/18
  */
-public class RuntimeErrorEvent implements Event {
+public class RuntimeErrorEvent implements Event
+{
 
-    private final String title;
-    private final Throwable e;
+        private final String title;
+        private final Throwable e;
 
-    public RuntimeErrorEvent(Throwable e) {
-        this(Cores.SQL_STUDIO_TITLE, e);
-    }
+        public RuntimeErrorEvent(Throwable e)
+        {
+                this(Cores.SQL_STUDIO_TITLE, e);
+        }
 
-    public RuntimeErrorEvent(String title, Throwable e) {
-        this.title = title;
-        this.e = e;
-    }
+        public RuntimeErrorEvent(String title, Throwable e)
+        {
+                this.title = title;
+                this.e = e;
+        }
 
-    public String getTitle() {
-        return title;
-    }
+        public String getTitle()
+        {
+                return title;
+        }
 
-    public Throwable getThrowable() {
-        return e;
-    }
+        public Throwable getThrowable()
+        {
+                return e;
+        }
 
-    public String getMessage() {
-        return e.getMessage();
-    }
+        public String getMessage()
+        {
+                return e.getMessage();
+        }
 
 }

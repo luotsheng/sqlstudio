@@ -57,122 +57,100 @@ import java.util.*;
  * 的实现类之一，所以它也可以使用 Lists 中的许多操作函数。
  *
  * @author Luo Tiansheng
- *
  * @see Set
  * @see HashSet
  * @see LinkedHashSet
  * @since 1.0
  */
-public class Sets {
+public class Sets
+{
 
-    /**
-     * 传入一个 {@link Set} 对象，拷贝参数 {@code a} 中的数据到新的 {@link HashSet} 对象中，数据拷贝
-     * 过去以后，修改原来的 {@link Set} 对象或修改新分配到对象，并不会影响两个对象之间的数据。
-     *
-     * @param a 需要拷贝的数据
-     * @return 拷贝后的新 {@link HashSet} 对象实例
-     */
-    public static <E> Set<E> copy(Set<E> a) {
-        return new HashSet<>(a);
-    }
+        /**
+         * 传入一个 {@link Set} 对象，拷贝参数 {@code a} 中的数据到新的 {@link HashSet} 对象中，数据拷贝
+         * 过去以后，修改原来的 {@link Set} 对象或修改新分配到对象，并不会影响两个对象之间的数据。
+         *
+         * @param a 需要拷贝的数据
+         * @return 拷贝后的新 {@link HashSet} 对象实例
+         */
+        public static <E> Set<E> copy(Set<E> a)
+        {
+                return new HashSet<>(a);
+        }
 
-    /**
-     * @return 分配一个空的 {@link HashSet} 集合对象实例。
-     */
-    public static <E> HashSet<E> newHashSet() {
-        return new HashSet<>();
-    }
+        /**
+         * @return 分配一个空的 {@link HashSet} 集合对象实例。
+         */
+        public static <E> HashSet<E> newHashSet()
+        {
+                return new HashSet<>();
+        }
 
-    /**
-     * 截取数组 {@code a} 通过 {@code off} 和 {@code len} 两个参数去截取，截取出来的新数组会
-     * 分配成一个可变的 {@link HashSet} 对象实例。
-     *
-     * @param a
-     *        泛型可变参数数组
-     *
-     * @param off
-     *        泛型数组开始的索引位置，偏移量。
-     *
-     * @param len
-     *        要截取的长度，这个长度范围应该在 <= {@code a}.length()。如果长度超出 {@code a} 数组
-     *        的大小，会抛出 {@link ArrayIndexOutOfBoundsException} 异常。
-     *
-     * @return 一个新的 {@link HashSet} 对象实例
-     *
-     * @throws NullPointerException
-     *         如果泛型参数为空值。
-     *
-     * @throws ArrayIndexOutOfBoundsException
-     *         如果 {@code len} 超出整个 {@code a} 数组大小的长度。
-     *
-     * @see #newHashSet(Collection)
-     */
-    @SuppressWarnings("unchecked")
-    public static <E> HashSet<E> newHashSet(E[] a, int off, int len) {
-        return (HashSet<E>) newHashSet(Arrays.asList(a, off, len));
-    }
+        /**
+         * 截取数组 {@code a} 通过 {@code off} 和 {@code len} 两个参数去截取，截取出来的新数组会
+         * 分配成一个可变的 {@link HashSet} 对象实例。
+         *
+         * @param a   泛型可变参数数组
+         * @param off 泛型数组开始的索引位置，偏移量。
+         * @param len 要截取的长度，这个长度范围应该在 <= {@code a}.length()。如果长度超出 {@code a} 数组
+         *            的大小，会抛出 {@link ArrayIndexOutOfBoundsException} 异常。
+         * @return 一个新的 {@link HashSet} 对象实例
+         * @throws NullPointerException           如果泛型参数为空值。
+         * @throws ArrayIndexOutOfBoundsException 如果 {@code len} 超出整个 {@code a} 数组大小的长度。
+         * @see #newHashSet(Collection)
+         */
+        @SuppressWarnings("unchecked")
+        public static <E> HashSet<E> newHashSet(E[] a, int off, int len)
+        {
+                return (HashSet<E>) newHashSet(Arrays.asList(a, off, len));
+        }
 
-    /**
-     * 通过传入的 {@link Collection} 实例去分配一个 {@link HashSet} 集合对象实例。{@code collection} 参数不能为空
-     * 否则会抛出 {@link NullPointerException} 异常。
-     *
-     * @param collection
-     *        实现了 {@link Collection} 接口的对象实例，如 {@link HashSet}、{@link LinkedList} 等
-     *        对象实例皆实现了 {@link Collection} 接口。
-     *
-     * @return 一个新的 {@link HashSet} 对象实例
-     *
-     * @throws NullPointerException
-     *         如果 {@code collection} 参数为空值
-     *
-     * @see HashSet#HashSet(Collection)
-     */
-    public static <E> HashSet<E> newHashSet(Collection<? extends E> collection) {
-        return new HashSet<>(collection);
-    }
+        /**
+         * 通过传入的 {@link Collection} 实例去分配一个 {@link HashSet} 集合对象实例。{@code collection} 参数不能为空
+         * 否则会抛出 {@link NullPointerException} 异常。
+         *
+         * @param collection 实现了 {@link Collection} 接口的对象实例，如 {@link HashSet}、{@link LinkedList} 等
+         *                   对象实例皆实现了 {@link Collection} 接口。
+         * @return 一个新的 {@link HashSet} 对象实例
+         * @throws NullPointerException 如果 {@code collection} 参数为空值
+         * @see HashSet#HashSet(Collection)
+         */
+        public static <E> HashSet<E> newHashSet(Collection<? extends E> collection)
+        {
+                return new HashSet<>(collection);
+        }
 
-    /**
-     * 合并两个实现了 {@link Collection} 接口的对象实例，通过传入顺序合并两个对象成一个新的 {@link HashSet} 对象
-     * 实例。两个 {@link Collection} 不能为空，否则会抛出 {@link NullPointerException} 异常。
-     *
-     * @param a
-     *        实现了 {@link Collection} 接口的对象实例，如 {@link HashSet}、{@link LinkedList} 等
-     *        对象实例皆实现了 {@link Collection} 接口。
+        /**
+         * 合并两个实现了 {@link Collection} 接口的对象实例，通过传入顺序合并两个对象成一个新的 {@link HashSet} 对象
+         * 实例。两个 {@link Collection} 不能为空，否则会抛出 {@link NullPointerException} 异常。
+         *
+         * @param a 实现了 {@link Collection} 接口的对象实例，如 {@link HashSet}、{@link LinkedList} 等
+         *          对象实例皆实现了 {@link Collection} 接口。
+         * @param b 另一个实现了 {@link Collection} 接口的对象的实例
+         * @return 一个新的 {@link HashSet} 对象实例
+         * @throws NullPointerException 如果 {@code a} 或者 {@code b} 参数为空值
+         * @see HashSet#HashSet(Collection)
+         */
+        public static <E> HashSet<E> newHashSet(Collection<? extends E> a, Collection<? extends E> b)
+        {
+                HashSet<E> ret = newHashSet();
+                ret.addAll(a);
+                ret.addAll(b);
+                return (HashSet<E>) ret;
+        }
 
-     * @param b
-     *        另一个实现了 {@link Collection} 接口的对象的实例
-     *
-     * @return 一个新的 {@link HashSet} 对象实例
-     *
-     * @throws NullPointerException
-     *         如果 {@code a} 或者 {@code b} 参数为空值
-     *
-     * @see HashSet#HashSet(Collection)
-     */
-    public static <E> HashSet<E> newHashSet(Collection<? extends E> a, Collection<? extends E> b) {
-        HashSet<E> ret = newHashSet();
-        ret.addAll(a);
-        ret.addAll(b);
-        return (HashSet<E>) ret;
-    }
-
-    /**
-     * 通过传入的泛型可变参数去分配一个 {@link HashSet} 集合对象实例。泛型可变参数不能为空
-     * 否则会抛出 {@link NullPointerException} 异常。
-     *
-     * @param a
-     *        泛型可变参数数组
-     *
-     * @return 一个新的 {@link HashSet} 对象实例
-     *
-     * @throws NullPointerException
-     *         如果泛型参数为空值
-     *
-     * @see #newHashSet(Collection)
-     */
-    @SafeVarargs
-    public static <E> HashSet<E> fromVarargs(E... a) {
-        return newHashSet(Arrays.asList(a));
-    }
+        /**
+         * 通过传入的泛型可变参数去分配一个 {@link HashSet} 集合对象实例。泛型可变参数不能为空
+         * 否则会抛出 {@link NullPointerException} 异常。
+         *
+         * @param a 泛型可变参数数组
+         * @return 一个新的 {@link HashSet} 对象实例
+         * @throws NullPointerException 如果泛型参数为空值
+         * @see #newHashSet(Collection)
+         */
+        @SafeVarargs
+        public static <E> HashSet<E> fromVarargs(E... a)
+        {
+                return newHashSet(Arrays.asList(a));
+        }
 
 }

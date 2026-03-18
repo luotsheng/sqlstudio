@@ -15,14 +15,15 @@ import org.eclipse.swt.widgets.TreeItem;
 @SuppressWarnings({
         "FieldCanBeLocal",
 })
-public class NNTable
+public class DBTable
 {
         private final String tableName;
         private final TreeItem parent;
         private final TreeItem item;
-        private final NNDatabase db;
+        private final DBDatabase db;
 
-        public NNTable(String tableName, NNDatabase db, TreeItem parent) {
+        public DBTable(String tableName, DBDatabase db, TreeItem parent)
+        {
                 this.tableName = tableName;
                 this.db = db;
                 this.parent = parent;
@@ -33,7 +34,8 @@ public class NNTable
                 item.setData(this);
         }
 
-        public void openDataTabelTab() {
+        public void openDataTabelTab()
+        {
                 EventBus.publish(new OpenDataTableTabEvent(this));
         }
 
@@ -42,11 +44,13 @@ public class NNTable
                 return tableName;
         }
 
-        public void close() {
+        public void close()
+        {
                 item.dispose();
         }
 
-        public NNDatabase db() {
+        public DBDatabase db()
+        {
                 return db;
         }
 

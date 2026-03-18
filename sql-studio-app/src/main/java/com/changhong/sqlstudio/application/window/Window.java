@@ -2,8 +2,8 @@ package com.changhong.sqlstudio.application.window;
 
 import com.changhong.sqlstudio.application.ui.AppMenuBar;
 import com.changhong.sqlstudio.application.ui.AppNavigator;
-import com.changhong.sqlstudio.application.ui.AppWorkbench;
 import com.changhong.sqlstudio.application.ui.AppToolBar;
+import com.changhong.sqlstudio.application.ui.AppWorkbench;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.GridData;
@@ -19,60 +19,62 @@ import org.eclipse.swt.widgets.Shell;
         "FieldCanBeLocal",
         "unused"
 })
-public class Window {
+public class Window
+{
 
-    private final Display display;
+        private static Window sWindow = null;
+        private final Display display;
+        private Shell shell;
+        private SashForm sashForm;
+        private AppMenuBar menuBar;
+        private AppToolBar toolBar;
+        private AppNavigator navigator;
+        private AppWorkbench workbench;
 
-    private Shell shell;
-    private SashForm sashForm;
+        private Window(Display display)
+        {
+                this.display = display;
+        }
 
-    private AppMenuBar menuBar;
-    private AppToolBar toolBar;
-    private AppNavigator navigator;
-    private AppWorkbench workbench;
+        public static Window initialize(Display display)
+        {
+                if (sWindow != null)
+                        return sWindow;
 
-    private static Window sWindow = null;
+                sWindow = new Window(display);
 
-    private Window(Display display) {
-        this.display = display;
-    }
+                return sWindow;
+        }
 
-    public static Window initialize(Display display) {
-        if (sWindow != null)
-            return sWindow;
+        public static synchronized Shell shell()
+        {
+                return sWindow.shell;
+        }
 
-        sWindow = new Window(display);
+        public void open()
+        {
+                shell = new Shell(display);
 
-        return sWindow;
-    }
+                GridLayout gridLayout = new GridLayout();
+                gridLayout.marginWidth = 0;
+                gridLayout.marginHeight = 0;
+                gridLayout.verticalSpacing = 0;
 
-    public static synchronized Shell shell() {
-        return sWindow.shell;
-    }
+                shell.setLayout(gridLayout);
+                shell.setSize(1200, 800);
 
-    public void open() {
-        shell = new Shell(display);
+                menuBar = new AppMenuBar(shell);
+                toolBar = new AppToolBar(shell);
 
-        GridLayout gridLayout = new GridLayout();
-        gridLayout.marginWidth = 0;
-        gridLayout.marginHeight = 0;
-        gridLayout.verticalSpacing = 0;
+                sashForm = new SashForm(shell, SWT.HORIZONTAL | SWT.BORDER);
+                sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        shell.setLayout(gridLayout);
-        shell.setSize(1200, 800);
+                navigator = new AppNavigator(sashForm);
+                workbench = new AppWorkbench(shell, sashForm);
 
-        menuBar = new AppMenuBar(shell);
-        toolBar = new AppToolBar(shell);
+                sashForm.setWeights(20, 80);
 
-        sashForm = new SashForm(shell, SWT.HORIZONTAL | SWT.BORDER);
-        sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-        navigator = new AppNavigator(sashForm);
-        workbench = new AppWorkbench(shell, sashForm);
-
-        sashForm.setWeights(20, 80);
-
-        shell.open();
-    }
+                shell.open();
+        }
 
 }

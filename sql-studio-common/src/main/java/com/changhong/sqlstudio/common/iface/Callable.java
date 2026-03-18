@@ -23,21 +23,22 @@ package com.changhong.sqlstudio.common.iface;
  *
  * <p>实现该接口的类需要提供具体的 `call` 方法，以执行特定的逻辑并返回结果。
  *
- * @author Luo Tiansheng
  * @param <V> 返回值的类型
+ * @author Luo Tiansheng
  * @since 1.0
  */
-public interface Callable<V> {
+public interface Callable<V>
+{
 
-    /**
-     * #brief: 执行可调用的逻辑并返回结果
-     *
-     * <p>该方法定义了具体的执行逻辑，可能会抛出异常。
-     * 实现该方法时需要处理可能的异常情况，并返回合适的结果。
-     *
-     * @return 函数执行后的结果
-     * @throws Throwable 可能抛出的异常，需在调用时处理
-     */
-    V call() throws Throwable;
+        /**
+         * #brief: 执行可调用的逻辑并返回结果
+         *
+         * <p>该方法定义了具体的执行逻辑，可能会抛出异常。
+         * 实现该方法时需要处理可能的异常情况，并返回合适的结果。
+         *
+         * @return 函数执行后的结果
+         * @throws Throwable 可能抛出的异常，需在调用时处理
+         */
+        V call() throws Throwable;
 
 }

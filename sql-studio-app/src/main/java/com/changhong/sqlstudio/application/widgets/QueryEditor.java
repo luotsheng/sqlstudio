@@ -156,23 +156,23 @@ public class QueryEditor extends Composite
                 });
         }
 
-        public void setTabItem(CTabItem tabItem)
-        {
-                this.tabItem = tabItem;
-        }
-
         public CTabItem getTabItem()
         {
                 return tabItem;
         }
 
-        public void setDirty(boolean dirty)
+        public void setTabItem(CTabItem tabItem)
         {
-                this.dirty = dirty;
+                this.tabItem = tabItem;
         }
 
         public boolean isDirty()
         {
                 return dirty;
+        }
+
+        public void setDirty(boolean dirty)
+        {
+                this.dirty = dirty;
         }
 }

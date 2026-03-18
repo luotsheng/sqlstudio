@@ -33,19 +33,19 @@ package com.changhong.sqlstudio.common.iface;
  *
  * @param <T> 输入值的类型
  * @param <R> 输出值的类型
- *
  * @author Luo Tiansheng
  */
-public interface TypeMapper<T, R> {
+public interface TypeMapper<T, R>
+{
 
-    /**
-     * #brief: 执行类型映射，将输入值转换为另一种类型
-     *
-     * <p>该方法接收一个输入值，并将其转换为指定的输出类型。实现该方法时需定义具体的转换逻辑。
-     *
-     * @param value 要转换的输入值
-     * @return 转换后的输出值
-     */
-    R call(T value);
+        /**
+         * #brief: 执行类型映射，将输入值转换为另一种类型
+         *
+         * <p>该方法接收一个输入值，并将其转换为指定的输出类型。实现该方法时需定义具体的转换逻辑。
+         *
+         * @param value 要转换的输入值
+         * @return 转换后的输出值
+         */
+        R call(T value);
 
 }

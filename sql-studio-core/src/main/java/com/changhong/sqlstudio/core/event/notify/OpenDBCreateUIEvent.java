@@ -11,6 +11,7 @@ import org.eclipse.swt.events.SelectionEvent;
  * @author Luo Tiansheng
  * @since 2026/3/17
  */
-public record OpenDBCreateUIEvent(DBType dbType, SelectionEvent selectionEvent) implements Event {
+public record OpenDBCreateUIEvent(DBType dbType, SelectionEvent selectionEvent) implements Event
+{
 
 }

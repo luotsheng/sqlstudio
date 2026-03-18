@@ -5,11 +5,13 @@ package com.changhong.sqlstudio.core.event;
  *
  * @author Luo Tiansheng
  */
-public interface Event {
+public interface Event
+{
 
-    @SuppressWarnings("unchecked")
-    default <T extends Event> T getEventInstance() {
-        return (T) this;
-    }
+        @SuppressWarnings("unchecked")
+        default <T extends Event> T getEventInstance()
+        {
+                return (T) this;
+        }
 
 }

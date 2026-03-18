@@ -9,5 +9,6 @@ import com.changhong.sqlstudio.core.event.Event;
  * @author Luo Tiansheng
  * @since 2026/3/17
  */
-public class ApplicationReadyEvent implements Event {
+public class ApplicationReadyEvent implements Event
+{
 }

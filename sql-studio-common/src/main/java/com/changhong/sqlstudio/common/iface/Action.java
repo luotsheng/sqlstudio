@@ -26,16 +26,17 @@ package com.changhong.sqlstudio.common.iface;
  * @author Luo Tiansheng
  * @since 1.0
  */
-public interface Action {
+public interface Action
+{
 
-    /**
-     * #brief: 执行可执行的逻辑
-     *
-     * <p>该方法定义了具体的执行逻辑，可能会抛出异常。
-     * 实现该方法时需要处理可能的异常情况。
-     *
-     * @throws Throwable 可能抛出的异常，需在调用时处理
-     */
-    void call() throws Throwable;
+        /**
+         * #brief: 执行可执行的逻辑
+         *
+         * <p>该方法定义了具体的执行逻辑，可能会抛出异常。
+         * 实现该方法时需要处理可能的异常情况。
+         *
+         * @throws Throwable 可能抛出的异常，需在调用时处理
+         */
+        void call() throws Throwable;
 
 }

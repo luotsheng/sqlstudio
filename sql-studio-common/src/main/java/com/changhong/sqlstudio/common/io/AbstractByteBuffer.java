@@ -28,226 +28,264 @@ import com.changhong.sqlstudio.common.utils.ArrayUtils;
  *
  * @author Luo Tiansheng
  */
-public abstract class AbstractByteBuffer extends ByteBuffer {
+public abstract class AbstractByteBuffer extends ByteBuffer
+{
 
-    /** 读写指针 */
-    protected int index;
+        /* 临时缓冲区 */
+        private final byte[] tmp = new byte[16];
+        /**
+         * 读写指针
+         */
+        protected int index;
+        /**
+         * 字节缓冲区内部真实数据大小
+         */
+        protected int capacity;
+        /**
+         * 标记当前索引位置
+         */
+        protected int markIndex = 0;
 
-    /** 字节缓冲区内部真实数据大小 */
-    protected int capacity;
+        @Override
+        public ByteBuffer duplicate()
+        {
+                return wrap(toByteArray());
+        }
 
-    /** 标记当前索引位置 */
-    protected int markIndex = 0;
+        public int readableBytes()
+        {
+                return capacity - index;
+        }
 
-    /* 临时缓冲区 */
-    private final byte[] tmp = new byte[16];
+        @Override
+        public int writeableBytes()
+        {
+                return size() - index;
+        }
 
-    @Override
-    public ByteBuffer duplicate() {
-        return wrap(toByteArray());
-    }
+        @Override
+        public int index()
+        {
+                return index;
+        }
 
-    public int readableBytes() {
-        return capacity - index;
-    }
+        @Override
+        public int capacity()
+        {
+                return capacity;
+        }
 
-    @Override
-    public int writeableBytes() {
-        return size() - index;
-    }
+        public ByteBuffer seekSet(int off)
+        {
+                index = off;
+                return this;
+        }
 
-    @Override
-    public int index() {
-        return index;
-    }
+        public ByteBuffer seekCur(int off)
+        {
+                index += off;
+                return this;
+        }
 
-    @Override
-    public int capacity() {
-        return capacity;
-    }
+        public ByteBuffer seekEnd(int off)
+        {
+                index = capacity - off;
+                return this;
+        }
 
-    public ByteBuffer seekSet(int off) {
-        index = off;
-        return this;
-    }
+        @Override
+        public void skipBytes(int len)
+        {
+                seekCur(len);
+        }
 
-    public ByteBuffer seekCur(int off) {
-        index += off;
-        return this;
-    }
+        @Override
+        public ByteBuffer markIndex()
+        {
+                markIndex = index;
+                return this;
+        }
 
-    public ByteBuffer seekEnd(int off) {
-        index = capacity - off;
-        return this;
-    }
+        @Override
+        public ByteBuffer reset()
+        {
+                index = markIndex;
+                return this;
+        }
 
-    @Override
-    public void skipBytes(int len) {
-        seekCur(len);
-    }
+        @Override
+        public ByteBuffer rewind()
+        {
+                index = 0;
+                return this;
+        }
 
-    @Override
-    public ByteBuffer markIndex() {
-        markIndex = index;
-        return this;
-    }
+        public byte readByte()
+        {
+                readBytes(tmp, 0, 1);
+                return tmp[0];
+        }
 
-    @Override
-    public ByteBuffer reset() {
-        index = markIndex;
-        return this;
-    }
+        @Override
+        public char readChar()
+        {
+                readBytes(tmp, 0, Character.BYTES);
+                return (char) ((tmp[0] << 8) | (tmp[1] & 0xFF));
+        }
 
-    @Override
-    public ByteBuffer rewind() {
-        index = 0;
-        return this;
-    }
+        @Override
+        public char[] readChars(int n)
+        {
+                char[] c = new char[n];
+                for (int i = 0; i < n; i++)
+                        c[i] = readChar();
+                return c;
+        }
 
-    public byte readByte() {
-        readBytes(tmp, 0, 1);
-        return tmp[0];
-    }
+        public short readShort()
+        {
+                readBytes(tmp, 0, Short.BYTES);
+                return (short) ((tmp[0] << 8) | tmp[1] & 0xFF);
+        }
 
-    @Override
-    public char readChar() {
-        readBytes(tmp, 0, Character.BYTES);
-        return (char) ((tmp[0] << 8) | (tmp[1] & 0xFF));
-    }
+        public int readInt()
+        {
+                readBytes(tmp, 0, Integer.BYTES);
+                return ((tmp[0] & 0xFF) << 24)
+                        | ((tmp[1] & 0xFF) << 16)
+                        | ((tmp[2] & 0xFF) << 8)
+                        | (tmp[3] & 0xFF);
+        }
 
-    @Override
-    public char[] readChars(int n) {
-        char[] c = new char[n];
-        for (int i = 0; i < n; i++)
-            c[i] = readChar();
-        return c;
-    }
+        public long readLong()
+        {
+                readBytes(tmp, 0, Long.BYTES);
+                long value = 0L;
+                for (int i = 0; i < Long.BYTES; i++)
+                        value = (value << 8) | (tmp[i] & 0xFF);
+                return value;
+        }
 
-    public short readShort() {
-        readBytes(tmp, 0, Short.BYTES);
-        return (short) ((tmp[0] << 8) | tmp[1] & 0xFF);
-    }
+        @Override
+        public float readFloat()
+        {
+                return Float.intBitsToFloat(readInt());
+        }
 
-    public int readInt() {
-        readBytes(tmp, 0, Integer.BYTES);
-        return ((tmp[0] & 0xFF) << 24)
-                | ((tmp[1] & 0xFF) << 16)
-                | ((tmp[2] & 0xFF) << 8)
-                |  (tmp[3] & 0xFF);
-    }
+        @Override
+        public double readDouble()
+        {
+                return Double.longBitsToDouble(readLong());
+        }
 
-    public long readLong() {
-        readBytes(tmp, 0, Long.BYTES);
-        long value = 0L;
-        for (int i = 0; i < Long.BYTES; i++)
-            value = (value << 8) | (tmp[i] & 0xFF);
-        return value;
-    }
+        @Override
+        public byte[] readBytes(int nb)
+        {
+                byte[] buf = new byte[nb];
+                readBytes(buf, 0, nb);
+                return buf;
+        }
 
-    @Override
-    public float readFloat() {
-        return Float.intBitsToFloat(readInt());
-    }
+        public int readBytes(byte[] b, int off, int len)
+        {
+                ArrayUtils.checkIndexSize(off, len, b.length);
+                int remcap = capacity - index;
+                if (remcap == 0)
+                        return IOUtils.EOF;
+                if (len > remcap)
+                        len = remcap;
+                read0(b, off, len);
+                return len;
+        }
 
-    @Override
-    public double readDouble() {
-        return Double.longBitsToDouble(readLong());
-    }
+        public ByteBuffer writeByte(byte b)
+        {
+                tmp[0] = b;
+                return writeBytes(tmp, 0, Byte.BYTES);
+        }
 
-    @Override
-    public byte[] readBytes(int nb) {
-        byte[] buf = new byte[nb];
-        readBytes(buf, 0, nb);
-        return buf;
-    }
+        @Override
+        public ByteBuffer writeChar(char c)
+        {
+                return writeBytes(new byte[]{
+                        (byte) (c >> 8),
+                        (byte) c,
+                });
+        }
 
-    public int readBytes(byte[] b, int off, int len) {
-        ArrayUtils.checkIndexSize(off, len, b.length);
-        int remcap = capacity - index;
-        if (remcap == 0)
-            return IOUtils.EOF;
-        if (len > remcap)
-            len = remcap;
-        read0(b, off, len);
-        return len;
-    }
+        @Override
+        public ByteBuffer writeChars(char[] ch)
+        {
+                for (char c : ch)
+                        writeChar(c);
+                return this;
+        }
 
-    public ByteBuffer writeByte(byte b) {
-        tmp[0] = b;
-        return writeBytes(tmp, 0, Byte.BYTES);
-    }
+        public ByteBuffer writeShort(short v)
+        {
+                return writeBytes(new byte[]{
+                        (byte) (v >> 8),
+                        (byte) v,
+                }, 0, Short.BYTES);
+        }
 
-    @Override
-    public ByteBuffer writeChar(char c) {
-        return writeBytes(new byte[] {
-                (byte) (c >> 8),
-                (byte)  c,
-        });
-    }
+        public ByteBuffer writeInt(int i)
+        {
+                tmp[0] = (byte) ((i >> 24) & 0xFF);
+                tmp[1] = (byte) ((i >> 16) & 0xFF);
+                tmp[2] = (byte) ((i >> 8) & 0xFF);
+                tmp[3] = (byte) (i & 0xFF);
+                return writeBytes(tmp, 0, Integer.BYTES);
+        }
 
-    @Override
-    public ByteBuffer writeChars(char[] ch) {
-        for (char c : ch)
-            writeChar(c);
-        return this;
-    }
+        public ByteBuffer writeLong(long l)
+        {
+                for (int i = 0; i < Long.BYTES; i++)
+                        tmp[i] = (byte) ((l >> ((Long.BYTES - i - 1) * 8)) & 0xFF);
+                return writeBytes(tmp, 0, Long.BYTES);
+        }
 
-    public ByteBuffer writeShort(short v) {
-        return writeBytes(new byte[]{
-                (byte) (v >> 8),
-                (byte)  v,
-        }, 0, Short.BYTES);
-    }
+        @Override
+        public ByteBuffer writeFloat(float f)
+        {
+                return writeInt(Float.floatToIntBits(f));
+        }
 
-    public ByteBuffer writeInt(int i) {
-        tmp[0] = (byte) ((i >> 24) & 0xFF);
-        tmp[1] = (byte) ((i >> 16) & 0xFF);
-        tmp[2] = (byte) ((i >> 8) & 0xFF);
-        tmp[3] = (byte) (i & 0xFF);
-        return writeBytes(tmp, 0, Integer.BYTES);
-    }
+        @Override
+        public ByteBuffer writeDouble(double d)
+        {
+                return writeLong(Double.doubleToLongBits(d));
+        }
 
-    public ByteBuffer writeLong(long l) {
-        for (int i = 0; i < Long.BYTES; i++)
-            tmp[i] = (byte) ((l >> ((Long.BYTES - i - 1) * 8)) & 0xFF);
-        return writeBytes(tmp, 0, Long.BYTES);
-    }
+        public ByteBuffer writeBytes(byte[] b)
+        {
+                return writeBytes(b, 0, b.length);
+        }
 
-    @Override
-    public ByteBuffer writeFloat(float f) {
-        return writeInt(Float.floatToIntBits(f));
-    }
+        public ByteBuffer writeBytes(byte[] b, int off, int len)
+        {
+                ArrayUtils.checkIndexSize(off, len, b.length);
+                write0(b, off, len);
+                return this;
+        }
 
-    @Override
-    public ByteBuffer writeDouble(double d) {
-        return writeLong(Double.doubleToLongBits(d));
-    }
+        abstract void read0(byte[] b, int off, int len);
 
-    public ByteBuffer writeBytes(byte[] b) {
-        return writeBytes(b, 0, b.length);
-    }
+        abstract void write0(byte[] b, int off, int len);
 
-    public ByteBuffer writeBytes(byte[] b, int off, int len) {
-        ArrayUtils.checkIndexSize(off, len, b.length);
-        write0(b, off, len);
-        return this;
-    }
+        public byte[] toByteArray()
+        {
+                byte[] retval = new byte[capacity];
+                markIndex();
+                seekSet(0);
+                readBytes(retval, 0, retval.length);
+                reset();
+                return retval;
+        }
 
-    abstract void read0(byte[] b, int off, int len);
-
-    abstract void write0(byte[] b, int off, int len);
-
-    public byte[] toByteArray() {
-        byte[] retval = new byte[capacity];
-        markIndex();
-        seekSet(0);
-        readBytes(retval, 0, retval.length);
-        reset();
-        return retval;
-    }
-
-    @Override
-    public String toString() {
-        return StringUtils.strwfmt("%s [size=%s, cap=%s, index=%s]", super.toString(), size(), capacity(), index());
-    }
+        @Override
+        public String toString()
+        {
+                return StringUtils.strwfmt("%s [size=%s, cap=%s, index=%s]", super.toString(), size(), capacity(), index());
+        }
 }

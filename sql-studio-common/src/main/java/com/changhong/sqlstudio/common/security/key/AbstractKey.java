@@ -35,64 +35,72 @@ import static com.changhong.sqlstudio.common.utils.TypeCvt.atos;
 /**
  * @author Luo Tiansheng
  */
-public abstract class AbstractKey {
+public abstract class AbstractKey
+{
 
-    private final byte[] encoded;
+        private final byte[] encoded;
 
-    public AbstractKey(Key key) {
-        this(key.getEncoded());
-    }
-
-    public AbstractKey(byte[] encoded) {
-        this.encoded = encoded;
-    }
-
-    public byte[] getEncoded() {
-        return encoded;
-    }
-
-    public abstract String toPEMFormat();
-
-    public static byte[] decodePEMFormat(String pem) {
-        String[] lines = StringUtils.strtok(pem, "\n");
-        StringBuilder remakeBuilder = new StringBuilder();
-        for (int i = 1; i < (lines.length - 1); i++) {
-            remakeBuilder.append(StringUtils.strcut(lines[i], 0, 0));
-        }
-        return Codec.BASE64.decodeBytes(atos(remakeBuilder));
-    }
-
-    protected static String toPEMFormat0(String keyType, byte[] encoded) {
-        StringBuilder secretBuilder = new StringBuilder();
-
-        String base64Encode = Codec.BASE64.encode(encoded);
-        int encodeLength = StringUtils.strlen(base64Encode);
-        int len = 64;
-        int loopCount = encodeLength / len;
-        int copyLength = 0;
-
-        for (int i = 0; i < loopCount; i++) {
-            int off = i * len;
-            if (off + len > encodeLength)
-                len = Math.abs((off + len) - encodeLength);
-            secretBuilder.append(StringUtils.strcut(base64Encode, off, len)).append("\n");
-            copyLength += len;
+        public AbstractKey(Key key)
+        {
+                this(key.getEncoded());
         }
 
-        // 检查是否还有剩余内容
-        if (copyLength < encodeLength)
-            secretBuilder.append(StringUtils.strcut(base64Encode, copyLength, 0)).append("\n");
+        public AbstractKey(byte[] encoded)
+        {
+                this.encoded = encoded;
+        }
 
-        secretBuilder.delete(secretBuilder.length() - 1, secretBuilder.length());
-        return "-----BEGIN " + keyType + "-----\n" + atos(secretBuilder) + "\n-----END " + keyType + "-----";
-    }
+        public static byte[] decodePEMFormat(String pem)
+        {
+                String[] lines = StringUtils.strtok(pem, "\n");
+                StringBuilder remakeBuilder = new StringBuilder();
+                for (int i = 1; i < (lines.length - 1); i++) {
+                        remakeBuilder.append(StringUtils.strcut(lines[i], 0, 0));
+                }
+                return Codec.BASE64.decodeBytes(atos(remakeBuilder));
+        }
 
-    public String toZipKeyFormat() {
-        return Codec.BASE64.encode(encoded);
-    }
+        protected static String toPEMFormat0(String keyType, byte[] encoded)
+        {
+                StringBuilder secretBuilder = new StringBuilder();
 
-    @Override
-    public String toString() {
-        return toZipKeyFormat();
-    }
+                String base64Encode = Codec.BASE64.encode(encoded);
+                int encodeLength = StringUtils.strlen(base64Encode);
+                int len = 64;
+                int loopCount = encodeLength / len;
+                int copyLength = 0;
+
+                for (int i = 0; i < loopCount; i++) {
+                        int off = i * len;
+                        if (off + len > encodeLength)
+                                len = Math.abs((off + len) - encodeLength);
+                        secretBuilder.append(StringUtils.strcut(base64Encode, off, len)).append("\n");
+                        copyLength += len;
+                }
+
+                // 检查是否还有剩余内容
+                if (copyLength < encodeLength)
+                        secretBuilder.append(StringUtils.strcut(base64Encode, copyLength, 0)).append("\n");
+
+                secretBuilder.delete(secretBuilder.length() - 1, secretBuilder.length());
+                return "-----BEGIN " + keyType + "-----\n" + atos(secretBuilder) + "\n-----END " + keyType + "-----";
+        }
+
+        public byte[] getEncoded()
+        {
+                return encoded;
+        }
+
+        public abstract String toPEMFormat();
+
+        public String toZipKeyFormat()
+        {
+                return Codec.BASE64.encode(encoded);
+        }
+
+        @Override
+        public String toString()
+        {
+                return toZipKeyFormat();
+        }
 }

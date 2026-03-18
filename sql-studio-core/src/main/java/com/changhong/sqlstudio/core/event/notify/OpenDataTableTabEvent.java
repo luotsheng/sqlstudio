@@ -18,7 +18,8 @@ public class OpenDataTableTabEvent implements Event
         }
 
         @SuppressWarnings("unchecked")
-        public <T> T table() {
+        public <T> T table()
+        {
                 return (T) object;
         }
 }

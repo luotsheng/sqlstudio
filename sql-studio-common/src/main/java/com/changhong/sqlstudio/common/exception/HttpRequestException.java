@@ -54,42 +54,47 @@ package com.changhong.sqlstudio.common.exception;
  * @author Luo Tiansheng
  * @since 1.0
  */
-public class HttpRequestException extends SystemRuntimeException {
+public class HttpRequestException extends SystemRuntimeException
+{
 
-    /**
-     * 默认构造函数。
-     */
-    public HttpRequestException() {
-    }
+        /**
+         * 默认构造函数。
+         */
+        public HttpRequestException()
+        {
+        }
 
-    /**
-     * 通过已有的异常创建一个新的 HTTP 请求异常。
-     *
-     * @param e 原始异常，不能为 null。
-     */
-    public HttpRequestException(Throwable e) {
-        super(e);
-    }
+        /**
+         * 通过已有的异常创建一个新的 HTTP 请求异常。
+         *
+         * @param e 原始异常，不能为 null。
+         */
+        public HttpRequestException(Throwable e)
+        {
+                super(e);
+        }
 
-    /**
-     * 根据格式化字符串和参数创建异常信息。
-     *
-     * @param fmt 格式化字符串，不能为 null。
-     * @param args 格式化参数。
-     */
-    public HttpRequestException(String fmt, Object... args) {
-        super(fmt, args);
-    }
+        /**
+         * 根据格式化字符串和参数创建异常信息。
+         *
+         * @param fmt  格式化字符串，不能为 null。
+         * @param args 格式化参数。
+         */
+        public HttpRequestException(String fmt, Object... args)
+        {
+                super(fmt, args);
+        }
 
-    /**
-     * 根据格式化字符串、已有异常和参数创建异常信息。
-     *
-     * @param fmt 格式化字符串，不能为 null。
-     * @param e 原始异常，不能为 null。
-     * @param args 格式化参数。
-     */
-    public HttpRequestException(String fmt, Throwable e, Object... args) {
-        super(fmt, e, args);
-    }
+        /**
+         * 根据格式化字符串、已有异常和参数创建异常信息。
+         *
+         * @param fmt  格式化字符串，不能为 null。
+         * @param e    原始异常，不能为 null。
+         * @param args 格式化参数。
+         */
+        public HttpRequestException(String fmt, Throwable e, Object... args)
+        {
+                super(fmt, e, args);
+        }
 }
 

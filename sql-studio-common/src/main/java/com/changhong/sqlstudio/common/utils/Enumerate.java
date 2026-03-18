@@ -55,69 +55,72 @@ import com.changhong.sqlstudio.common.string.StringUtils;
  * <p>完整的使用示例和测试用例可以参考项目的测试包下的相关测试类。
  *
  * @author Luo Tiansheng
- *
  * @see Enum
  * @see IllegalArgumentException
  * @since 1.0
  */
-public class Enumerate {
+public class Enumerate
+{
 
-    /**
-     * #brief: 获取指定枚举类的所有枚举值
-     *
-     * <p>该方法通过反射机制获取枚举类的所有枚举值。需要传入枚举类的 `Class` 对象，并返回
-     * 枚举值数组。由于使用了类型转换，因此标记了 `@SuppressWarnings("unchecked")` 注解以
-     * 忽略未经检查的类型转换警告。
-     *
-     * @param enumClass 枚举类的 `Class` 对象
-     * @param <E> 枚举类的类型参数
-     * @return 枚举类中定义的所有枚举值的数组
-     */
-    @SuppressWarnings("unchecked")
-    private static <E extends Enum<E>> E[] values(Class<? extends Enum<E>> enumClass) {
-        return (E[]) new UClass(enumClass).staticInvoke("values");
-    }
+        /**
+         * #brief: 获取指定枚举类的所有枚举值
+         *
+         * <p>该方法通过反射机制获取枚举类的所有枚举值。需要传入枚举类的 `Class` 对象，并返回
+         * 枚举值数组。由于使用了类型转换，因此标记了 `@SuppressWarnings("unchecked")` 注解以
+         * 忽略未经检查的类型转换警告。
+         *
+         * @param enumClass 枚举类的 `Class` 对象
+         * @param <E>       枚举类的类型参数
+         * @return 枚举类中定义的所有枚举值的数组
+         */
+        @SuppressWarnings("unchecked")
+        private static <E extends Enum<E>> E[] values(Class<? extends Enum<E>> enumClass)
+        {
+                return (E[]) new UClass(enumClass).staticInvoke("values");
+        }
 
-    /**
-     * #brief: 根据名称查找并返回指定枚举类的枚举值
-     *
-     * <p>该方法查找枚举类中名称匹配的枚举值。如果找到与提供的名称匹配的枚举值，则返回该
-     * 枚举值。如果没有找到，则抛出 `InvalidArgumentException` 异常，指明参数错误和常量不存在。
-     *
-     * <p>方法首先调用 `values` 方法获取所有枚举值，然后遍历这些枚举值，比较它们的名称与
-     * 提供的名称。如果找到匹配项，则返回对应的枚举值。否则，抛出 `InvalidArgumentException` 异常。
-     *
-     * @param enumClass 枚举类的 `Class` 对象
-     * @param name 要查找的枚举值名称
-     * @param <E> 枚举类的类型参数
-     * @return 与提供名称匹配的枚举值
-     * @throws NullPointerException 如果提供的名称没有匹配的枚举值
-     */
-    public static <E extends Enum<E>> E checkout(Class<? extends Enum<E>> enumClass, String name) {
-        E elem = find(enumClass, name);
-        Assert.notNull(elem, "参数错误【%s】常量不存在！", name);
-        return elem;
-    }
+        /**
+         * #brief: 根据名称查找并返回指定枚举类的枚举值
+         *
+         * <p>该方法查找枚举类中名称匹配的枚举值。如果找到与提供的名称匹配的枚举值，则返回该
+         * 枚举值。如果没有找到，则抛出 `InvalidArgumentException` 异常，指明参数错误和常量不存在。
+         *
+         * <p>方法首先调用 `values` 方法获取所有枚举值，然后遍历这些枚举值，比较它们的名称与
+         * 提供的名称。如果找到匹配项，则返回对应的枚举值。否则，抛出 `InvalidArgumentException` 异常。
+         *
+         * @param enumClass 枚举类的 `Class` 对象
+         * @param name      要查找的枚举值名称
+         * @param <E>       枚举类的类型参数
+         * @return 与提供名称匹配的枚举值
+         * @throws NullPointerException 如果提供的名称没有匹配的枚举值
+         */
+        public static <E extends Enum<E>> E checkout(Class<? extends Enum<E>> enumClass, String name)
+        {
+                E elem = find(enumClass, name);
+                Assert.notNull(elem, "参数错误【%s】常量不存在！", name);
+                return elem;
+        }
 
-    /**
-     * #brief: 根据名称查找并返回指定枚举类的枚举值
-     *
-     * <p>该方法在指定的枚举类中查找与提供的名称匹配的枚举值。如果找到匹配的枚举值，
-     * 则返回该枚举值；如果未找到匹配项，则返回 `null`。该方法利用反射机制获取枚举
-     * 类的所有枚举值，并逐一比较名称。
-     *
-     * @param enumClass 枚举类的 `Class` 对象
-     * @param name 要查找的枚举值名称
-     * @param <E> 枚举类的类型参数
-     * @return 与提供名称匹配的枚举值，如果没有匹配项则返回 `null`
-     */
-    @SuppressWarnings("unchecked")
-    public static <E extends Enum<E>> E find(Class<? extends Enum<E>> enumClass, String name) {
-        Enum<E>[] values = values(enumClass);
-        for (Enum<E> value : values)
-            if (StringUtils.strieq(value.name(), name))
-                return (E) value;
-        return null;
-    }
+        /**
+         * #brief: 根据名称查找并返回指定枚举类的枚举值
+         *
+         * <p>该方法在指定的枚举类中查找与提供的名称匹配的枚举值。如果找到匹配的枚举值，
+         * 则返回该枚举值；如果未找到匹配项，则返回 `null`。该方法利用反射机制获取枚举
+         * 类的所有枚举值，并逐一比较名称。
+         *
+         * @param enumClass 枚举类的 `Class` 对象
+         * @param name      要查找的枚举值名称
+         * @param <E>       枚举类的类型参数
+         * @return 与提供名称匹配的枚举值，如果没有匹配项则返回 `null`
+         */
+        @SuppressWarnings("unchecked")
+        public static <E extends Enum<E>> E find(Class<? extends Enum<E>> enumClass, String name)
+        {
+                Enum<E>[] values = values(enumClass);
+                for (Enum<E> value : values)
+                        if (StringUtils.strieq(value.name(), name))
+                                return (E) value;
+                return null;
+        }
 
 }

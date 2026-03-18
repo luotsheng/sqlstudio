@@ -10,29 +10,31 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Luo Tiansheng
  */
-public class EventBus {
+public class EventBus
+{
+        private static final Map<Class<? extends Event>, List<EventListener>> listeners
+                = new ConcurrentHashMap<>();
 
-    private static final Map<Class<? extends Event>, List<EventListener>> listeners
-            = new ConcurrentHashMap<>();
+        /**
+         * 订阅事件
+         */
+        public static void subscribe(Class<? extends Event> clazz, EventListener listener)
+        {
+                listeners.computeIfAbsent(clazz, k -> new ArrayList<>()).add(listener);
+        }
 
-    /**
-     * 订阅事件
-     */
-    public static void subscribe(Class<? extends Event> clazz, EventListener listener) {
-        listeners.computeIfAbsent(clazz, k -> new ArrayList<>()).add(listener);
-    }
+        /**
+         * 发布事件
+         */
+        public static <T extends Event> void publish(T event)
+        {
+                List<EventListener> eventListeners = listeners.get(event.getClass());
 
-    /**
-     * 发布事件
-     */
-    public static <T extends Event> void publish(T event) {
-        List<EventListener> eventListeners = listeners.get(event.getClass());
+                if (eventListeners == null || eventListeners.isEmpty())
+                        return;
 
-        if (eventListeners == null || eventListeners.isEmpty())
-            return;
-
-        for (EventListener eventListener : eventListeners)
-            eventListener.eventTigger(event);
-    }
+                for (EventListener eventListener : eventListeners)
+                        eventListener.eventTigger(event);
+        }
 
 }

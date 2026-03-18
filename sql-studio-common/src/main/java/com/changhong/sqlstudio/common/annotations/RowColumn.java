@@ -30,20 +30,21 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface RowColumn {
+public @interface RowColumn
+{
 
-    /**
-     * Excel 列标题名称
-     *
-     * @return 列名
-     */
-    String name();
+        /**
+         * Excel 列标题名称
+         *
+         * @return 列名
+         */
+        String name();
 
-    /**
-     * 日期字段的格式化模式，默认为 "yyyy/MM/dd HH:mm:ss"。
-     *
-     * @return 日期格式
-     */
-    String pattern() default DateFormatter.SLASH_PATTERN_Y4H2M2D2H2M2S2;
+        /**
+         * 日期字段的格式化模式，默认为 "yyyy/MM/dd HH:mm:ss"。
+         *
+         * @return 日期格式
+         */
+        String pattern() default DateFormatter.SLASH_PATTERN_Y4H2M2D2H2M2S2;
 
 }

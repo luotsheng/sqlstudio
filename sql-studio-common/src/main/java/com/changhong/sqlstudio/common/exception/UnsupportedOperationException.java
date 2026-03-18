@@ -53,43 +53,48 @@ package com.changhong.sqlstudio.common.exception;
  * @author Luo Tiansheng
  * @since 1.0
  */
-public class UnsupportedOperationException extends SystemRuntimeException {
+public class UnsupportedOperationException extends SystemRuntimeException
+{
 
-    /**
-     * 默认构造函数。
-     */
-    public UnsupportedOperationException() {
-    }
+        /**
+         * 默认构造函数。
+         */
+        public UnsupportedOperationException()
+        {
+        }
 
-    /**
-     * 通过已有的异常创建一个新的不支持操作异常。
-     *
-     * @param e 原始异常，不能为 null。
-     */
-    public UnsupportedOperationException(Throwable e) {
-        super(e);
-    }
+        /**
+         * 通过已有的异常创建一个新的不支持操作异常。
+         *
+         * @param e 原始异常，不能为 null。
+         */
+        public UnsupportedOperationException(Throwable e)
+        {
+                super(e);
+        }
 
-    /**
-     * 根据格式化字符串和参数创建异常信息。
-     *
-     * @param fmt 格式化字符串，不能为 null。
-     * @param args 格式化参数。
-     */
-    public UnsupportedOperationException(String fmt, Object... args) {
-        super(fmt, args);
-    }
+        /**
+         * 根据格式化字符串和参数创建异常信息。
+         *
+         * @param fmt  格式化字符串，不能为 null。
+         * @param args 格式化参数。
+         */
+        public UnsupportedOperationException(String fmt, Object... args)
+        {
+                super(fmt, args);
+        }
 
-    /**
-     * 根据格式化字符串、已有异常和参数创建异常信息。
-     *
-     * @param fmt 格式化字符串，不能为 null。
-     * @param e 原始异常，不能为 null。
-     * @param args 格式化参数。
-     */
-    public UnsupportedOperationException(String fmt, Throwable e, Object... args) {
-        super(fmt, e, args);
-    }
+        /**
+         * 根据格式化字符串、已有异常和参数创建异常信息。
+         *
+         * @param fmt  格式化字符串，不能为 null。
+         * @param e    原始异常，不能为 null。
+         * @param args 格式化参数。
+         */
+        public UnsupportedOperationException(String fmt, Throwable e, Object... args)
+        {
+                super(fmt, e, args);
+        }
 
 }
 

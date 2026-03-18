@@ -23,28 +23,29 @@ package com.changhong.sqlstudio.common.system;
  *
  * @author Luo Tiansheng
  */
-public enum OperatorSystem {
+public enum OperatorSystem
+{
 
-    /**
-     * 未知操作系统
-     */
-    UNKNOWN,
+        /**
+         * 未知操作系统
+         */
+        UNKNOWN,
 
-    /**
-     * Windows
-     */
-    WINDOWS,
+        /**
+         * Windows
+         */
+        WINDOWS,
 
-    /**
-     * MacOS
-     */
-    MACOS,
+        /**
+         * MacOS
+         */
+        MACOS,
 
-    /**
-     * Linux 或其他发行版
-     */
-    LINUX,
+        /**
+         * Linux 或其他发行版
+         */
+        LINUX,
 
-    ;
+        ;
 
 }

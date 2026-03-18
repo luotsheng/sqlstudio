@@ -46,44 +46,45 @@ import com.changhong.sqlstudio.common.tuple.Pair;
  *     <li>RSA 加密只能加密数据的哈希值，通常需要与其他加密算法联合使用。</li>
  * </ul>
  *
+ * @author Luo Tiansheng
  * @see Pair
  * @see RSAPublicKey
  * @see RSAPrivateKey
- * @author Luo Tiansheng
  */
-public interface RSA {
+public interface RSA
+{
 
-    /**
-     * 生成一对 RSA 公钥和私钥，使用默认的密钥大小。
-     *
-     * @return 包含公钥和私钥的 `Pair` 对象
-     */
-    Pair<RSAPublicKey, RSAPrivateKey> generateKeyPair();
+        /**
+         * 生成一对 RSA 公钥和私钥，使用默认的密钥大小。
+         *
+         * @return 包含公钥和私钥的 `Pair` 对象
+         */
+        Pair<RSAPublicKey, RSAPrivateKey> generateKeyPair();
 
-    /**
-     * 生成一对 RSA 公钥和私钥，使用指定的密钥大小。
-     *
-     * @param size 指定的密钥大小（通常为 2048 或 4096）
-     * @return 包含公钥和私钥的 `Pair` 对象
-     */
-    Pair<RSAPublicKey, RSAPrivateKey> generateKeyPair(int size);
+        /**
+         * 生成一对 RSA 公钥和私钥，使用指定的密钥大小。
+         *
+         * @param size 指定的密钥大小（通常为 2048 或 4096）
+         * @return 包含公钥和私钥的 `Pair` 对象
+         */
+        Pair<RSAPublicKey, RSAPrivateKey> generateKeyPair(int size);
 
-    /**
-     * 使用 RSA 公钥加密给定的消息。
-     *
-     * @param message 要加密的消息
-     * @param publicKey 用于加密的公钥
-     * @return 加密后的消息
-     */
-    String encrypt(String message, RSAPublicKey publicKey);
+        /**
+         * 使用 RSA 公钥加密给定的消息。
+         *
+         * @param message   要加密的消息
+         * @param publicKey 用于加密的公钥
+         * @return 加密后的消息
+         */
+        String encrypt(String message, RSAPublicKey publicKey);
 
-    /**
-     * 使用 RSA 私钥解密给定的加密消息。
-     *
-     * @param encryptedMessage 被加密的消息
-     * @param privateKey 用于解密的私钥
-     * @return 解密后的原始消息
-     */
-    String decrypt(String encryptedMessage, RSAPrivateKey privateKey);
+        /**
+         * 使用 RSA 私钥解密给定的加密消息。
+         *
+         * @param encryptedMessage 被加密的消息
+         * @param privateKey       用于解密的私钥
+         * @return 解密后的原始消息
+         */
+        String decrypt(String encryptedMessage, RSAPrivateKey privateKey);
 }
 

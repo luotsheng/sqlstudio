@@ -23,53 +23,66 @@ package com.changhong.sqlstudio.common.io;
 /**
  * @author Luo Tiansheng
  */
-public class HeapByteBuffer extends AbstractByteBuffer {
+public class HeapByteBuffer extends AbstractByteBuffer
+{
 
-    /** 字节缓冲区 */
-    private byte[] buf;
-    /** 每次扩容大小为初始分配大小 */
-    private static final int initializeCapacity = IOUtils.DEFAULT_BYTE_BUFFER_SIZE;
+        /**
+         * 每次扩容大小为初始分配大小
+         */
+        private static final int initializeCapacity = IOUtils.DEFAULT_BYTE_BUFFER_SIZE;
+        /**
+         * 字节缓冲区
+         */
+        private byte[] buf;
 
-    HeapByteBuffer(int capacity) {
-        buf = new byte[capacity];
-    }
-
-    /** 确保数据写入时缓冲区内部容量足够 */
-    private void ensureCapacity(int size) {
-        if (buf.length < (capacity + size)) {
-            byte[] n = new byte[(buf.length + size) + initializeCapacity];
-            System.arraycopy(buf, 0, n, 0, buf.length);
-            buf = n;
+        HeapByteBuffer(int capacity)
+        {
+                buf = new byte[capacity];
         }
-    }
 
-    @Override
-    public int size() {
-        return buf.length;
-    }
-
-    @Override
-    public void read0(byte[] b, int off, int len) {
-        System.arraycopy(buf, index, b, off, len);
-        index += len;
-    }
-
-    @Override
-    void write0(byte[] a, int off, int len) {
-        ensureCapacity(len);
-        System.arraycopy(a, off, buf, index, len);
-        index += len;
-        capacity += len;
-    }
-
-    @Override
-    public ByteBuffer compact() {
-        if (size() > capacity) {
-            byte[] n = new byte[capacity];
-            System.arraycopy(buf, 0, n, 0, capacity);
-            buf = n;
+        /**
+         * 确保数据写入时缓冲区内部容量足够
+         */
+        private void ensureCapacity(int size)
+        {
+                if (buf.length < (capacity + size)) {
+                        byte[] n = new byte[(buf.length + size) + initializeCapacity];
+                        System.arraycopy(buf, 0, n, 0, buf.length);
+                        buf = n;
+                }
         }
-        return this;
-    }
+
+        @Override
+        public int size()
+        {
+                return buf.length;
+        }
+
+        @Override
+        public void read0(byte[] b, int off, int len)
+        {
+                System.arraycopy(buf, index, b, off, len);
+                index += len;
+        }
+
+        @Override
+        void write0(byte[] a, int off, int len)
+        {
+                ensureCapacity(len);
+                System.arraycopy(a, off, buf, index, len);
+                index += len;
+                capacity += len;
+        }
+
+        @Override
+        public ByteBuffer compact()
+        {
+                if (size() > capacity) {
+                        byte[] n = new byte[capacity];
+                        System.arraycopy(buf, 0, n, 0, capacity);
+                        buf = n;
+                }
+                return this;
+        }
 
 }

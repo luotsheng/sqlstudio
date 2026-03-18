@@ -43,40 +43,45 @@ import static com.changhong.sqlstudio.common.utils.TypeCvt.atos;
  * @author Luo Tiansheng
  */
 @SuppressWarnings("DataFlowIssue")
-public class RSACipher implements RSA {
+public class RSACipher implements RSA
+{
 
-    @Override
-    public Pair<RSAPublicKey, RSAPrivateKey> generateKeyPair() {
-        return generateKeyPair(2048);
-    }
+        @Override
+        public Pair<RSAPublicKey, RSAPrivateKey> generateKeyPair()
+        {
+                return generateKeyPair(2048);
+        }
 
-    @Override
-    public Pair<RSAPublicKey, RSAPrivateKey> generateKeyPair(int size) {
-        KeyPairGenerator keyPairGenerator =
-                Captor.icall(() -> KeyPairGenerator.getInstance("RSA"));
-        keyPairGenerator.initialize(size);
-        KeyPair keyPair = keyPairGenerator.generateKeyPair();
-        return Pair.of(new RSAPublicKey(keyPair.getPublic()), new RSAPrivateKey(keyPair.getPrivate()));
-    }
+        @Override
+        public Pair<RSAPublicKey, RSAPrivateKey> generateKeyPair(int size)
+        {
+                KeyPairGenerator keyPairGenerator =
+                        Captor.icall(() -> KeyPairGenerator.getInstance("RSA"));
+                keyPairGenerator.initialize(size);
+                KeyPair keyPair = keyPairGenerator.generateKeyPair();
+                return Pair.of(new RSAPublicKey(keyPair.getPublic()), new RSAPrivateKey(keyPair.getPrivate()));
+        }
 
-    @Override
-    public String encrypt(String message, RSAPublicKey publicKey) {
-        return Captor.call(() -> {
-            Cipher cipher = Cipher.getInstance("RSA");
-            cipher.init(Cipher.ENCRYPT_MODE, publicKey.toPublicKey());
-            byte[] b = cipher.doFinal(atob(message));
-            return Codec.BASE64.encode(b);
-        });
-    }
+        @Override
+        public String encrypt(String message, RSAPublicKey publicKey)
+        {
+                return Captor.call(() -> {
+                        Cipher cipher = Cipher.getInstance("RSA");
+                        cipher.init(Cipher.ENCRYPT_MODE, publicKey.toPublicKey());
+                        byte[] b = cipher.doFinal(atob(message));
+                        return Codec.BASE64.encode(b);
+                });
+        }
 
-    @Override
-    public String decrypt(String encryptedMessage, RSAPrivateKey privateKey) {
-        return Captor.call(() -> {
-            Cipher cipher = Cipher.getInstance("RSA");
-            cipher.init(Cipher.DECRYPT_MODE, privateKey.toPrivateKey());
-            byte[] b = cipher.doFinal(Codec.BASE64.decodeBytes(encryptedMessage));
-            return atos(b);
-        });
-    }
+        @Override
+        public String decrypt(String encryptedMessage, RSAPrivateKey privateKey)
+        {
+                return Captor.call(() -> {
+                        Cipher cipher = Cipher.getInstance("RSA");
+                        cipher.init(Cipher.DECRYPT_MODE, privateKey.toPrivateKey());
+                        byte[] b = cipher.doFinal(Codec.BASE64.decodeBytes(encryptedMessage));
+                        return atos(b);
+                });
+        }
 
 }

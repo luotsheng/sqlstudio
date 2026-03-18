@@ -19,6 +19,11 @@ public class QueryResultSet
                 this.rows = rows;
         }
 
+        public static QueryResultSet of(List<String> columns, List<List<String>> rows)
+        {
+                return new QueryResultSet(columns, rows);
+        }
+
         public List<String> getColumns()
         {
                 return columns;
@@ -32,10 +37,5 @@ public class QueryResultSet
         public List<String> getRow(int index)
         {
                 return rows.get(index);
-        }
-
-        public static QueryResultSet of(List<String> columns, List<List<String>> rows)
-        {
-                return new QueryResultSet(columns, rows);
         }
 }

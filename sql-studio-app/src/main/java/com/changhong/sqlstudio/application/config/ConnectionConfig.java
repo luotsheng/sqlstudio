@@ -9,93 +9,112 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @author Luo Tiansheng
  * @since 2026/3/17
  */
-public class ConnectionConfig {
+public class ConnectionConfig
+{
 
-    private String host;
-    private int port;
-    private String jdbcType;
-    private String username;
-    private String password;
-    private boolean useSSL;
-    private String timezone;
-    private boolean savePassword;
+        private String host;
+        private int port;
+        private String jdbcType;
+        private String username;
+        private String password;
+        private boolean useSSL;
+        private String timezone;
+        private boolean savePassword;
 
-    public String getHost() {
-        return host;
-    }
+        public String getHost()
+        {
+                return host;
+        }
 
-    public void setHost(String host) {
-        this.host = host;
-    }
+        public void setHost(String host)
+        {
+                this.host = host;
+        }
 
-    public int getPort() {
-        return port;
-    }
+        public int getPort()
+        {
+                return port;
+        }
 
-    public void setPort(int port) {
-        this.port = port;
-    }
+        public void setPort(int port)
+        {
+                this.port = port;
+        }
 
-    public String getJdbcType() {
-        return jdbcType;
-    }
+        public String getJdbcType()
+        {
+                return jdbcType;
+        }
 
-    public void setJdbcType(String jdbcType) {
-        this.jdbcType = jdbcType;
-    }
+        public void setJdbcType(String jdbcType)
+        {
+                this.jdbcType = jdbcType;
+        }
 
-    public String getUsername() {
-        return username;
-    }
+        public String getUsername()
+        {
+                return username;
+        }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+        public void setUsername(String username)
+        {
+                this.username = username;
+        }
 
-    public String getPassword() {
-        return password;
-    }
+        public String getPassword()
+        {
+                return password;
+        }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+        public void setPassword(String password)
+        {
+                this.password = password;
+        }
 
-    public boolean isUseSSL() {
-        return useSSL;
-    }
+        public boolean isUseSSL()
+        {
+                return useSSL;
+        }
 
-    public void setUseSSL(boolean useSSL) {
-        this.useSSL = useSSL;
-    }
+        public void setUseSSL(boolean useSSL)
+        {
+                this.useSSL = useSSL;
+        }
 
-    public String getTimezone() {
-        return timezone;
-    }
+        public String getTimezone()
+        {
+                return timezone;
+        }
 
-    public void setTimezone(String timezone) {
-        this.timezone = timezone;
-    }
+        public void setTimezone(String timezone)
+        {
+                this.timezone = timezone;
+        }
 
-    public boolean isSavePassword() {
-        return savePassword;
-    }
+        public boolean isSavePassword()
+        {
+                return savePassword;
+        }
 
-    public void setSavePassword(boolean savePassword) {
-        this.savePassword = savePassword;
-    }
+        public void setSavePassword(boolean savePassword)
+        {
+                this.savePassword = savePassword;
+        }
 
-    public String buildJdbcUrl() {
-        return "jdbc:" + jdbcType + "://" + host + ":" + port
-                + "?useSSL=" + useSSL + "&serverTimezone=" + timezone;
-    }
+        public String buildJdbcUrl()
+        {
+                return "jdbc:" + jdbcType + "://" + host + ":" + port
+                        + "?useSSL=" + useSSL + "&serverTimezone=" + timezone;
+        }
 
-    @JsonIgnore
-    public DataSourceConfig getDataSourceConfig() {
-        DataSourceConfig cnf = new DataSourceConfig();
-        cnf.setJdbcUrl(buildJdbcUrl());
-        cnf.setUsername(username);
-        cnf.setPassword(password == null ? "" : password);
-        return cnf;
-    }
+        @JsonIgnore
+        public DataSourceConfig getDataSourceConfig()
+        {
+                DataSourceConfig cnf = new DataSourceConfig();
+                cnf.setJdbcUrl(buildJdbcUrl());
+                cnf.setUsername(username);
+                cnf.setPassword(password == null ? "" : password);
+                return cnf;
+        }
 
 }

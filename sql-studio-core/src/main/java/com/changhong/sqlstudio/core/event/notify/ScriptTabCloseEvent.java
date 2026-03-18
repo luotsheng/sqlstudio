@@ -10,20 +10,24 @@ import org.eclipse.swt.custom.CTabItem;
  * @author Luo Tiansheng
  * @since 2026-03-01
  */
-public class ScriptTabCloseEvent implements Event {
+public class ScriptTabCloseEvent implements Event
+{
 
-    private final CTabFolderEvent event;
+        private final CTabFolderEvent event;
 
-    public ScriptTabCloseEvent(CTabFolderEvent event) {
-        this.event = event;
-    }
+        public ScriptTabCloseEvent(CTabFolderEvent event)
+        {
+                this.event = event;
+        }
 
-    public CTabItem getCTabItem() {
-        return (CTabItem) event.item;
-    }
+        public CTabItem getCTabItem()
+        {
+                return (CTabItem) event.item;
+        }
 
-    public void setDoit(boolean value) {
-        event.doit = value;
-    }
+        public void setDoit(boolean value)
+        {
+                event.doit = value;
+        }
 
 }

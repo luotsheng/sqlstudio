@@ -12,7 +12,10 @@ import com.changhong.sqlstudio.driver.MySqlDataSource;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.TreeItem;
 
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
@@ -31,17 +34,17 @@ import static org.eclipse.swt.SWT.NONE;
         "FieldCanBeLocal",
         "unused",
 })
-public class NNConnection
+public class DBConnection
 {
         private final ConnectionConfig config;
         private final String name;
         private final TreeItem item;
+        private final Map<String, DBDatabase> databases = new LinkedHashMap<>();
         private Menu menu;
         private boolean openFlag;
         private HikariDataSourceAdapter ds;
-        private final Map<String, NNDatabase> databases = new LinkedHashMap<>();
 
-        public NNConnection(String name, TreeItem parent, ConnectionConfig config)
+        public DBConnection(String name, TreeItem parent, ConnectionConfig config)
         {
                 this.name = name;
                 this.config = config;
@@ -98,7 +101,7 @@ public class NNConnection
                         for (String databaseName : databaseNames) {
                                 if (databases.containsKey(databaseName))
                                         continue;
-                                databases.put(databaseName, new NNDatabase(ds, item, databaseName));
+                                databases.put(databaseName, new DBDatabase(ds, item, databaseName));
                         }
                 } catch (SQLException e) {
                         EventBus.publish(new RuntimeErrorEvent(item.getText(), e));
@@ -134,7 +137,7 @@ public class NNConnection
                 if (ds != null)
                         ds.close();
 
-                databases.values().forEach(NNDatabase::close);
+                databases.values().forEach(DBDatabase::close);
                 databases.clear();
 
                 openFlag = false;

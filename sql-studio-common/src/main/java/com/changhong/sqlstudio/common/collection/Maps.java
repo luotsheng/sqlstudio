@@ -59,187 +59,186 @@ import java.util.*;
  * <p>该类旨在为开发者提供方便且高效的 Map 操作工具，是日常开发中处理 Map 对象的理想选择。
  *
  * @author Luo Tiansheng
- *
+ * @noinspection DuplicatedCode
  * @see Map
  * @see HashMap
  * @see LinkedHashMap
  * @since 1.0
- * @noinspection DuplicatedCode
  */
-public class Maps {
+public class Maps
+{
 
-    /**
-     * 判断参数 {@code map} 实现了 {@link Map} 接口的对象实例，是否为空。如果要满足函数
-     * 返回 {@code false} 那么该对象不能为 {@code null} 并且该对象的 {@code size} 必须大
-     * 于 0。反之返回 {@code true}。<p>
-     *
-     * <p>
-     * 这个函数主要的作用在于判断各种 {@link LinkedHashMap}、{@link HashMap} 等继承了
-     * {@link Map} 接口的子接口。
-     *
-     * @param map
-     *        一个 {@link Map} 接口对象实例
-     *
-     * @return {@code false} 表示集合不为空，集合内有真实的数据。反之 {@code true} 表示集合
-     *         内是空的，没有真实的任何数据。
-     *
-     * @see List
-     * @see Set
-     */
-    public static <K, V> boolean isEmpty(Map<K, V> map) {
-        return map == null || map.isEmpty();
-    }
+        /**
+         * 判断参数 {@code map} 实现了 {@link Map} 接口的对象实例，是否为空。如果要满足函数
+         * 返回 {@code false} 那么该对象不能为 {@code null} 并且该对象的 {@code size} 必须大
+         * 于 0。反之返回 {@code true}。<p>
+         *
+         * <p>
+         * 这个函数主要的作用在于判断各种 {@link LinkedHashMap}、{@link HashMap} 等继承了
+         * {@link Map} 接口的子接口。
+         *
+         * @param map 一个 {@link Map} 接口对象实例
+         * @return {@code false} 表示集合不为空，集合内有真实的数据。反之 {@code true} 表示集合
+         * 内是空的，没有真实的任何数据。
+         * @see List
+         * @see Set
+         */
+        public static <K, V> boolean isEmpty(Map<K, V> map)
+        {
+                return map == null || map.isEmpty();
+        }
 
-    /**
-     * 传入一个 {@link Map} 对象，拷贝参数 {@code a} 中的数据到新的 {@link HashMap} 对象中，数据拷贝
-     * 过去以后，修改原来的 {@link Map} 对象或修改新分配到对象，并不会影响两个对象之间的数据。
-     *
-     * @param a 需要拷贝的数据
-     * @return 拷贝后的新 {@link HashMap} 对象实例
-     */
-    public static <K, V> Map<K, V> copy(Map<K, V> a) {
-        return new HashMap<>(a);
-    }
+        /**
+         * 传入一个 {@link Map} 对象，拷贝参数 {@code a} 中的数据到新的 {@link HashMap} 对象中，数据拷贝
+         * 过去以后，修改原来的 {@link Map} 对象或修改新分配到对象，并不会影响两个对象之间的数据。
+         *
+         * @param a 需要拷贝的数据
+         * @return 拷贝后的新 {@link HashMap} 对象实例
+         */
+        public static <K, V> Map<K, V> copy(Map<K, V> a)
+        {
+                return new HashMap<>(a);
+        }
 
-    /**
-     * @return 分配一个新的容量默认为 16 个空间的 {@link Map} 实例。
-     */
-    public static <K, V> Map<K, V> newHashMap() {
-        return new HashMap<>();
-    }
+        /**
+         * @return 分配一个新的容量默认为 16 个空间的 {@link Map} 实例。
+         */
+        public static <K, V> Map<K, V> newHashMap()
+        {
+                return new HashMap<>();
+        }
 
-    /**
-     * 合并两个实现了 {@link Map} 接口实例，合并的 {@link Map} 对象可以是任何实现类。但是有一个地方
-     * 需要注意，也就是如果想要的合并结果是有序的。比如你想要合并两个 {@link LinkedHashMap} 成一个单独
-     * 的 {@link Map} 对象并且要保证数据的有序。那么这个函数并不适合这样的操作。
-     *
-     * <p>因为这个函数的返回结果是 {@link HashMap}，而 {@link HashMap} 是一个无序的
-     * {@link Map} 实现类。
-     *
-     * @param a
-     *          一个要合并的 {@link Map} 实现
-     *
-     * @param b
-     *          另一个要合并的 {@link Map} 实现
-     *
-     * @return 合并后的 {@link HashMap} 对象。
-     */
-    public static <K, V> Map<K, V> fromVarargs(Map<K, V> a, Map<K, V> b) {
-        Map<K, V> retmap = newHashMap();
-        retmap.putAll(a);
-        retmap.putAll(b);
-        return retmap;
-    }
+        /**
+         * 合并两个实现了 {@link Map} 接口实例，合并的 {@link Map} 对象可以是任何实现类。但是有一个地方
+         * 需要注意，也就是如果想要的合并结果是有序的。比如你想要合并两个 {@link LinkedHashMap} 成一个单独
+         * 的 {@link Map} 对象并且要保证数据的有序。那么这个函数并不适合这样的操作。
+         *
+         * <p>因为这个函数的返回结果是 {@link HashMap}，而 {@link HashMap} 是一个无序的
+         * {@link Map} 实现类。
+         *
+         * @param a 一个要合并的 {@link Map} 实现
+         * @param b 另一个要合并的 {@link Map} 实现
+         * @return 合并后的 {@link HashMap} 对象。
+         */
+        public static <K, V> Map<K, V> fromVarargs(Map<K, V> a, Map<K, V> b)
+        {
+                Map<K, V> retmap = newHashMap();
+                retmap.putAll(a);
+                retmap.putAll(b);
+                return retmap;
+        }
 
-    /**
-     * 通过参数传入，key 和 value 创建一个 {@link Map} 对象实例。这个函数必须传入
-     * {@code key} 和 {@code value} 并且返回的 Map 对象实例中包含传入的 {@code key}
-     * 和 {@code value}
-     *
-     * 这个函数支持传入一个键值对。
-     *
-     * @param k1
-     *          key
-     *
-     * @param v1
-     *          value
-     *
-     * @return 返回一个包含传入的 key 和 value 的 {@link Map} 对象实例。
-     */
-    public static <K, V> Map<K, V> fromVarargs(K k1, V v1) {
-        Map<K, V> retmap = newHashMap();
-        retmap.put(k1, v1);
-        return retmap;
-    }
+        /**
+         * 通过参数传入，key 和 value 创建一个 {@link Map} 对象实例。这个函数必须传入
+         * {@code key} 和 {@code value} 并且返回的 Map 对象实例中包含传入的 {@code key}
+         * 和 {@code value}
+         * <p>
+         * 这个函数支持传入一个键值对。
+         *
+         * @param k1 key
+         * @param v1 value
+         * @return 返回一个包含传入的 key 和 value 的 {@link Map} 对象实例。
+         */
+        public static <K, V> Map<K, V> fromVarargs(K k1, V v1)
+        {
+                Map<K, V> retmap = newHashMap();
+                retmap.put(k1, v1);
+                return retmap;
+        }
 
-    /**
-     * 通过参数传入，key 和 value 创建一个 {@link Map} 对象实例。这个函数必须传入
-     * {@code key} 和 {@code value} 并且返回的 Map 对象实例中包含传入的 {@code key}
-     * 和 {@code value}
-     *
-     * 这个函数支持传入两个键值对。
-     *
-     * @return 返回一个包含传入的 key 和 value 的 {@link Map} 对象实例。
-     */
-    public static <K, V> Map<K, V> fromVarargs(K k1, V v1, K k2, V v2) {
-        Map<K, V> retmap = newHashMap();
-        retmap.put(k1, v1);
-        retmap.put(k2, v2);
-        return retmap;
-    }
+        /**
+         * 通过参数传入，key 和 value 创建一个 {@link Map} 对象实例。这个函数必须传入
+         * {@code key} 和 {@code value} 并且返回的 Map 对象实例中包含传入的 {@code key}
+         * 和 {@code value}
+         * <p>
+         * 这个函数支持传入两个键值对。
+         *
+         * @return 返回一个包含传入的 key 和 value 的 {@link Map} 对象实例。
+         */
+        public static <K, V> Map<K, V> fromVarargs(K k1, V v1, K k2, V v2)
+        {
+                Map<K, V> retmap = newHashMap();
+                retmap.put(k1, v1);
+                retmap.put(k2, v2);
+                return retmap;
+        }
 
-    /**
-     * 通过参数传入，key 和 value 创建一个 {@link Map} 对象实例。这个函数必须传入
-     * {@code key} 和 {@code value} 并且返回的 Map 对象实例中包含传入的 {@code key}
-     * 和 {@code value}
-     *
-     * 这个函数支持传入三个键值对。
-     *
-     * @return 返回一个包含传入的 key 和 value 的 {@link Map} 对象实例。
-     */
-    public static <K, V> Map<K, V> fromVarargs(K k1, V v1, K k2, V v2, K k3, V v3) {
-        Map<K, V> retmap = newHashMap();
-        retmap.put(k1, v1);
-        retmap.put(k2, v2);
-        retmap.put(k3, v3);
-        return retmap;
-    }
+        /**
+         * 通过参数传入，key 和 value 创建一个 {@link Map} 对象实例。这个函数必须传入
+         * {@code key} 和 {@code value} 并且返回的 Map 对象实例中包含传入的 {@code key}
+         * 和 {@code value}
+         * <p>
+         * 这个函数支持传入三个键值对。
+         *
+         * @return 返回一个包含传入的 key 和 value 的 {@link Map} 对象实例。
+         */
+        public static <K, V> Map<K, V> fromVarargs(K k1, V v1, K k2, V v2, K k3, V v3)
+        {
+                Map<K, V> retmap = newHashMap();
+                retmap.put(k1, v1);
+                retmap.put(k2, v2);
+                retmap.put(k3, v3);
+                return retmap;
+        }
 
-    /**
-     * 通过参数传入，key 和 value 创建一个 {@link Map} 对象实例。这个函数必须传入
-     * {@code key} 和 {@code value} 并且返回的 Map 对象实例中包含传入的 {@code key}
-     * 和 {@code value}
-     *
-     * 这个函数支持传入四个键值对。
-     *
-     * @return 返回一个包含传入的 key 和 value 的 {@link Map} 对象实例。
-     */
-    public static <K, V> Map<K, V> fromVarargs(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4) {
-        Map<K, V> retmap = newHashMap();
-        retmap.put(k1, v1);
-        retmap.put(k2, v2);
-        retmap.put(k3, v3);
-        retmap.put(k4, v4);
-        return retmap;
-    }
+        /**
+         * 通过参数传入，key 和 value 创建一个 {@link Map} 对象实例。这个函数必须传入
+         * {@code key} 和 {@code value} 并且返回的 Map 对象实例中包含传入的 {@code key}
+         * 和 {@code value}
+         * <p>
+         * 这个函数支持传入四个键值对。
+         *
+         * @return 返回一个包含传入的 key 和 value 的 {@link Map} 对象实例。
+         */
+        public static <K, V> Map<K, V> fromVarargs(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4)
+        {
+                Map<K, V> retmap = newHashMap();
+                retmap.put(k1, v1);
+                retmap.put(k2, v2);
+                retmap.put(k3, v3);
+                retmap.put(k4, v4);
+                return retmap;
+        }
 
-    /**
-     * 通过参数传入，key 和 value 创建一个 {@link Map} 对象实例。这个函数必须传入
-     * {@code key} 和 {@code value} 并且返回的 Map 对象实例中包含传入的 {@code key}
-     * 和 {@code value}
-     *
-     * 这个函数支持传入五个键值对。
-     *
-     * @return 返回一个包含传入的 key 和 value 的 {@link Map} 对象实例。
-     */
-    public static <K, V> Map<K, V> fromVarargs(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5) {
-        Map<K, V> retmap = newHashMap();
-        retmap.put(k1, v1);
-        retmap.put(k2, v2);
-        retmap.put(k3, v3);
-        retmap.put(k4, v4);
-        retmap.put(k5, v5);
-        return retmap;
-    }
+        /**
+         * 通过参数传入，key 和 value 创建一个 {@link Map} 对象实例。这个函数必须传入
+         * {@code key} 和 {@code value} 并且返回的 Map 对象实例中包含传入的 {@code key}
+         * 和 {@code value}
+         * <p>
+         * 这个函数支持传入五个键值对。
+         *
+         * @return 返回一个包含传入的 key 和 value 的 {@link Map} 对象实例。
+         */
+        public static <K, V> Map<K, V> fromVarargs(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5)
+        {
+                Map<K, V> retmap = newHashMap();
+                retmap.put(k1, v1);
+                retmap.put(k2, v2);
+                retmap.put(k3, v3);
+                retmap.put(k4, v4);
+                retmap.put(k5, v5);
+                return retmap;
+        }
 
-    /**
-     * 通过参数传入，key 和 value 创建一个 {@link Map} 对象实例。这个函数必须传入
-     * {@code key} 和 {@code value} 并且返回的 Map 对象实例中包含传入的 {@code key}
-     * 和 {@code value}
-     *
-     * 这个函数支持传入六个键值对。
-     *
-     * @return 返回一个包含传入的 key 和 value 的 {@link Map} 对象实例。
-     */
-    public static <K, V> Map<K, V> fromVarargs(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6) {
-        Map<K, V> retmap = newHashMap();
-        retmap.put(k1, v1);
-        retmap.put(k2, v2);
-        retmap.put(k3, v3);
-        retmap.put(k4, v4);
-        retmap.put(k5, v5);
-        retmap.put(k6, v6);
-        return retmap;
-    }
+        /**
+         * 通过参数传入，key 和 value 创建一个 {@link Map} 对象实例。这个函数必须传入
+         * {@code key} 和 {@code value} 并且返回的 Map 对象实例中包含传入的 {@code key}
+         * 和 {@code value}
+         * <p>
+         * 这个函数支持传入六个键值对。
+         *
+         * @return 返回一个包含传入的 key 和 value 的 {@link Map} 对象实例。
+         */
+        public static <K, V> Map<K, V> fromVarargs(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5, K k6, V v6)
+        {
+                Map<K, V> retmap = newHashMap();
+                retmap.put(k1, v1);
+                retmap.put(k2, v2);
+                retmap.put(k3, v3);
+                retmap.put(k4, v4);
+                retmap.put(k5, v5);
+                retmap.put(k6, v6);
+                return retmap;
+        }
 
 }
