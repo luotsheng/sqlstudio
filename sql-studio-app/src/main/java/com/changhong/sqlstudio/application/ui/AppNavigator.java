@@ -118,6 +118,9 @@ public class AppNavigator extends EventListener
                         Point point = tree.toControl(event.x, event.y);
                         TreeItem item = tree.getItem(point);
 
+                        if (item == null)
+                                return;
+
                         if (item == connectionListChild) {
                                 tree.setMenu(menu);
                         } else if (item.getData() instanceof Connection conn) {
