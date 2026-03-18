@@ -28,4 +28,9 @@ public class Database
         item = new TreeItem(parent, SWT.NONE);
         item.setText(name);
     }
+
+    public void destroy() {
+        item.dispose();
+    }
+
 }
