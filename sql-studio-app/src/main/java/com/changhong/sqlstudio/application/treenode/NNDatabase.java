@@ -90,7 +90,7 @@ public class NNDatabase
                 return openFlag;
         }
 
-        public QueryResultSet selectTableData(String tableName, int start, int count) throws SQLException {
-                return ds.selectTableData(name, tableName, start, count);
+        public QueryResultSet queryResultSet(String tableName, int start, int count) throws SQLException {
+                return ds.queryResultSet(name, tableName, start, count);
         }
 }

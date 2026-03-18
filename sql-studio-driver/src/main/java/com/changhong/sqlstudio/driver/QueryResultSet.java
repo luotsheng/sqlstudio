@@ -29,6 +29,11 @@ public class QueryResultSet
                 return rows;
         }
 
+        public List<String> getRow(int index)
+        {
+                return rows.get(index);
+        }
+
         public static QueryResultSet of(List<String> columns, List<List<String>> rows)
         {
                 return new QueryResultSet(columns, rows);

@@ -1,7 +1,7 @@
 package com.changhong.sqlstudio.application.ui;
 
 import com.changhong.sqlstudio.application.treenode.NNTable;
-import com.changhong.sqlstudio.application.widgets.DataTable;
+import com.changhong.sqlstudio.application.widgets.GridViewer;
 import com.changhong.sqlstudio.core.event.notify.ApplicationReadyEvent;
 import com.changhong.sqlstudio.core.event.notify.OpenDataTableTabEvent;
 import com.changhong.sqlstudio.core.event.notify.OpenNewQueryScriptEvent;
@@ -61,13 +61,14 @@ public class AppWorkbench extends EventListener {
     public void eventTigger(Event event) {
         if (event instanceof ScriptTabCloseEvent closeEvent) {
             CTabItem tabItem = closeEvent.getCTabItem();
-            QueryEditor codeEditor = (QueryEditor) tabItem.getControl();
 
-            if (codeEditor.isDirty()) {
-                String tips = "文件 \"" + tabItem.getText() + "\" 已修改，是否保存？";
-                switch (Widgets.showSaveDialog(tips)) {
-                    case SWT.CANCEL -> closeEvent.setDoit(false);
-                    case SWT.NO -> closeEvent.setDoit(true);
+            if (tabItem.getControl() instanceof QueryEditor editor) {
+                if (editor.isDirty()) {
+                    String tips = "文件 \"" + tabItem.getText() + "\" 已修改，是否保存？";
+                    switch (Widgets.showSaveDialog(tips)) {
+                        case SWT.CANCEL -> closeEvent.setDoit(false);
+                        case SWT.NO -> closeEvent.setDoit(true);
+                    }
                 }
             }
 
@@ -89,8 +90,8 @@ public class AppWorkbench extends EventListener {
 
     public void newDataTableTab(OpenDataTableTabEvent event) {
         NNTable table = event.table();
-        DataTable dataTable = new DataTable(tabFolder, table);
-        tabFolder.addTab(table.name(), dataTable);
+        GridViewer gridViewer = new GridViewer(tabFolder, table);
+        tabFolder.addTab(table.name(), gridViewer);
     }
 
 }
