@@ -44,6 +44,7 @@ public class Widgets
         /**
          * 显示错误对话框
          */
+        @SuppressWarnings("UnusedReturnValue")
         public static int showErrorDialog(String title, String tips)
         {
                 MessageBox dialog = new MessageBox(Window.shell(),

@@ -15,7 +15,6 @@ import java.util.Objects;
 @SuppressWarnings("ExtractMethodRecommender")
 public class Images
 {
-
         private static final int ICON_WIDTH = 20;
         private static final int ICON_HEIGHT = 20;
         private static Map<String, Image> iconsMap = null;

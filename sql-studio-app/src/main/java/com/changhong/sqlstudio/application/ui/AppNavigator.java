@@ -81,6 +81,9 @@ public class AppNavigator extends EventListener
                 connectionItems.put(name, new DBConnection(name, connectionListChild, config));
         }
 
+        /**
+         * 节点双击事件管理
+         */
         private void doubleClickEvent(TreeItem item)
         {
                 if (item == null)

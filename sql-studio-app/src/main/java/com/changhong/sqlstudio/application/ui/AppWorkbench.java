@@ -17,8 +17,6 @@ import org.eclipse.swt.custom.CTabFolder2Adapter;
 import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -107,7 +105,9 @@ public class AppWorkbench extends EventListener
                 cTabItem.addDisposeListener(disposeEvent -> {
                         if (!gridViewer.isDisposed())
                                 gridViewer.dispose();
+                        table.setOpenTabItem(null);
                 });
+                table.setOpenTabItem(cTabItem);
         }
 
 }
