@@ -10,6 +10,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -47,7 +48,14 @@ public class QueryEditor extends Composite
         {
                 super(parent, SWT.NONE);
 
-                setLayout(new GridLayout(2, false));
+                GridLayout gdLayout = new GridLayout(1, false);
+                gdLayout.marginWidth = 0;
+                gdLayout.marginHeight = 0;
+                gdLayout.horizontalSpacing = 0;
+                gdLayout.verticalSpacing = 0;
+                setLayout(gdLayout);
+
+                setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
                 createToolBar();
                 createStyledText();
@@ -55,29 +63,47 @@ public class QueryEditor extends Composite
 
         private void createToolBar()
         {
-                toolBar = new ToolBar(this, SWT.FLAT | SWT.VERTICAL);
+                toolBar = new ToolBar(this, SWT.FLAT | SWT.HORIZONTAL | SWT.CENTER);
+                toolBar.setBackground(new Color(Launcher.display, 245,245,245));
 
-                GridData toolbarData = new GridData(SWT.LEFT, SWT.FILL, false, true);
-                toolbarData.verticalAlignment = SWT.BEGINNING;
+                GridData toolbarData = new GridData(SWT.FILL, SWT.CENTER, true, false);
                 toolBar.setLayoutData(toolbarData);
+
+                new ToolItem(toolBar, SWT.SEPARATOR);
 
                 ToolItem runItem = new ToolItem(toolBar, SWT.PUSH);
                 runItem.setImage(Images.RUN_0);
                 runItem.setToolTipText("运行已选择");
+
+                new ToolItem(toolBar, SWT.SEPARATOR);
+
+                // 连接下拉框
+                Combo connCombo = new Combo(toolBar, SWT.DROP_DOWN | SWT.READ_ONLY);
+                connCombo.setItems(new String[]{"本地连接", "远程连接"});
+                connCombo.setText("本地连接");
+                ToolItem connItem = new ToolItem(toolBar, SWT.SEPARATOR);
+                connItem.setControl(connCombo);
+                connItem.setWidth(180);
+
+                // 连接下拉框
+                Combo dbCombo = new Combo(toolBar, SWT.DROP_DOWN | SWT.READ_ONLY);
+                dbCombo.setItems(new String[]{"mysql", "openser"});
+                dbCombo.setText("数据库");
+                ToolItem dbItem = new ToolItem(toolBar, SWT.SEPARATOR);
+                dbItem.setControl(dbCombo);
+                dbItem.setWidth(180);
+
+                new ToolItem(toolBar, SWT.SEPARATOR);
         }
 
         private void createStyledText()
         {
                 styledText = new StyledText(this, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
                 styledText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+                styledText.setAlwaysShowScrollBars(false);
 
                 setBackground(Launcher.display.getSystemColor(SWT.COLOR_WHITE));
                 setForeground(Launcher.display.getSystemColor(SWT.COLOR_BLACK));
-
-                styledText.setLeftMargin(10);
-                styledText.setRightMargin(10);
-                styledText.setTopMargin(10);
-                styledText.setBottomMargin(10);
 
                 Font font = new Font(Launcher.display, new FontData[]{
                         new FontData("Monaco", EDITOR_FONT_SIZE, SWT.NORMAL),

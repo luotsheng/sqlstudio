@@ -39,7 +39,7 @@ public class DragTabFolder extends CTabFolder
 
         public DragTabFolder(Composite parent)
         {
-                super(parent, SWT.BORDER | SWT.CLOSE);
+                super(parent, SWT.CLOSE);
 
                 createContextMenu();
                 configureTabFolder();
