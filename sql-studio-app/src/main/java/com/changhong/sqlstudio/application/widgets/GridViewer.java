@@ -18,12 +18,11 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 
 import java.sql.SQLException;
 import java.util.*;
+import java.util.List;
 
 /**
  * 数据页
@@ -38,7 +37,7 @@ public class GridViewer extends Composite
         private final GridEditor gridEditor;
 
         private int start = 0;
-        private int count = 50;
+        private int count = 1000;
         private QueryResultSet queryResultSet;
 
         private static final Color NULL_COLOR = new Color(Launcher.display, 128, 128, 128);
@@ -50,13 +49,18 @@ public class GridViewer extends Composite
 
                 this.tableNode = tableNode;
 
-                grid = new Grid(this, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+                int gridFlags = SWT.BORDER | SWT.FULL_SELECTION | SWT.VIRTUAL |
+                                SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL;
+
+                grid = new Grid(this, gridFlags);
                 grid.setHeaderVisible(true);
                 grid.setLinesVisible(true);
 
-                grid.setAutoHeight(true);
+                grid.setAutoHeight(false);
                 grid.setRowHeaderVisible(false);
                 grid.setCellSelectionEnabled(true);
+
+                grid.addListener(SWT.EraseItem, e -> e.detail &= ~(SWT.HOT | SWT.SELECTED));
 
                 gridEditor = new GridEditor(grid);
 
@@ -64,6 +68,66 @@ public class GridViewer extends Composite
                 enableEditing();
 
                 render();
+        }
+
+        private void render()
+        {
+                grid.setRedraw(false);
+                grid.setLayoutDeferred(true);
+
+                DBDatabase db = tableNode.db();
+
+                try {
+                        queryResultSet = db.queryResultSet(tableNode.name(), start, count);
+
+                        // 计算列宽
+                        int[] columnWidths = new int[queryResultSet.getColumns().size()];
+                        Arrays.fill(columnWidths, 100);
+
+                        for (List<String> row : queryResultSet.getRows()) {
+                                for (int i = 0; i < row.size(); i++) {
+                                        String value = row.get(i);
+                                        if (value != null) {
+                                                int width = value.length() * 8; // 估算
+                                                columnWidths[i] = Math.max(columnWidths[i], Math.min(width, 300));
+                                        }
+                                }
+                        }
+
+                        for (int i = 0; i < queryResultSet.getColumns().size(); i++) {
+                                GridColumn column = new GridColumn(grid, SWT.NONE);
+                                column.setText(queryResultSet.getColumns().get(i));
+                                column.setResizeable(true);
+                                column.setMoveable(true);
+                                column.setWidth(columnWidths[i]);
+                        }
+
+                        // 设置总行数, 绑定 SetData
+                        grid.setItemCount(queryResultSet.totalRows());
+
+                        grid.addListener(SWT.SetData, event -> {
+                                GridItem item = (GridItem) event.item;
+                                int index = grid.indexOf(item);
+
+                                List<String> rowData = queryResultSet.getRow(index);
+
+                                for (int col = 0; col < rowData.size(); col++) {
+                                        String value = rowData.get(col);
+                                        if (value != null) {
+                                                item.setText(col, value);
+                                        } else {
+                                                item.setText(col, "(NULL)");
+                                                item.setForeground(col, NULL_COLOR);
+                                        }
+                                }
+                                item.setHeight(25);
+                        });
+                } catch (SQLException e) {
+                        EventBus.publish(new RuntimeErrorEvent(e));
+                }
+
+                grid.setLayoutDeferred(false);
+                grid.setRedraw(true);
         }
 
         private void addKeyListener()
@@ -74,11 +138,11 @@ public class GridViewer extends Composite
                         public void keyPressed(KeyEvent e)
                         {
                                 // Ctrl+C 复制
-                                if ((e.stateMask & SWT.CTRL) != 0 && e.keyCode == 'c') {
+                                if (e.keyCode == 'c' && ((e.stateMask & SWT.CTRL) != 0 || (e.stateMask & SWT.COMMAND) != 0)) {
                                         copySelection();
                                 }
                                 // Ctrl+A 全选
-                                if ((e.stateMask & SWT.CTRL) != 0 && e.keyCode == 'a') {
+                                if (e.keyCode == 'a' && ((e.stateMask & SWT.CTRL) != 0 || (e.stateMask & SWT.COMMAND) != 0)) {
                                         selectAll();
                                 }
                         }
@@ -136,7 +200,11 @@ public class GridViewer extends Composite
                                         sb.append(text != null ? text : "");
                                 }
                         }
+
+                        sb.append(System.lineSeparator());
                 }
+
+                sb.delete(sb.length() - 1, sb.length());
 
                 // 复制到剪贴板
                 TextTransfer textTransfer = TextTransfer.getInstance();
@@ -235,62 +303,11 @@ public class GridViewer extends Composite
                 item.setText(columnIndex, newValue);
         }
 
-        private void render()
+        @Override
+        public void dispose()
         {
-                grid.setRedraw(false);
-
-                DBDatabase db = tableNode.db();
-
-                try {
-                        queryResultSet = db.queryResultSet(tableNode.name(), start, count);
-
-                        queryResultSet.getColumns().forEach(col -> {
-                                GridColumn column = new GridColumn(grid, SWT.NONE);
-                                column.setText(col);
-
-                                column.setResizeable(true);
-                                column.setMoveable(true);
-
-                                column.setWidth(150);
-                        });
-
-                        queryResultSet.getRows().forEach(row -> {
-                                GridItem item = new GridItem(grid, SWT.NONE);
-
-                                int rowIndex = grid.indexOf(item);
-                                if (rowIndex % 2 == 0)
-                                        item.setBackground(Launcher.display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
-
-                                for (int i = 0; i < row.size(); i++) {
-                                        String value = row.get(i);
-
-                                        if (value != null) {
-                                                item.setText(i, value);
-                                        } else {
-                                                item.setText(i, "(N/A)");
-                                                item.setForeground(i, NULL_COLOR);
-                                        }
-                                }
-
-                                item.setHeight(25);
-                        });
-
-                        for (int i = 0; i < grid.getColumnCount(); i++) {
-                                GridColumn column = grid.getColumn(i);
-                                int maxWidth = 100;
-
-                                for (GridItem item : grid.getItems()) {
-                                        String text = item.getText(i);
-                                        int width = text.length() * 8;
-                                        maxWidth = Math.max(maxWidth, width);
-                                }
-
-                                column.setWidth(Math.min(maxWidth, 300));
-                        }
-                } catch (SQLException e) {
-                        EventBus.publish(new RuntimeErrorEvent(e));
-                }
-
-                grid.setRedraw(true);
+                super.dispose();
+                gridEditor.dispose();
+                grid.dispose();
         }
 }

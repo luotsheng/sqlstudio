@@ -175,4 +175,12 @@ public class QueryEditor extends Composite
         {
                 this.dirty = dirty;
         }
+
+        @Override
+        public void dispose()
+        {
+                super.dispose();
+                toolBar.dispose();
+                styledText.dispose();
+        }
 }

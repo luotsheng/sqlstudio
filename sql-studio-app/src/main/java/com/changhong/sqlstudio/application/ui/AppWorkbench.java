@@ -17,6 +17,8 @@ import org.eclipse.swt.custom.CTabFolder2Adapter;
 import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -91,13 +93,21 @@ public class AppWorkbench extends EventListener
                 QueryEditor codeEditor = new QueryEditor(tabFolder);
                 CTabItem cTabItem = tabFolder.addTab("新建查询" + "_" + (count++) + ".sql", codeEditor);
                 codeEditor.setTabItem(cTabItem);
+                cTabItem.addDisposeListener(disposeEvent -> {
+                        if (!codeEditor.isDisposed())
+                                codeEditor.dispose();
+                });
         }
 
         public void newDataTableTab(OpenDataTableTabEvent event)
         {
                 DBTable table = event.table();
                 GridViewer gridViewer = new GridViewer(tabFolder, table);
-                tabFolder.addTab(table.name(), gridViewer);
+                CTabItem cTabItem = tabFolder.addTab(table.name(), gridViewer);
+                cTabItem.addDisposeListener(disposeEvent -> {
+                        if (!gridViewer.isDisposed())
+                                gridViewer.dispose();
+                });
         }
 
 }

@@ -201,7 +201,7 @@ public class GeneralConnectionCreateUI extends EventListener
                 });
 
                 Text port = createLabeledTextField(content, "端口号", String.valueOf(config.getPort()));
-                host.addVerifyListener(e -> {
+                port.addVerifyListener(e -> {
                         String string = e.text;
                         for (int i = 0; i < string.length(); i++) {
                                 if (!Character.isDigit(string.charAt(i))) {

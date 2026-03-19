@@ -38,4 +38,9 @@ public class QueryResultSet
         {
                 return rows.get(index);
         }
+
+        public int totalRows()
+        {
+                return rows.size();
+        }
 }
