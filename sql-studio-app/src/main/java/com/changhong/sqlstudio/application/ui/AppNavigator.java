@@ -6,6 +6,7 @@ import com.changhong.sqlstudio.application.config.ConnectionConfig;
 import com.changhong.sqlstudio.application.treenode.DBConnection;
 import com.changhong.sqlstudio.application.treenode.DBDatabase;
 import com.changhong.sqlstudio.application.treenode.DBTable;
+import com.changhong.sqlstudio.application.treenode.DBTreeNode;
 import com.changhong.sqlstudio.application.widgets.Widgets;
 import com.changhong.sqlstudio.application.widgets.dbui.GeneralConnectionCreateUI;
 import com.changhong.sqlstudio.core.common.DBType;
@@ -130,11 +131,15 @@ public class AppNavigator extends EventListener
 
                         if (item == connectionListChild) {
                                 tree.setMenu(menu);
-                        } else if (item.getData() instanceof DBConnection conn) {
-                                tree.setMenu(conn.getMenu());
-                        } else {
-                                tree.setMenu(null);
+                                return;
                         }
+
+                        if (item.getData() instanceof DBTreeNode dbNode) {
+                                tree.setMenu(dbNode.menu());
+                                return;
+                        }
+
+                        tree.setMenu(null);
                 });
 
                 tree.addListener(MouseDoubleClick, event -> {

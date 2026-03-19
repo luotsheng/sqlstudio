@@ -1,11 +1,14 @@
 package com.changhong.sqlstudio.application.treenode;
 
 import com.changhong.sqlstudio.application.Images;
+import com.changhong.sqlstudio.application.window.Window;
 import com.changhong.sqlstudio.core.event.EventBus;
 import com.changhong.sqlstudio.core.event.notify.RuntimeErrorEvent;
 import com.changhong.sqlstudio.driver.HikariDataSourceAdapter;
 import com.changhong.sqlstudio.driver.QueryResultSet;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.TreeItem;
 
 import java.sql.SQLException;
@@ -22,7 +25,7 @@ import java.util.Map;
 @SuppressWarnings({
         "FieldCanBeLocal",
 })
-public class DBDatabase
+public class DBDatabase implements DBTreeNode
 {
         private final HikariDataSourceAdapter ds;
         private final TreeItem parent;
@@ -32,6 +35,7 @@ public class DBDatabase
         private TreeItem item;
         private TreeItem tabelItem;
         private TreeItem queryItem;
+        private Menu menu;
 
         public DBDatabase(HikariDataSourceAdapter ds, TreeItem parent, String name)
         {
@@ -43,6 +47,24 @@ public class DBDatabase
                 item.setText(name);
                 item.setData(this);
                 item.setImage(Images.DATABASE_1);
+
+                configureMenu();
+        }
+
+        private void configureMenu()
+        {
+                menu = new Menu(Window.shell(), SWT.POP_UP);
+
+                MenuItem openDatabaseItem = new MenuItem(menu, SWT.PUSH);
+                openDatabaseItem.setText("打开数据库");
+
+                MenuItem closeDatabaseItem = new MenuItem(menu, SWT.PUSH);
+                closeDatabaseItem.setText("关闭数据库");
+
+                new MenuItem(menu, SWT.SEPARATOR);
+
+                MenuItem newQueryItem = new MenuItem(menu, SWT.PUSH);
+                newQueryItem.setText("新建查询");
         }
 
         private void showTables()
@@ -84,6 +106,7 @@ public class DBDatabase
                 tables.values().forEach(DBTable::close);
                 tabelItem.dispose();
                 queryItem.dispose();
+                menu.dispose();
         }
 
         public boolean isOpen()
@@ -94,5 +117,11 @@ public class DBDatabase
         public QueryResultSet queryResultSet(String tableName, int start, int count) throws SQLException
         {
                 return ds.queryResultSet(name, tableName, start, count);
+        }
+
+        @Override
+        public Menu menu()
+        {
+                return menu;
         }
 }

@@ -34,7 +34,7 @@ import static org.eclipse.swt.SWT.NONE;
         "FieldCanBeLocal",
         "unused",
 })
-public class DBConnection
+public class DBConnection implements DBTreeNode
 {
         private final ConnectionConfig config;
         private final String name;
@@ -139,6 +139,7 @@ public class DBConnection
 
                 databases.values().forEach(DBDatabase::close);
                 databases.clear();
+                menu.dispose();
 
                 openFlag = false;
         }
@@ -148,7 +149,8 @@ public class DBConnection
                 return openFlag;
         }
 
-        public Menu getMenu()
+        @Override
+        public Menu menu()
         {
                 return menu;
         }
