@@ -65,7 +65,7 @@ public class Images
                         }
 
                         // 使用原图的 ImageData，缩放后保留 alpha
-                        Image tmp = new Image(Launcher.display, w, h); // 先创建空 Image
+                        Image tmp = new Image(Launcher.display, w, h);
 
                         GC gc = new GC(tmp);
                         gc.setAntialias(SWT.ON);
@@ -109,7 +109,7 @@ public class Images
         private static void initializeImageLibrary()
         {
                 iconsMap = new HashMap<>();
-                File iconsDir = new File("sql-studio-assets/icons");
+                File iconsDir = new File("assets/icons");
 
                 for (File file : Objects.requireNonNull(iconsDir.listFiles())) {
                         Image src = new Image(Launcher.display, file.getAbsolutePath());
