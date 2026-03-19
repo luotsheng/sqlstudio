@@ -137,7 +137,7 @@ public class DBConnection implements DBTreeNode
                 if (ds != null)
                         ds.close();
 
-                databases.values().forEach(DBDatabase::close);
+                databases.values().forEach(DBDatabase::dispose);
                 databases.clear();
                 menu.dispose();
 
