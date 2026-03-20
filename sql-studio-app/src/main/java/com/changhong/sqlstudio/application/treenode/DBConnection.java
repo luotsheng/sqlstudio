@@ -41,6 +41,9 @@ public class DBConnection implements DBTreeNode
         private final TreeItem item;
         private final Map<String, DBDatabase> databases = new LinkedHashMap<>();
         private Menu menu;
+        private MenuItem editConnection;
+        private MenuItem openConnection;
+        private MenuItem closeConnection;
         private boolean openFlag;
         private HikariDataSourceAdapter ds;
 
@@ -62,12 +65,12 @@ public class DBConnection implements DBTreeNode
         {
                 menu = new Menu(Window.shell(), SWT.POP_UP);
 
-                MenuItem editConnection = new MenuItem(menu, SWT.PUSH);
+                editConnection = new MenuItem(menu, SWT.PUSH);
                 editConnection.setText("编辑连接");
 
                 new MenuItem(menu, SWT.SEPARATOR);
 
-                MenuItem openConnection = new MenuItem(menu, SWT.PUSH);
+                openConnection = new MenuItem(menu, SWT.PUSH);
                 openConnection.setText("打开连接");
                 openConnection.addSelectionListener(new SelectionAdapter()
                 {
@@ -78,7 +81,7 @@ public class DBConnection implements DBTreeNode
                         }
                 });
 
-                MenuItem closeConnection = new MenuItem(menu, SWT.PUSH);
+                closeConnection = new MenuItem(menu, SWT.PUSH);
                 closeConnection.setText("关闭连接");
                 closeConnection.addSelectionListener(new SelectionAdapter()
                 {
@@ -103,6 +106,8 @@ public class DBConnection implements DBTreeNode
                                         continue;
                                 databases.put(databaseName, new DBDatabase(ds, item, databaseName));
                         }
+
+                        item.setExpanded(true);
                 } catch (SQLException e) {
                         EventBus.publish(new RuntimeErrorEvent(item.getText(), e));
                 }
@@ -152,6 +157,13 @@ public class DBConnection implements DBTreeNode
         @Override
         public Menu menu()
         {
+                if (openFlag) {
+                        openConnection.setEnabled(false);
+                        closeConnection.setEnabled(true);
+                } else {
+                        openConnection.setEnabled(true);
+                        closeConnection.setEnabled(false);
+                }
                 return menu;
         }
 }

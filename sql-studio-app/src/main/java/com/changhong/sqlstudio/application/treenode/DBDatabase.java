@@ -38,6 +38,8 @@ public class DBDatabase implements DBTreeNode
         private final TreeItem item;
         private TreeItem tabelItem;
         private TreeItem queryItem;
+        private MenuItem openDatabaseItem;
+        private MenuItem closeDatabaseItem;
         private Menu menu;
 
         public DBDatabase(HikariDataSourceAdapter ds, TreeItem parent, String name)
@@ -58,7 +60,7 @@ public class DBDatabase implements DBTreeNode
         {
                 menu = new Menu(Window.shell(), SWT.POP_UP);
 
-                MenuItem openDatabaseItem = new MenuItem(menu, SWT.PUSH);
+                openDatabaseItem = new MenuItem(menu, SWT.PUSH);
                 openDatabaseItem.setText("打开数据库");
                 openDatabaseItem.addSelectionListener(new SelectionAdapter()
                 {
@@ -70,7 +72,7 @@ public class DBDatabase implements DBTreeNode
                         }
                 });
 
-                MenuItem closeDatabaseItem = new MenuItem(menu, SWT.PUSH);
+                closeDatabaseItem = new MenuItem(menu, SWT.PUSH);
                 closeDatabaseItem.setText("关闭数据库");
                 closeDatabaseItem.addSelectionListener(new SelectionAdapter()
                 {
@@ -91,6 +93,7 @@ public class DBDatabase implements DBTreeNode
                         @Override
                         public void widgetSelected(SelectionEvent e)
                         {
+                                open();
                                 EventBus.publish(new OpenNewQueryScriptEvent());
                         }
                 });
@@ -122,6 +125,7 @@ public class DBDatabase implements DBTreeNode
 
                 showTables();
 
+                item.setExpanded(true);
                 openFlag = true;
         }
 
@@ -155,6 +159,13 @@ public class DBDatabase implements DBTreeNode
         @Override
         public Menu menu()
         {
+                if (openFlag) {
+                        openDatabaseItem.setEnabled(false);
+                        closeDatabaseItem.setEnabled(true);
+                } else {
+                        openDatabaseItem.setEnabled(true);
+                        closeDatabaseItem.setEnabled(false);
+                }
                 return menu;
         }
 }
