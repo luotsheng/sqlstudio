@@ -135,7 +135,9 @@ public class AppNavigator extends EventListener
                         }
 
                         if (item.getData() instanceof DBTreeNode dbNode) {
-                                tree.setMenu(dbNode.menu());
+                                if (dbNode.isClose())
+                                        return;
+                                tree.setMenu(dbNode.getMenu());
                                 return;
                         }
 
@@ -190,7 +192,7 @@ public class AppNavigator extends EventListener
                         public void widgetSelected(SelectionEvent e)
                         {
                                 List<DBConnection> values = connectionItems.values().stream()
-                                        .filter(DBConnection::isOpen)
+                                        .filter(conn -> !conn.isClose())
                                         .toList();
 
                                 if (values.isEmpty())

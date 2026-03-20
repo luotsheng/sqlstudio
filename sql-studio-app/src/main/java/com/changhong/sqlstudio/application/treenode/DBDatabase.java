@@ -28,13 +28,12 @@ import java.util.Map;
 @SuppressWarnings({
         "FieldCanBeLocal",
 })
-public class DBDatabase implements DBTreeNode
+public class DBDatabase extends DBTreeNode
 {
         private final HikariDataSourceAdapter ds;
         private final TreeItem parent;
         private final String name;
         private final Map<String, DBTable> tables = new LinkedHashMap<>();
-        private boolean openFlag;
         private final TreeItem item;
         private TreeItem tabelItem;
         private TreeItem queryItem;
@@ -67,7 +66,7 @@ public class DBDatabase implements DBTreeNode
                         @Override
                         public void widgetSelected(SelectionEvent e)
                         {
-                                if (!isOpen())
+                                if (!openFlag)
                                         open();
                         }
                 });
@@ -79,7 +78,7 @@ public class DBDatabase implements DBTreeNode
                         @Override
                         public void widgetSelected(SelectionEvent e)
                         {
-                                if (isOpen())
+                                if (openFlag)
                                         close();
                         }
                 });
@@ -146,18 +145,13 @@ public class DBDatabase implements DBTreeNode
                 menu.dispose();
         }
 
-        public boolean isOpen()
-        {
-                return openFlag;
-        }
-
         public QueryResultSet queryResultSet(String tableName, int start, int count) throws SQLException
         {
                 return ds.queryResultSet(name, tableName, start, count);
         }
 
         @Override
-        public Menu menu()
+        public Menu getMenu()
         {
                 if (openFlag) {
                         openDatabaseItem.setEnabled(false);

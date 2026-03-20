@@ -8,7 +8,14 @@ import org.eclipse.swt.widgets.Menu;
  * @author Luo Tiansheng
  * @since 2026/3/19
  */
-public interface DBTreeNode
+public abstract class DBTreeNode
 {
-        Menu menu();
+        protected boolean openFlag;
+
+        public boolean isClose()
+        {
+                return !openFlag;
+        }
+
+        public abstract Menu getMenu();
 }

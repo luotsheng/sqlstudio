@@ -34,7 +34,7 @@ import static org.eclipse.swt.SWT.NONE;
         "FieldCanBeLocal",
         "unused",
 })
-public class DBConnection implements DBTreeNode
+public class DBConnection extends DBTreeNode
 {
         private final ConnectionConfig config;
         private final String name;
@@ -44,7 +44,6 @@ public class DBConnection implements DBTreeNode
         private MenuItem editConnection;
         private MenuItem openConnection;
         private MenuItem closeConnection;
-        private boolean openFlag;
         private HikariDataSourceAdapter ds;
 
         public DBConnection(String name, TreeItem parent, ConnectionConfig config)
@@ -144,18 +143,12 @@ public class DBConnection implements DBTreeNode
 
                 databases.values().forEach(DBDatabase::dispose);
                 databases.clear();
-                menu.dispose();
 
                 openFlag = false;
         }
 
-        public boolean isOpen()
-        {
-                return openFlag;
-        }
-
         @Override
-        public Menu menu()
+        public Menu getMenu()
         {
                 if (openFlag) {
                         openConnection.setEnabled(false);
