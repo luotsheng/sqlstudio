@@ -1,7 +1,6 @@
-package com.changhong.sqlstudio.application.widgets;
+package com.changhong.swt.widgets;
 
-import com.changhong.sqlstudio.application.Images;
-import com.changhong.sqlstudio.application.Launcher;
+import com.changhong.swt.Images;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.custom.*;
@@ -10,15 +9,12 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.*;
 
 import java.util.ArrayList;
 
 /**
- * 查询工作页
+ * 文本编辑器
  *
  * @author Luo Tiansheng
  * @since 2026-03-01
@@ -27,7 +23,7 @@ import java.util.ArrayList;
         "FieldMayBeFinal",
         "FieldCanBeLocal",
 })
-public class QueryEditor extends Composite
+public class CodeStyledText extends Composite
 {
         private static final int EDITOR_FONT_SIZE = 18;
 
@@ -39,12 +35,14 @@ public class QueryEditor extends Composite
                 "NULL", "IS", "LIKE", "BETWEEN", "EXISTS", "IN"
         };
 
+        private static final Color backgroundColor = new Color(Display.getCurrent(), 245,245,245);
+
         private StyledText styledText;
         private ToolBar toolBar;
         private CTabItem tabItem;
         private boolean dirty = false;
 
-        public QueryEditor(Composite parent)
+        public CodeStyledText(Composite parent)
         {
                 super(parent, SWT.NONE);
 
@@ -64,7 +62,7 @@ public class QueryEditor extends Composite
         private void createToolBar()
         {
                 toolBar = new ToolBar(this, SWT.FLAT | SWT.HORIZONTAL | SWT.CENTER);
-                toolBar.setBackground(new Color(Launcher.display, 245,245,245));
+                toolBar.setBackground(backgroundColor);
 
                 GridData toolbarData = new GridData(SWT.FILL, SWT.CENTER, true, false);
                 toolBar.setLayoutData(toolbarData);
@@ -102,10 +100,10 @@ public class QueryEditor extends Composite
                 styledText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
                 styledText.setAlwaysShowScrollBars(false);
 
-                setBackground(Launcher.display.getSystemColor(SWT.COLOR_WHITE));
-                setForeground(Launcher.display.getSystemColor(SWT.COLOR_BLACK));
+                setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+                setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
 
-                Font font = new Font(Launcher.display, new FontData[]{
+                Font font = new Font(Display.getCurrent(), new FontData[]{
                         new FontData("Monaco", EDITOR_FONT_SIZE, SWT.NORMAL),
                 });
 
@@ -130,8 +128,8 @@ public class QueryEditor extends Composite
 
                 styledText.addLineStyleListener(new LineStyleListener()
                 {
-                        private final Color keywordColor = Launcher.display.getSystemColor(SWT.COLOR_DARK_BLUE);
-                        private final Color stringColor = Launcher.display.getSystemColor(SWT.COLOR_DARK_GREEN);
+                        private final Color keywordColor = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_BLUE);
+                        private final Color stringColor = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GREEN);
 
                         @Override
                         public void lineGetStyle(LineStyleEvent event)

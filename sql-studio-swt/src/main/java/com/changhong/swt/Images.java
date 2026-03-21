@@ -1,7 +1,8 @@
-package com.changhong.sqlstudio.application;
+package com.changhong.swt;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.widgets.Display;
 
 import java.io.File;
 import java.util.HashMap;
@@ -64,7 +65,7 @@ public class Images
                         }
 
                         // 使用原图的 ImageData，缩放后保留 alpha
-                        Image tmp = new Image(Launcher.display, w, h);
+                        Image tmp = new Image(Display.getCurrent(), w, h);
 
                         GC gc = new GC(tmp);
                         gc.setAntialias(SWT.ON);
@@ -85,7 +86,7 @@ public class Images
                                         }
                                 }
                                 tmp.dispose();
-                                tmp = new Image(Launcher.display, tmpData);
+                                tmp = new Image(Display.getCurrent(), tmpData);
                         }
 
                         if (current != src)
@@ -97,7 +98,7 @@ public class Images
                 ImageData currentData = current.getImageData();
                 ImageData finalData = currentData.scaledTo(ICON_WIDTH, ICON_HEIGHT);
 
-                Image result = new Image(Launcher.display, finalData);
+                Image result = new Image(Display.getCurrent(), finalData);
 
                 if (current != src)
                         current.dispose();
@@ -111,7 +112,7 @@ public class Images
                 File iconsDir = new File("assets/icons");
 
                 for (File file : Objects.requireNonNull(iconsDir.listFiles())) {
-                        Image src = new Image(Launcher.display, file.getAbsolutePath());
+                        Image src = new Image(Display.getCurrent(), file.getAbsolutePath());
                         Image scaled = scaleImage(src);
                         src.dispose();
                         iconsMap.put(file.getName(), scaled);

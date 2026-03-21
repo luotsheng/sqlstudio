@@ -1,17 +1,15 @@
 package com.changhong.sqlstudio.application.ui;
 
 import com.changhong.sqlstudio.application.treenode.DBTable;
-import com.changhong.sqlstudio.application.widgets.DragTabFolder;
-import com.changhong.sqlstudio.application.widgets.GridViewer;
-import com.changhong.sqlstudio.application.widgets.QueryEditor;
 import com.changhong.sqlstudio.application.widgets.Widgets;
 import com.changhong.sqlstudio.core.event.Event;
 import com.changhong.sqlstudio.core.event.EventBus;
 import com.changhong.sqlstudio.core.event.EventListener;
-import com.changhong.sqlstudio.core.event.notify.ApplicationReadyEvent;
-import com.changhong.sqlstudio.core.event.notify.OpenDataTableTabEvent;
-import com.changhong.sqlstudio.core.event.notify.OpenNewQueryScriptEvent;
-import com.changhong.sqlstudio.core.event.notify.ScriptTabCloseEvent;
+import com.changhong.sqlstudio.core.event.notify.*;
+import com.changhong.sqlstudio.driver.QueryResultSet;
+import com.changhong.swt.widgets.CodeStyledText;
+import com.changhong.swt.widgets.VTabFolder;
+import com.changhong.swt.widgets.SqlGrid;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder2Adapter;
 import org.eclipse.swt.custom.CTabFolderEvent;
@@ -20,6 +18,9 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+
+import java.sql.SQLException;
+import java.util.List;
 
 import static org.eclipse.swt.SWT.BORDER;
 
@@ -33,7 +34,7 @@ public class AppWorkbench extends EventListener
 
         private final Shell shell;
         private final Composite container;
-        private final DragTabFolder tabFolder;
+        private final VTabFolder tabFolder;
         private int count = 1;
 
         public AppWorkbench(Shell shell, SashForm sashForm)
@@ -42,7 +43,7 @@ public class AppWorkbench extends EventListener
                 container = new Composite(sashForm, BORDER);
                 container.setLayout(new FillLayout());
 
-                tabFolder = new DragTabFolder(container);
+                tabFolder = new VTabFolder(container);
                 tabFolder.setSimple(true);
 
                 tabFolder.addCTabFolder2Listener(new CTabFolder2Adapter()
@@ -66,7 +67,7 @@ public class AppWorkbench extends EventListener
                 if (event instanceof ScriptTabCloseEvent closeEvent) {
                         CTabItem tabItem = closeEvent.getCTabItem();
 
-                        if (tabItem.getControl() instanceof QueryEditor editor) {
+                        if (tabItem.getControl() instanceof CodeStyledText editor) {
                                 if (editor.isDirty()) {
                                         String tips = "文件 \"" + tabItem.getText() + "\" 已修改，是否保存？";
                                         switch (Widgets.showSaveDialog(tips)) {
@@ -88,7 +89,7 @@ public class AppWorkbench extends EventListener
 
         public void newQueryScriptTab()
         {
-                QueryEditor codeEditor = new QueryEditor(tabFolder);
+                CodeStyledText codeEditor = new CodeStyledText(tabFolder);
                 CTabItem cTabItem = tabFolder.addTab("新建查询" + "_" + (count++) + ".sql", codeEditor);
                 codeEditor.setTabItem(cTabItem);
                 cTabItem.addDisposeListener(disposeEvent -> {
@@ -100,13 +101,21 @@ public class AppWorkbench extends EventListener
         public void newDataTableTab(OpenDataTableTabEvent event)
         {
                 DBTable table = event.table();
-                GridViewer gridViewer = new GridViewer(tabFolder, table);
-                CTabItem cTabItem = tabFolder.addTab(table.name(), gridViewer);
+                SqlGrid grid = new SqlGrid(tabFolder);
+                CTabItem cTabItem = tabFolder.addTab(table.name(), grid);
                 cTabItem.addDisposeListener(disposeEvent -> {
-                        if (!gridViewer.isDisposed())
-                                gridViewer.dispose();
+                        if (!grid.isDisposed())
+                                grid.dispose();
                         table.setOpenTabItem(null);
                 });
+
+                try {
+                        QueryResultSet rs = table.selectByPage(0, 50);
+                        grid.drawData(rs.getColumns(), rs.getRows());
+                } catch (SQLException e) {
+                        EventBus.publish(new RuntimeErrorEvent(e));
+                }
+
                 table.setOpenTabItem(cTabItem);
         }
 

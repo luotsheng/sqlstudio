@@ -1,6 +1,5 @@
 package com.changhong.sqlstudio.application.ui;
 
-import com.changhong.sqlstudio.application.Images;
 import com.changhong.sqlstudio.application.Users;
 import com.changhong.sqlstudio.application.config.ConnectionConfig;
 import com.changhong.sqlstudio.application.treenode.DBConnection;
@@ -16,6 +15,7 @@ import com.changhong.sqlstudio.core.event.EventListener;
 import com.changhong.sqlstudio.core.event.notify.ApplicationReadyEvent;
 import com.changhong.sqlstudio.core.event.notify.OpenDBCreateUIEvent;
 import com.changhong.sqlstudio.core.event.notify.RefreshConnectionListEvent;
+import com.changhong.swt.Images;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;

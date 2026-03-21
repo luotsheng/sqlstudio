@@ -1,6 +1,5 @@
 package com.changhong.sqlstudio.application.treenode;
 
-import com.changhong.sqlstudio.application.Images;
 import com.changhong.sqlstudio.application.config.ConnectionConfig;
 import com.changhong.sqlstudio.application.window.Window;
 import com.changhong.sqlstudio.core.event.EventBus;
@@ -9,6 +8,7 @@ import com.changhong.sqlstudio.driver.DataSourceConfig;
 import com.changhong.sqlstudio.driver.DataSourceUtils;
 import com.changhong.sqlstudio.driver.HikariDataSourceAdapter;
 import com.changhong.sqlstudio.driver.MySqlDataSource;
+import com.changhong.swt.Images;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;

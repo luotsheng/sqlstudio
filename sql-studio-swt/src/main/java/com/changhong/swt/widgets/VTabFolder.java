@@ -1,7 +1,6 @@
-package com.changhong.sqlstudio.application.widgets;
+package com.changhong.swt.widgets;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabFolder2Listener;
 import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.custom.CTabItem;
@@ -19,25 +18,29 @@ import java.util.Map;
  *
  * @author Luo Tiansheng
  */
-public class DragTabFolder extends CTabFolder
+public class VTabFolder extends org.eclipse.swt.custom.CTabFolder
 {
         /* 拖拽阈值 */
         private static final int DRAG_THRESHOLD = 5;
+
         /* 插入框的尺寸 */
         private static final int INSERT_MARKER_WIDTH = 4;
         private static final int INSERT_MARKER_COLOR = SWT.COLOR_LIST_SELECTION;
         private final Map<CTabItem, Control> itemContentMap = new HashMap<>();
+
         /* 鼠标右键所在的标签 */
         private CTabItem contextMenuItem;
+
         /* 拖拽状态 */
         private CTabItem dragSourceItem;
         private boolean isDragging;
         private Point dragStartPoint;
+
         /* 插入位置 */
         private int insertIndex = -1;
         private boolean insertAfter;
 
-        public DragTabFolder(Composite parent)
+        public VTabFolder(Composite parent)
         {
                 super(parent, SWT.CLOSE);
 
@@ -110,21 +113,16 @@ public class DragTabFolder extends CTabFolder
                 });
 
                 /* 菜单检测监听器 */
-                this.addMenuDetectListener(new MenuDetectListener()
-                {
-                        @Override
-                        public void menuDetected(MenuDetectEvent e)
-                        {
-                                Point point = toControl(e.x, e.y);
-                                CTabItem item = getItem(point);
+                this.addMenuDetectListener(e -> {
+                        Point point = toControl(e.x, e.y);
+                        CTabItem item = getItem(point);
 
-                                if (item == null) {
-                                        e.doit = false;
-                                        contextMenuItem = null;
-                                } else {
-                                        contextMenuItem = item;
-                                        e.doit = true;
-                                }
+                        if (item == null) {
+                                e.doit = false;
+                                contextMenuItem = null;
+                        } else {
+                                contextMenuItem = item;
+                                e.doit = true;
                         }
                 });
 
@@ -169,7 +167,7 @@ public class DragTabFolder extends CTabFolder
         private CTabFolder2Listener[] getCTabFolder2Listeners()
         {
                 try {
-                        Field field = CTabFolder.class.getDeclaredField("folderListeners");
+                        Field field = org.eclipse.swt.custom.CTabFolder.class.getDeclaredField("folderListeners");
                         field.setAccessible(true);
 
                         CTabFolder2Listener[] listeners =
@@ -257,36 +255,31 @@ public class DragTabFolder extends CTabFolder
          */
         private void setupPaintListener()
         {
-                this.addPaintListener(new PaintListener()
-                {
-                        @Override
-                        public void paintControl(PaintEvent e)
-                        {
-                                if (!isDragging || insertIndex < 0)
-                                        return;
+                this.addPaintListener(e -> {
+                        if (!isDragging || insertIndex < 0)
+                                return;
 
-                                int itemCount = getItemCount();
-                                if (itemCount == 0)
-                                        return;
+                        int itemCount = getItemCount();
+                        if (itemCount == 0)
+                                return;
 
-                                Rectangle markerRect = calculateInsertMarkerRect();
-                                if (markerRect == null)
-                                        return;
+                        Rectangle markerRect = calculateInsertMarkerRect();
+                        if (markerRect == null)
+                                return;
 
-                                GC gc = e.gc;
-                                gc.setAdvanced(true);
-                                gc.setAlpha(180);
+                        GC gc = e.gc;
+                        gc.setAdvanced(true);
+                        gc.setAlpha(180);
 
-                                Color markerColor = Display.getCurrent()
-                                        .getSystemColor(INSERT_MARKER_COLOR);
-                                gc.setBackground(markerColor);
-                                gc.fillRectangle(markerRect);
+                        Color markerColor = Display.getCurrent()
+                                .getSystemColor(INSERT_MARKER_COLOR);
+                        gc.setBackground(markerColor);
+                        gc.fillRectangle(markerRect);
 
-                                gc.setAlpha(255);
-                                gc.setForeground(Display.getCurrent()
-                                        .getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
-                                gc.drawRectangle(markerRect);
-                        }
+                        gc.setAlpha(255);
+                        gc.setForeground(Display.getCurrent()
+                                .getSystemColor(SWT.COLOR_WIDGET_DARK_SHADOW));
+                        gc.drawRectangle(markerRect);
                 });
         }
 
@@ -363,34 +356,29 @@ public class DragTabFolder extends CTabFolder
                         }
                 });
 
-                this.addMouseMoveListener(new MouseMoveListener()
-                {
-                        @Override
-                        public void mouseMove(MouseEvent e)
-                        {
-                                if (dragSourceItem == null || dragSourceItem.isDisposed())
+                this.addMouseMoveListener(e -> {
+                        if (dragSourceItem == null || dragSourceItem.isDisposed())
+                                return;
+
+                        Point currentPoint = new Point(e.x, e.y);
+
+                        if (!isDragging) {
+                                if (dragStartPoint == null)
                                         return;
 
-                                Point currentPoint = new Point(e.x, e.y);
+                                int distance = Math.abs(currentPoint.x - dragStartPoint.x)
+                                        + Math.abs(currentPoint.y - dragStartPoint.y);
 
-                                if (!isDragging) {
-                                        if (dragStartPoint == null)
-                                                return;
-
-                                        int distance = Math.abs(currentPoint.x - dragStartPoint.x)
-                                                + Math.abs(currentPoint.y - dragStartPoint.y);
-
-                                        if (distance > DRAG_THRESHOLD) {
-                                                isDragging = true;
-                                                setCursor(Display.getCurrent()
-                                                        .getSystemCursor(SWT.CURSOR_SIZEALL));
-                                        } else {
-                                                return;
-                                        }
+                                if (distance > DRAG_THRESHOLD) {
+                                        isDragging = true;
+                                        setCursor(Display.getCurrent()
+                                                .getSystemCursor(SWT.CURSOR_SIZEALL));
+                                } else {
+                                        return;
                                 }
-
-                                updateInsertPosition(currentPoint);
                         }
+
+                        updateInsertPosition(currentPoint);
                 });
         }
 

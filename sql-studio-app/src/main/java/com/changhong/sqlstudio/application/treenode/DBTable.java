@@ -1,11 +1,14 @@
 package com.changhong.sqlstudio.application.treenode;
 
-import com.changhong.sqlstudio.application.Images;
 import com.changhong.sqlstudio.core.event.EventBus;
 import com.changhong.sqlstudio.core.event.notify.OpenDataTableTabEvent;
+import com.changhong.sqlstudio.driver.QueryResultSet;
+import com.changhong.swt.Images;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.TreeItem;
+
+import java.sql.SQLException;
 
 /**
  * 数据表
@@ -34,6 +37,12 @@ public class DBTable
                 item.setText(tableName);
                 item.setImage(Images.TABLE);
                 item.setData(this);
+        }
+
+
+        public QueryResultSet selectByPage(int start, int count) throws SQLException
+        {
+                return db().selectByPage(tableName, start, count);
         }
 
         public void openDataTabelTab()

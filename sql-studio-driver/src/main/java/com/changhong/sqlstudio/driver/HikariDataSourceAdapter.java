@@ -32,6 +32,5 @@ public abstract class HikariDataSourceAdapter extends HikariDataSource
         /**
          * 查询表数据
          */
-        public abstract QueryResultSet queryResultSet(String dbName, String tableName, int start, int count) throws SQLException;
-
+        public abstract QueryResultSet selectByPage(String dbName, String tableName, int start, int count) throws SQLException;
 }

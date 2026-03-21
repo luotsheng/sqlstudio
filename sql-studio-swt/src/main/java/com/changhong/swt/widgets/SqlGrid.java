@@ -1,16 +1,11 @@
-package com.changhong.sqlstudio.application.widgets;
+package com.changhong.swt.widgets;
 
-import com.changhong.sqlstudio.application.Launcher;
-import com.changhong.sqlstudio.application.treenode.DBDatabase;
-import com.changhong.sqlstudio.application.treenode.DBTable;
-import com.changhong.sqlstudio.core.event.EventBus;
-import com.changhong.sqlstudio.core.event.notify.RuntimeErrorEvent;
-import com.changhong.sqlstudio.driver.QueryResultSet;
 import org.eclipse.nebula.widgets.grid.Grid;
 import org.eclipse.nebula.widgets.grid.GridColumn;
 import org.eclipse.nebula.widgets.grid.GridEditor;
 import org.eclipse.nebula.widgets.grid.GridItem;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.KeyAdapter;
@@ -20,7 +15,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
 
-import java.sql.SQLException;
 import java.util.*;
 import java.util.List;
 
@@ -30,29 +24,22 @@ import java.util.List;
  * @author Luo Tiansheng
  * @since 2026-03-01
  */
-public class GridViewer extends Composite
+public class SqlGrid extends Composite
 {
         private final Grid grid;
-        private final DBTable tableNode;
         private final GridEditor gridEditor;
 
-        private int start = 0;
-        private int count = 1000;
-        private QueryResultSet queryResultSet;
+        private static final Color NULL_COLOR = new Color(128, 128, 128);
 
-        private static final Color NULL_COLOR = new Color(Launcher.display, 128, 128, 128);
-
-        public GridViewer(Composite parent, DBTable tableNode)
+        public SqlGrid(Composite parent)
         {
                 super(parent, SWT.NONE);
                 setLayout(new FillLayout());
 
-                this.tableNode = tableNode;
-
                 int gridFlags = SWT.BORDER | SWT.FULL_SELECTION | SWT.VIRTUAL |
                                 SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL;
 
-                grid = new Grid(this, gridFlags);
+                grid = new org.eclipse.nebula.widgets.grid.Grid(this, gridFlags);
                 grid.setHeaderVisible(true);
                 grid.setLinesVisible(true);
 
@@ -66,65 +53,55 @@ public class GridViewer extends Composite
 
                 addKeyListener();
                 enableEditing();
-
-                render();
         }
 
-        private void render()
+        public void drawData(List<String> columns, List<List<String>> rows)
         {
                 grid.setRedraw(false);
                 grid.setLayoutDeferred(true);
 
-                DBDatabase db = tableNode.db();
+                // 计算列宽
+                int[] columnWidths = new int[columns.size()];
+                Arrays.fill(columnWidths, 100);
 
-                try {
-                        queryResultSet = db.queryResultSet(tableNode.name(), start, count);
-
-                        // 计算列宽
-                        int[] columnWidths = new int[queryResultSet.getColumns().size()];
-                        Arrays.fill(columnWidths, 100);
-
-                        for (List<String> row : queryResultSet.getRows()) {
-                                for (int i = 0; i < row.size(); i++) {
-                                        String value = row.get(i);
-                                        if (value != null) {
-                                                int width = value.length() * 8; // 估算
-                                                columnWidths[i] = Math.max(columnWidths[i], Math.min(width, 300));
-                                        }
+                for (List<String> row : rows) {
+                        for (int i = 0; i < row.size(); i++) {
+                                String value = row.get(i);
+                                if (value != null) {
+                                        int width = value.length() * 8; // 估算
+                                        columnWidths[i] = Math.max(columnWidths[i], Math.min(width, 300));
                                 }
                         }
-
-                        for (int i = 0; i < queryResultSet.getColumns().size(); i++) {
-                                GridColumn column = new GridColumn(grid, SWT.NONE);
-                                column.setText(queryResultSet.getColumns().get(i));
-                                column.setResizeable(true);
-                                column.setMoveable(true);
-                                column.setWidth(columnWidths[i]);
-                        }
-
-                        // 设置总行数, 绑定 SetData
-                        grid.setItemCount(queryResultSet.totalRows());
-
-                        grid.addListener(SWT.SetData, event -> {
-                                GridItem item = (GridItem) event.item;
-                                int index = grid.indexOf(item);
-
-                                List<String> rowData = queryResultSet.getRow(index);
-
-                                for (int col = 0; col < rowData.size(); col++) {
-                                        String value = rowData.get(col);
-                                        if (value != null) {
-                                                item.setText(col, value);
-                                        } else {
-                                                item.setText(col, "(NULL)");
-                                                item.setForeground(col, NULL_COLOR);
-                                        }
-                                }
-                                item.setHeight(25);
-                        });
-                } catch (SQLException e) {
-                        EventBus.publish(new RuntimeErrorEvent(e));
                 }
+
+                for (int i = 0; i < columns.size(); i++) {
+                        GridColumn column = new GridColumn(grid, SWT.NONE);
+                        column.setText(columns.get(i));
+                        column.setResizeable(true);
+                        column.setMoveable(true);
+                        column.setWidth(columnWidths[i]);
+                }
+
+                // 设置总行数, 绑定 SetData
+                grid.setItemCount(rows.size());
+
+                grid.addListener(SWT.SetData, event -> {
+                        GridItem item = (GridItem) event.item;
+                        int index = grid.indexOf(item);
+
+                        List<String> rowData = rows.get(index);
+
+                        for (int col = 0; col < rowData.size(); col++) {
+                                String value = rowData.get(col);
+                                if (value != null) {
+                                        item.setText(col, value);
+                                } else {
+                                        item.setText(col, "(NULL)");
+                                        item.setForeground(col, NULL_COLOR);
+                                }
+                        }
+                        item.setHeight(25);
+                });
 
                 grid.setLayoutDeferred(false);
                 grid.setRedraw(true);
@@ -206,9 +183,10 @@ public class GridViewer extends Composite
 
                 sb.delete(sb.length() - 1, sb.length());
 
-                // 复制到剪贴板
                 TextTransfer textTransfer = TextTransfer.getInstance();
-                Launcher.clipboard.setContents(new Object[]{sb.toString()}, new Transfer[]{textTransfer});
+                Clipboard clipboard = new Clipboard(Display.getCurrent());
+                clipboard.setContents(new Object[]{sb.toString()}, new Transfer[]{textTransfer});
+                clipboard.dispose();
         }
 
 

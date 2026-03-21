@@ -66,7 +66,7 @@ public class MySqlDataSource extends HikariDataSourceAdapter
         }
 
         @Override
-        public QueryResultSet queryResultSet(String dbName, String tableName, int start, int count) throws SQLException
+        public QueryResultSet selectByPage(String dbName, String tableName, int start, int count) throws SQLException
         {
                 List<String> columns = new ArrayList<>();
                 List<List<String>> rows = new ArrayList<>();

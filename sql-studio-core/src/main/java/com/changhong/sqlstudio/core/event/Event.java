@@ -7,7 +7,6 @@ package com.changhong.sqlstudio.core.event;
  */
 public interface Event
 {
-
         @SuppressWarnings("unchecked")
         default <T extends Event> T getEventInstance()
         {
