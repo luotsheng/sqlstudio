@@ -1,4 +1,4 @@
-package com.changhong.sqlstudio.application.treenode;
+package com.changhong.sqlstudio.application.node;
 
 import com.changhong.sqlstudio.application.config.ConnectionConfig;
 import com.changhong.sqlstudio.application.window.Window;
@@ -34,19 +34,19 @@ import static org.eclipse.swt.SWT.NONE;
         "FieldCanBeLocal",
         "unused",
 })
-public class DBConnection extends DBTreeNode
+public class DBNConnection extends DBNode
 {
         private final ConnectionConfig config;
         private final String name;
         private final TreeItem item;
-        private final Map<String, DBDatabase> databases = new LinkedHashMap<>();
+        private final Map<String, DBNDatabase> databases = new LinkedHashMap<>();
         private Menu menu;
         private MenuItem editConnection;
         private MenuItem openConnection;
         private MenuItem closeConnection;
         private HikariDataSourceAdapter ds;
 
-        public DBConnection(String name, TreeItem parent, ConnectionConfig config)
+        public DBNConnection(String name, TreeItem parent, ConnectionConfig config)
         {
                 this.name = name;
                 this.config = config;
@@ -93,8 +93,22 @@ public class DBConnection extends DBTreeNode
 
         }
 
-        private void asyncOpen(DataSourceConfig cnf)
+        public void open()
         {
+                if (openFlag)
+                        return;
+
+                openFlag = true;
+                DataSourceConfig cnf = config.getDataSourceConfig();
+
+                Throwable throwable = DataSourceUtils.testConnect(cnf);
+                if (throwable != null) {
+                        Display.getDefault().asyncExec(() -> {
+                                EventBus.publish(new RuntimeErrorEvent(item.getText(), throwable));
+                        });
+                        return;
+                }
+
                 ds = new MySqlDataSource(cnf);
 
                 try {
@@ -103,34 +117,13 @@ public class DBConnection extends DBTreeNode
                         for (String databaseName : databaseNames) {
                                 if (databases.containsKey(databaseName))
                                         continue;
-                                databases.put(databaseName, new DBDatabase(ds, item, databaseName));
+                                databases.put(databaseName, new DBNDatabase(ds, item, databaseName));
                         }
 
                         item.setExpanded(true);
                 } catch (SQLException e) {
                         EventBus.publish(new RuntimeErrorEvent(item.getText(), e));
                 }
-        }
-
-        public void open()
-        {
-                if (openFlag)
-                        return;
-
-                new Thread(() -> {
-                        openFlag = true;
-                        DataSourceConfig cnf = config.getDataSourceConfig();
-
-                        Throwable throwable = DataSourceUtils.testConnect(cnf);
-                        if (throwable != null) {
-                                Display.getDefault().asyncExec(() -> {
-                                        EventBus.publish(new RuntimeErrorEvent(item.getText(), throwable));
-                                });
-                                return;
-                        }
-
-                        Display.getDefault().asyncExec(() -> asyncOpen(cnf));
-                }).start();
         }
 
         public void close()
@@ -141,7 +134,7 @@ public class DBConnection extends DBTreeNode
                 if (ds != null)
                         ds.close();
 
-                databases.values().forEach(DBDatabase::dispose);
+                databases.values().forEach(DBNDatabase::dispose);
                 databases.clear();
 
                 openFlag = false;

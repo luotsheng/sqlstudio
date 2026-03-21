@@ -1,4 +1,4 @@
-package com.changhong.sqlstudio.application.treenode;
+package com.changhong.sqlstudio.application.node;
 
 import com.changhong.sqlstudio.core.event.EventBus;
 import com.changhong.sqlstudio.core.event.notify.OpenDataTableTabEvent;
@@ -19,15 +19,15 @@ import java.sql.SQLException;
 @SuppressWarnings({
         "FieldCanBeLocal",
 })
-public class DBTable
+public class DBNTable
 {
         private final String tableName;
         private final TreeItem parent;
         private final TreeItem item;
-        private final DBDatabase db;
+        private final DBNDatabase db;
         private CTabItem openTabItem;
 
-        public DBTable(String tableName, DBDatabase db, TreeItem parent)
+        public DBNTable(String tableName, DBNDatabase db, TreeItem parent)
         {
                 this.tableName = tableName;
                 this.db = db;
@@ -38,7 +38,6 @@ public class DBTable
                 item.setImage(Images.TABLE);
                 item.setData(this);
         }
-
 
         public QueryResultSet selectByPage(int start, int count) throws SQLException
         {
@@ -64,7 +63,7 @@ public class DBTable
                 item.dispose();
         }
 
-        public DBDatabase db()
+        public DBNDatabase db()
         {
                 return db;
         }
@@ -72,10 +71,5 @@ public class DBTable
         public void setOpenTabItem(CTabItem openTabItem)
         {
                 this.openTabItem = openTabItem;
-        }
-
-        public CTabItem getOpenTabItem()
-        {
-                return openTabItem;
         }
 }

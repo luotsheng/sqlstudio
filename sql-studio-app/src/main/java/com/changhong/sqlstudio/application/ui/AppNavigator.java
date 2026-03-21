@@ -2,10 +2,10 @@ package com.changhong.sqlstudio.application.ui;
 
 import com.changhong.sqlstudio.application.Users;
 import com.changhong.sqlstudio.application.config.ConnectionConfig;
-import com.changhong.sqlstudio.application.treenode.DBConnection;
-import com.changhong.sqlstudio.application.treenode.DBDatabase;
-import com.changhong.sqlstudio.application.treenode.DBTable;
-import com.changhong.sqlstudio.application.treenode.DBTreeNode;
+import com.changhong.sqlstudio.application.node.DBNConnection;
+import com.changhong.sqlstudio.application.node.DBNDatabase;
+import com.changhong.sqlstudio.application.node.DBNTable;
+import com.changhong.sqlstudio.application.node.DBNode;
 import com.changhong.sqlstudio.application.widgets.Widgets;
 import com.changhong.sqlstudio.application.widgets.dbui.GeneralConnectionCreateUI;
 import com.changhong.sqlstudio.core.common.DBType;
@@ -40,7 +40,7 @@ public class AppNavigator extends EventListener
 {
 
         private final Composite container;
-        private final Map<String, DBConnection> connectionItems
+        private final Map<String, DBNConnection> connectionItems
                 = new LinkedHashMap<>();
         private Tree tree;
         private TreeItem connectionListChild;
@@ -79,7 +79,7 @@ public class AppNavigator extends EventListener
         {
                 if (connectionItems.containsKey(name))
                         return;
-                connectionItems.put(name, new DBConnection(name, connectionListChild, config));
+                connectionItems.put(name, new DBNConnection(name, connectionListChild, config));
         }
 
         /**
@@ -90,8 +90,8 @@ public class AppNavigator extends EventListener
                 if (item == null)
                         return;
 
-                if (item.getData() instanceof DBConnection) {
-                        DBConnection DBConnection = connectionItems.get(item.getText());
+                if (item.getData() instanceof DBNConnection) {
+                        DBNConnection DBConnection = connectionItems.get(item.getText());
 
                         if (DBConnection == null)
                                 return;
@@ -99,10 +99,10 @@ public class AppNavigator extends EventListener
                         DBConnection.open();
                 }
 
-                if (item.getData() instanceof DBDatabase db)
+                if (item.getData() instanceof DBNDatabase db)
                         db.open();
 
-                if (item.getData() instanceof DBTable table)
+                if (item.getData() instanceof DBNTable table)
                         table.openDataTabelTab();
         }
 
@@ -121,7 +121,6 @@ public class AppNavigator extends EventListener
                 Menu menu = new Menu(tree);
                 tree.setMenu(menu);
 
-                /* 不允许其他子节点调用菜单 */
                 tree.addMenuDetectListener(event -> {
                         Point point = tree.toControl(event.x, event.y);
                         TreeItem item = tree.getItem(point);
@@ -134,9 +133,7 @@ public class AppNavigator extends EventListener
                                 return;
                         }
 
-                        if (item.getData() instanceof DBTreeNode dbNode) {
-                                if (dbNode.isClose())
-                                        return;
+                        if (item.getData() instanceof DBNode dbNode) {
                                 tree.setMenu(dbNode.getMenu());
                                 return;
                         }
@@ -191,7 +188,7 @@ public class AppNavigator extends EventListener
                         @Override
                         public void widgetSelected(SelectionEvent e)
                         {
-                                List<DBConnection> values = connectionItems.values().stream()
+                                List<DBNConnection> values = connectionItems.values().stream()
                                         .filter(conn -> !conn.isClose())
                                         .toList();
 
@@ -200,7 +197,7 @@ public class AppNavigator extends EventListener
 
                                 int r = Widgets.showQuestionDialog("是否关闭所有连接？");
                                 if (r == YES)
-                                        connectionItems.values().forEach(DBConnection::close);
+                                        connectionItems.values().forEach(DBNConnection::close);
                         }
                 });
 

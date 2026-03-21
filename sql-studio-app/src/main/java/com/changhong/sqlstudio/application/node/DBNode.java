@@ -1,4 +1,4 @@
-package com.changhong.sqlstudio.application.treenode;
+package com.changhong.sqlstudio.application.node;
 
 import org.eclipse.swt.widgets.Menu;
 
@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Menu;
  * @author Luo Tiansheng
  * @since 2026/3/19
  */
-public abstract class DBTreeNode
+public abstract class DBNode
 {
         protected boolean openFlag;
 

@@ -1,4 +1,4 @@
-package com.changhong.sqlstudio.application.treenode;
+package com.changhong.sqlstudio.application.node;
 
 import com.changhong.sqlstudio.application.window.Window;
 import com.changhong.sqlstudio.core.event.EventBus;
@@ -28,13 +28,12 @@ import java.util.Map;
 @SuppressWarnings({
         "FieldCanBeLocal",
 })
-public class DBDatabase extends DBTreeNode
+public class DBNDatabase extends DBNode
 {
         private final HikariDataSourceAdapter ds;
 
-        private final TreeItem parent;
         private final String name;
-        private final Map<String, DBTable> tables = new LinkedHashMap<>();
+        private final Map<String, DBNTable> tables = new LinkedHashMap<>();
         private final TreeItem item;
         private TreeItem tabelItem;
         private TreeItem queryItem;
@@ -42,10 +41,9 @@ public class DBDatabase extends DBTreeNode
         private MenuItem closeDatabaseItem;
         private Menu menu;
 
-        public DBDatabase(HikariDataSourceAdapter ds, TreeItem parent, String name)
+        public DBNDatabase(HikariDataSourceAdapter ds, TreeItem parent, String name)
         {
                 this.ds = ds;
-                this.parent = parent;
                 this.name = name;
 
                 item = new TreeItem(parent, SWT.NO_FOCUS);
@@ -109,7 +107,7 @@ public class DBDatabase extends DBTreeNode
                 try {
                         List<String> tableNames = ds.getTables(item.getText());
                         for (String tableName : tableNames)
-                                tables.put(tableName, new DBTable(tableName, this, tabelItem));
+                                tables.put(tableName, new DBNTable(tableName, this, tabelItem));
                 } catch (SQLException e) {
                         EventBus.publish(new RuntimeErrorEvent(e));
                 }
@@ -138,7 +136,7 @@ public class DBDatabase extends DBTreeNode
         {
                 if (openFlag) {
                         openFlag = false;
-                        tables.values().forEach(DBTable::close);
+                        tables.values().forEach(DBNTable::close);
                         tabelItem.dispose();
                         queryItem.dispose();
                 }

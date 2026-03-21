@@ -1,6 +1,6 @@
 package com.changhong.sqlstudio.application.ui;
 
-import com.changhong.sqlstudio.application.treenode.DBTable;
+import com.changhong.sqlstudio.application.node.DBNTable;
 import com.changhong.sqlstudio.application.widgets.Widgets;
 import com.changhong.sqlstudio.core.event.Event;
 import com.changhong.sqlstudio.core.event.EventBus;
@@ -20,7 +20,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
 import java.sql.SQLException;
-import java.util.List;
 
 import static org.eclipse.swt.SWT.BORDER;
 
@@ -100,7 +99,7 @@ public class AppWorkbench extends EventListener
 
         public void newDataTableTab(OpenDataTableTabEvent event)
         {
-                DBTable table = event.table();
+                DBNTable table = event.table();
                 SqlGrid grid = new SqlGrid(tabFolder);
                 CTabItem cTabItem = tabFolder.addTab(table.name(), grid);
                 cTabItem.addDisposeListener(disposeEvent -> {
